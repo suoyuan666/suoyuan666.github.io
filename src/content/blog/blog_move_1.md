@@ -9,6 +9,8 @@ tags:
 description: "本次更换博客框架的相关记录"
 ---
 
+# Blog 迁移记录
+
 我最早使用的是`hexo`作为博客框架，期间也换过很多主题，但没有一种主题是让我很满意的。我自己前端学的也没有多好，所以并没有自己做一个主题的想法。
 
 后来我看到有人使用[GitBook](https://www.gitbook.com/)写Blog，但我不喜欢使用gitbook，于是准备使用和它差不多的[mdBook](https://github.com/rust-lang/mdBook)，这位是用Rust开发，同时也是[The Rust Programming Language](https://doc.rust-lang.org/stable/book/)所使用的软件，但我用的时候才发现，这位默认的颜值不咋好看，而且搜索功能简陋（不支持CJK）。
