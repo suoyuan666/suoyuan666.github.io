@@ -1,25 +1,24 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
 import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
 import LinkButton from "@components/LinkButton.astro";
+import { SITE } from "@config";
 ---
 
-<Layout>
-  <section id="hero">
-    <Header />
-    <h1>Friends</h1>
+<Layout title={`Friends | ${SITE.title}`}>
+  <Header activeNav="friends" />
+  <Main>
+    <LinkButton
+      className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
+      href="https://blog.tsio.top/"
+    >
+      光溯星河
+    </LinkButton>: 博学笃志，切问近思。
+  </Main>
 
-    <br />
-
-    <p>
-      <LinkButton
-        className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
-        href="https://blog.tsio.top/"
-      >
-        光溯星河
-      </LinkButton>: 博学笃志，切问近思。
-    </p>
-  </section>
+  <Footer />
 </Layout>
 
 <style>
