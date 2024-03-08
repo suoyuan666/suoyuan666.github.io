@@ -1,0 +1,45 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import LinkButton from "@components/LinkButton.astro";
+---
+
+<Layout>
+  <section id="hero">
+    <Header />
+    <h1>Friends</h1>
+
+    <br />
+
+    <p>
+      <LinkButton
+        className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
+        href="https://blog.tsio.top/"
+      >
+        光溯星河
+      </LinkButton>: 博学笃志，切问近思。
+    </p>
+  </section>
+</Layout>
+
+<style>
+  /* ===== Hero Section ===== */
+  #hero {
+    @apply pb-6 pt-8;
+  }
+  #hero h1 {
+    @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
+  }
+  #hero p {
+    @apply my-2;
+  }
+  .social-wrapper {
+    @apply mt-4 flex flex-col sm:flex-row sm:items-center;
+  }
+  .social-links {
+    @apply mb-1 mr-2 whitespace-nowrap sm:mb-0;
+  }
+  .text-offset {
+    margin-left: -20rem;
+  }
+</style>
