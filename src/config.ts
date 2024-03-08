@@ -30,4 +30,10 @@ export const SOCIALS: SocialObjects = [
     linkTitle: ` ${SITE.title} on Github`,
     active: true,
   },
+  {
+    name: "Mail",
+    href: "mailto://BFoOcGEedpEfiKV@proton.me",
+    linkTitle: ` ${SITE.title} on Proton Mail`,
+    active: true,
+  }
 ];
