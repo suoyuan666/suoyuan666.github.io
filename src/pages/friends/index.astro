@@ -9,7 +9,7 @@ import { SITE } from "@config";
 
 <Layout title={`Friends | ${SITE.title}`}>
   <Header activeNav="friends" />
-  <Main pageTitle="Friends" pageDesc="All the friend link of me.">
+  <Main pageTitle="Friends" pageDesc="Friendly link collection.">
     <LinkButton
       className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
       href="https://blog.tsio.top/"
@@ -20,25 +20,3 @@ import { SITE } from "@config";
 
   <Footer />
 </Layout>
-
-<style>
-  /* ===== Hero Section ===== */
-  #hero {
-    @apply pb-6 pt-8;
-  }
-  #hero h1 {
-    @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
-  }
-  #hero p {
-    @apply my-2;
-  }
-  .social-wrapper {
-    @apply mt-4 flex flex-col sm:flex-row sm:items-center;
-  }
-  .social-links {
-    @apply mb-1 mr-2 whitespace-nowrap sm:mb-0;
-  }
-  .text-offset {
-    margin-left: -20rem;
-  }
-</style>
