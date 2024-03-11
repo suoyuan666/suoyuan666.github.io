@@ -24,9 +24,9 @@ description: "介绍了大部分主流发行版"
 
 现在来说，NVIDIA显卡驱动在Wayland桌面协议下的使用还有一堆事情，你会发现night light不可用，屏幕色温你根本无法调节。已知现在Linux发行版中能选择的桌面协议要么是之前的X11，要么是Wayland，其中X11是之前搞的，Wayland是新项目旨在取代X11，所以Wayland中存在XWayland去运行只支持X11的应用，但是这样Wayland带来的一些特性是不能很好的体验到的（比如Wayland较X11要安全一些）。如果你用的NVIDIA显卡，而且如果是新卡的话大概率使用nvidia-driver这个NVIDIA官方提供的闭源驱动，那么Wayland下并不能完美的运行XWayland模拟的应用。
 
-现在还不支持HDR，浏览器对硬件解码的支持也不是很好，NVIDIA有自己的一套，其他显卡用另一套，其中FireFox还支持了一些硬件解码，Chromium内核的浏览器目前仍然处于实验状态，ChromiumOS和其他Linux发行版的文档会有说明可以尝试添加哪些参数启用这个功能。Chromium内核的浏览器默认还不是Wayland，如果你启用了会发现Fcitx5突然不好使了，解决方案也是有的，可以去看Fcitx5的文档。Chromium内核的软件在我这里缩放还有点问题（启用了Wayland之后）。
+现在还不支持HDR，浏览器对硬件解码的支持也不是很好，NVIDIA有自己的一套，其他显卡用另一套，其中FireFox还支持了一些硬件解码，Chromium内核的浏览器目前仍然处于实验状态，ChromiumOS和其他Linux发行版的文档会有说明可以尝试添加哪些参数启用这个功能。Chromium内核的浏览器默认还不是Wayland，如果你启用了会发现Fcitx5突然不好使了，解决方案也是有的，可以去看Fcitx5的文档。Chromium内核的软件的缩放还有点问题（启用了Wayland之后）。
 
-我不好评价GNU/Linux玩游戏会是怎样的体验，不过Valve公司基于wine搞了一个[Proton](<https://en.wikipedia.org/wiki/Proton_(software)>)，只要在steam play中勾选为所有应用启用steam play就可以玩那些只支持Windows平台的游戏了，但不好评价是否能一定起作用，steam deck上搭载的系统steam os是基于Arch Linux做的，所以游戏方面也不至于那么难绷。有个非官方的网站[protondb](https://www.protondb.com/)，可以在这上面搜索一下特定游戏的评价，有玩家会在上面分享这个游戏运行起来的体验如何，如果是不太好运行的游戏，也许还会分享他们是如何让这个游戏跑起来的。
+我不好评价GNU/Linux玩游戏会是怎样的体验，不过Valve公司基于wine搞了一个[Proton](<https://en.wikipedia.org/wiki/Proton_(software)>)，只要在steam play中勾选为所有应用启用Steam play就可以玩那些只支持Windows平台的游戏了，但不好评价是否能一定起作用，Steam Deck上搭载的系统Steam OS是基于Arch Linux做的，所以游戏方面也不至于那么难绷。有个非官方的网站[protondb](https://www.protondb.com/)，可以在这上面搜索一下特定游戏的评价，有玩家会在上面分享这个游戏运行起来的体验如何，如果是不太好运行的游戏，也许还会分享他们是如何让这个游戏跑起来的。
 
 国内软件的适配还不是很好，听说腾讯会议虽然支持了Wayland，但是Wayland下的运行，窗口分享和摄像头都不能正常工作。QQ虽然存在Linux平台的版本，但仍然有一些小问题等待修复。微信则是根本没有相应的版本，大体上办法只有两种：搞个Windows的虚拟机运行微信，如果是VirtualBox或者VMWare这样的虚拟机管理软件直接开剪切板共享什么的，或者原生态一点就自己装spice驱动也可以，但还是不太贴合正常用户日常的使用，而且一整个虚拟机的占用也是有点难绷；还有就是用wine去模拟Windows的微信，直接上来就`wine wechat.exe`这样的其实并不能完美的运行，会有很多小问题，这时候就可以参考别人的项目，但貌似还是天生存在一些小问题无法解决——wine的微信不允许你传大于1MB的图片，并且小程序也用不了。
 
@@ -47,6 +47,16 @@ description: "介绍了大部分主流发行版"
 官网链接：https://www.debian.org/
 
 老牌OS了，在我认知中比Debian历史更加久远的应该就是Slackware。不过我本机没装过，虚拟机装过。我在安装Kali Linux的时候遇到了no-free firmware的问题，听别人讲貌似Debian Linux也会出现，不过这也是有些解决办法的，而且firmware这个检测是在对磁盘操作之前，不行了就不装这个系统，全身而退。Debian听说就是稳定，其实稳定就带来了使用的不是新版本的软件，毕竟时间方面，新版本没有经历过考验。不过听说如果给Debian添加一个testing软件源就可以尝鲜新版本了。说起来，虚拟机安装Debian Linux和Kali Linux的时候无论给多少内存（当然也就给过4G 8G的）默认都是把磁盘空间的1G给交换空间，剩下的是空间挂载到根目录，感觉很扯淡。
+
+---
+
+2024年3月更新：
+
+我在去年的时候在我的笔记本电脑上装Debian了，没有遇到no-free firmware的问题，安装体验还是不错的。不过我不是很喜欢选了GNOME后，把GNOME它们一些实用程序也给装上（比如视频和音乐播放器），我也许会用到，但不喜欢上来就装上。
+
+而且我暂时没找到一个比较好的管理我在GitHub上下载的deb包的方案，遂放弃。
+
+---
 
 Debian默认不安装类似sudo这样的执行特权命令的程序，所以需要你自己安装，然后自己写相应的配置文件。（这个我有点忘了是不是了，sudo这样的软件是很有必要的，老生常谈的就是尽量减少攻击面之类的，直接su切换到root用户去执行*和系统相关的命令*是很危险的行为）
 

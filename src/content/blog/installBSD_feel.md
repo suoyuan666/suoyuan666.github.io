@@ -7,9 +7,9 @@ draft: false
 tags:
   - BSD
   - intro
-description:
-  "介绍了大部分主流发行版"
+description: "在笔记本上安装FreeBSD的初步感受，因为无法日常使用，所以只是初步感受"
 ---
+
 # 安装FreeBSD的初步感受
 
 virt-manager的UEFI不是很能让我装上FreeBSD，难绷。

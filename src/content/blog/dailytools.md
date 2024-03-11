@@ -6,9 +6,9 @@ featured: false
 draft: false
 tags:
   - misc
-description:
-  "自己常用软件的记录及点评"
+description: "自己常用软件的记录及点评"
 ---
+
 # 常用软件记录
 
 这里会记录尝试用的软件以便于后续使用，平台上会分为Windows，GNU/Linux和Android，Windows用的不多，因为和GNU/Linux重了的话我会在GNU/Linux体现出来。
@@ -103,9 +103,9 @@ description:
 
 [Magisk](https://github.com/topjohnwu/Magisk)很出名了，也就不过多介绍了。
 
-[KernelSU](https://github.com/tiann/KernelSU)的优点在于使用GKI2内核的手机基本可以从GitHub Release页面上下载打好patch的boot镜像从而直接刷入，不同于Magisk的是，ksu运行在内核态，貌似可以更好的隐藏自身，并且不像Magisk那样不打hide就暴露su给对方，ksu是选择给特定应用权限，并且可以通过[App Profile](https://kernelsu.org/zh_CN/guide/app-profile.html)更加细致化权限的授予。不过Magisk有集成的Zygisk和system-hosts，而kernelsu需要模块才能拥有对应的功能：[ZygiskNext](https://github.com/Dr-TSNG/ZygiskNext)和[Ownersystemless-hosts-KernelSU-module ](https://github.com/symbuzzer/systemless-hosts-KernelSU-module)。而且ksu还自带一个救砖功能：[救砖](https://kernelsu.org/zh_CN/guide/rescue-from-bootloop.html)。不过可惜的是ZygiskNext项目已经停更了。
+[KernelSU](https://github.com/tiann/KernelSU)的优点在于使用GKI2内核的手机基本可以从GitHub Release页面上下载打好patch的boot镜像从而直接刷入，不同于Magisk的是，ksu运行在内核态，貌似可以更好的隐藏自身，并且不像Magisk那样不打hide就暴露su给对方，ksu是选择给特定应用权限，并且可以通过[App Profile](https://kernelsu.org/zh_CN/guide/app-profile.html)更加细致化权限的授予。不过Magisk有集成的Zygisk和system-hosts，而kernelsu需要模块才能拥有对应的功能：[ZygiskNext](https://github.com/Dr-TSNG/ZygiskNext)和[Ownersystemless-hosts-KernelSU-module ](https://github.com/symbuzzer/systemless-hosts-KernelSU-module)。而且ksu还自带一个救砖功能：[救砖](https://kernelsu.org/zh_CN/guide/rescue-from-bootloop.html)。~~不过可惜的是ZygiskNext项目已经停更了。~~（ZygiskNext目前是闭源发行二进制包）
 
-[LSPosed](https://github.com/LSPosed/LSPosed)是一个现代化的xposed框架，lsp本身也很出名了，可惜也停更了。
+[LSPosed](https://github.com/LSPosed/LSPosed)是一个现代化的xposed框架，lsp本身也很出名了，可惜停更了。
 
 ### IM
 
@@ -117,7 +117,7 @@ description:
 
 ### Anti-Ad
 
-[AdAway](https://github.com/AdAway/AdAway)是一个可以使用root权限下替换hosts文件来做到拦截广告的目的的软件，它同样有个VPN模式，不过我没用过，说起VPN模式，[RethinkDNS](https://github.com/celzero/rethink-app)就是VPN模式的，看起来蛮不错，可惜我的VPN模式已经有软件了。
+[AdAway](https://github.com/AdAway/AdAway)是一个可以使用root权限下替换hosts文件来做到拦截广告的目的的软件，它同样有个VPN模式，不过我没用过，说起VPN模式，[RethinkDNS](https://github.com/celzero/rethink-app)就是VPN模式的，看起来蛮不错，可惜我的VPN模式已经有软件了。adaway的功能主要就是替换hosts文件，不过hosts文件必须写死了URL，无法做到匹配子域名等功能，还是很难绷的。
 
 [blocker](https://github.com/lihenggui/blocker)是一款操作Android应用程序四大组件的程序，比如一些广告，分析的服务直接可以禁掉。感觉[Appmanager](https://github.com/MuntashirAkon/AppManager)也能做到这一点，但是不像这位提供了规则仓库用于直接统一杀掉。
 
@@ -127,7 +127,7 @@ description:
 
 [Aurora Store](https://f-droid.org/packages/com.aurora.store/)是一个第三方的Google Play客户端，支持匿名浏览。
 
-[Obtainium](https://github.com/ImranR98/Obtainium)是一个使用类似RSS订阅的方式管理各种不同软件来源的软件。比如GitHub，GitLab，Codeberg等上面的Android软件都可以跟踪管理。Neo-Store上的软件有的和GitHub Release上发布新版本会隔一段时间，所以我倾向于使用Obtainium去跟踪软件的更新。
+[Obtainium](https://github.com/ImranR98/Obtainium)是一个使用类似RSS订阅的方式管理各种不同软件来源的软件。比如GitHub，GitLab，Codeberg等上面的Android软件都可以跟踪管理。Neo-Store上的软件有的和GitHub Release上发布新版本会隔一段时间，所以我倾向于使用Obtainium去跟踪开源软件的更新，除非它只能在F-Droid上下载。
 
 ### Video
 
