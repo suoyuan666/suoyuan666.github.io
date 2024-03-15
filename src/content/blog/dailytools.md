@@ -33,7 +33,7 @@ description: "自己常用软件的记录及点评"
 
 [FireFox](https://www.mozilla.org/en-US/firefox/browsers/)应该大多数人用的发行版的软件库中都会有自己构建的版本，也不用从这里下载了。我一般是搭配[Arkenfox](https://github.com/arkenfox/user.js)项目和一些插件（如[Ublock Origin](https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/)）使用。作为一个难得非Chromium内核的项目，FireFox到现在总有一种落日余晖的样子，[Mozilla 宣言](https://www.mozilla.org/zh-CN/about/manifesto/)还是说的很好的，上次看到类似的还是[网络独立宣言](https://en.wikipedia.org/wiki/A_Declaration_of_the_Independence_of_Cyberspace)。不过FireFox在安全性方面倒貌似一直在被吐槽的样子：比如这个关于FireFox和Chromium对比的文档：[Firefox and Chromium](https://madaidans-insecurities.github.io/firefox-chromium.html)；和GrapheneOS中对自己在浏览器选择的叙述：[Usage guide | GrapheneOS: Web browsing](https://grapheneos.org/usage#web-browsing)。不过在GNU/Linux中，Firefox在Wayland桌面协议下的运行还基本正常，基于Chromium内核的浏览器现在默认还不是Wayland，而且启用了Wayland下也能很好的工作。
 
-[Brave](https://github.com/brave/brave-browser)是基于Chromium内核做的浏览器，内置Brave自己做的[adblock-rust](https://github.com/brave/adblock-rust)，并且还做了很多其他对增强隐私方面的改动。在[一个浏览器默认情况下的隐私保护比较](https://privacytests.org/)中可以发现Brave的隐私保护做的比其他浏览器要好一些。不过Brave也被吐槽过（比如把网站显示的别人家的广告替换成自家的，虽然这是它盈利的手段）。[Hacker News的讨论中](https://news.ycombinator.com/item?id=26332183)中有提到一些。还有就是所有基于Chromium内核的软件在Wayland上都会存在一点点问题，比如默认没有使用Wayland，使用了的话可能窗口缩放不太对并且Fcitx使用不了等。并且Wayland窗口协议下fcitx5也无法正常运行，需要修改其启动参数（具体可以参考Arch Wiki或Fcitx的文档）。
+[Brave](https://github.com/brave/brave-browser)是基于Chromium内核做的浏览器，内置Brave自己做的[adblock-rust](https://github.com/brave/adblock-rust)，并且还做了很多其他对增强隐私方面的改动。在[一个浏览器默认情况下的隐私保护比较](https://privacytests.org/)中可以发现Brave的隐私保护做的比其他浏览器要好一些。不过Brave也被吐槽过（比如把网站显示的别人家的广告替换成自家的，虽然这是它盈利的手段）。[Hacker News的讨论中](https://news.ycombinator.com/item?id=26332183)中有提到一些。还有就是所有基于Chromium内核的软件在Wayland上都会存在一点点问题，比如默认没有使用Wayland，使用了的话可能窗口缩放不太对并且Fcitx使用不了等。
 
 ### Develop Tools
 
