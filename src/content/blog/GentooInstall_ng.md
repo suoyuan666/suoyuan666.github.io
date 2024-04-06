@@ -6,6 +6,8 @@ featured: false
 draft: false
 tags:
   - Gentoo Linux
+  - Linux
+  - intro
 description: "我这次安装Gentoo Linux做的额外的工作，也就是除官方文档之外的安装步骤。这里我用的init是openrc，WM用的是Hyprland"
 ---
 
