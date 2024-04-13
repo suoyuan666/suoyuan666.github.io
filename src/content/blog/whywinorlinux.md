@@ -1,5 +1,5 @@
 ---
-title: 为什么你应该（不）使用GNU/Linux作为日用操作系统
+title: 为什么你应该(不)使用GNU/Linux作为日用操作系统
 author: suo yuan
 pubDatetime: 2024-04-13T11:58:25
 featured: false
@@ -7,12 +7,12 @@ draft: false
 tags:
   - Linux
   - intro
-description: "一个简单的评价文章，关于是否应该选择使用GNU/Linux作为你的个人桌面操作系统"
+description: "一个简单的评价文章，关于是否应该选择使用GNU/Linux作为你的个人日用桌面操作系统"
 ---
 
-# 为什么你应该（不）使用GNU/Linux作为日用操作系统
+# 为什么你应该(不)使用GNU/Linux作为日用操作系统
 
-我一直认为，GNU/Linux是一个极好的方面变成开发的系统，但是它未必是一个适合日常使用的系统。Linux适合开发，适合服务器，但也局限于此，只要没有引入桌面环境，Linux还是不错的。
+本章关于使用GNU/Linux作为个人日用桌面操作系统做了一些评价，主要是从是否应该使用两方面来评价。
 
 ## 为什么不应该使用
 
@@ -30,13 +30,13 @@ Microsoft office 365没有Linux的版本，目前要么用WPS。要么用onlyoff
 
 但是Chromium对Wayland的支持还没有那么完美，这导致了Electorn的程序大概率也不会对Wayland支持那么完美（缩放存在问题）。并且Chromium不支持text-input-v3（Wayland输入法协议第3版）导致在GNOME下需要为其附加环境变量`QT_IM_MODULE`才能正常使用（印象中还需要附加`--gtk-version=4`）。但是`--gtk-version=4`并没有被Electorn所支持（目前是2024年4月，它并没有支持），所以ibus或者fcitx5是无法切换到中文输入的。
 
-但是Plasma 5.27+支持text-input-v1，text-input-v2 和 text-input-v3。所以只需要附加`--enable-wayland-ime`即可使用。
+但是Plasma 5.27+支持text-input-v1，text-input-v2 和 text-input-v3。所以只需要附加`--enable-wayland-ime`（这是因为text-input-v1）即可使用。
 
 我这里说的GNOME和Plasma都是一种桌面环境，具体可以参考我在另一篇文章：[面向beginner: GNU/Linux发行版浅评与介绍](../distrointro/)中的图片，我在那篇文章的最后还介绍了一下桌面环境。
 
-只有部分游戏是提供了原生的Linux版本（其中有一部分大概是因为Steam Deck，Steam Deck上的操作系统Steam OS是一个GNU/Linux发行版）。不过Steam提供了proton兼容层以运行支持Windows的游戏。
+只有部分游戏是提供了原生的Linux版本（其中有一部分大概是因为Steam Deck，Steam Deck上的操作系统Steam OS是一个GNU/Linux发行版）。不过Steam提供了Proton兼容层以运行支持Windows的游戏。
 
-很多专业的软件可能处于没有Linux版本的状态。
+很多专业的软件可能处于没有Linux版本的状态。我又不是任何领域的专业人士，这个还是需要自己去搜集。如果是计算机相关还是有很多平替的，可以参考网站[AlternativeTo](https://alternativeto.net/)，这个网站列出了一些软件的替代品可供参考。
 
 ### 从硬件的层面来看
 
@@ -66,7 +66,7 @@ Microsoft office 365没有Linux的版本，目前要么用WPS。要么用onlyoff
 
 从安全角度来讲，你不应该使用linux-kernel，而是[linux-hardened](https://github.com/anthraxx/linux-hardened)，这样的kernel使用了基本内核加固补丁集和更多安全相关的编译时配置选项。不应该使用pulseaudio这个音频服务，而是使用pipewire，这一点还好，现在应该都在使用pipewire。应该使用SELinux或者AppArmor这样的软件更细致的管控权限。flatpak安装的软件，应该使用flatseal管理软件的权限。使用sudo这样的软件应该只允许用户执行部分软件，或者再用doas代替sudo，不过是否用doas倒还是看自己了。
 
-但这还不够，应该尽可能不要用Xorg，磁盘应该加密。grub也应该加密。
+但这还不够，应该尽可能不要用Xorg，磁盘应该加密。grub这个bootloader也应该加密，一些文件目录挂载的时候可以禁用读写权限或者执行权限之类的。
 
 这里还存在一个问题是——是否要选择*使用源码分发的包管理器*的发行版。这种发行版的软件分发的是其源代码，软件的编译工作是跑在用户的机器上这样的好处是可以控制软件的功能的选择，软件的体积减小，攻击面理论上也会少一些。并且由于编译是跑在用户自己的机器上，你可以开很多为了安全考虑的编译选项。甚至编译工具链也可以选择。
 
