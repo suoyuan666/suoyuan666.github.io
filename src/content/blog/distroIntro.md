@@ -294,6 +294,13 @@ KDE Plasma是相当受欢迎的DE了，而且一定程度上和Win10的桌面有
 
 KDE Plasma目前貌似还存在一个问题——Wayland下的部分应用无法正确显示图标，而是显示一个Wayland默认图标。这个问题不清楚在Plasma 6中是否还存在。
 
+---
+
+2024年4月更新：
+我安装了KDE Plasma6，对Wayland的支持要优于Plasma5，并且不显示应用图标而显示Waylnad默认图标的问题也不会出现了
+
+---
+
 我认为KDE Plasma什么都不错，就是颜值差了些。
 
 ### GNOME
