@@ -1,5 +1,5 @@
 ---
-title: "Cmake简单使用"
+title: "CMake简单使用"
 author: suo yuan
 pubDatetime: 2024-05-12T14:23:43.439Z
 featured: false
@@ -7,10 +7,10 @@ draft: false
 tags:
   - Cpp notes
   - intro
-description: "本次更换博客框架的相关记录"
+description: "我第一次尝试使用CMake管理自己的C++项目的记录"
 ---
 
-# Cmake 简单使用
+# CMake 简单使用
 
 由于想要编写一个C++的项目，所以开始学习`cmake`管理项目的编译工作。我这里会把 **src** 和 **include** 分开，并且尝试使用[Google test](https://github.com/google/googletest)做一些项目的简单测试。
 
@@ -24,7 +24,6 @@ $ tree -L 3
 │   │   ├── cppcurl.h
 │   │   ├── errmsg.h
 │   │   └── os-detect.h
-│   ├── main.c
 │   ├── main.cpp
 │   └── os-detect.cpp
 ├── test
@@ -199,4 +198,4 @@ $ ./build/test/main_test
 [  PASSED  ] 1 test.
 ```
 
-这里有一个问题，我使用的是Visual Studio Code写代码，用clangd插件提高C/C++的编程，我一开始用`ln -s`给 **build/compile_commands.json** 文件在根目录建一个软链接，但是clangd的没有成功解析出 **test/main_test.cpp** 文件的头文件位置，后来我安装了bear，特地`bear -- cmake`生成了一个 **compile_commands.json** 才成功解析
+这里有一个问题，我使用的是Visual Studio Code写代码，用clangd插件提高C/C++的编程，我一开始用`ln -s`给 **build/compile_commands.json** 文件在根目录建一个软链接，但是clangd的没有成功解析出 **test/main_test.cpp** 文件的头文件位置，后来我安装了bear，特地`bear -- cmake`生成了一个 **compile_commands.json** 才成功解析。
