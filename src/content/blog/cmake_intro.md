@@ -18,35 +18,57 @@ description: "我第一次尝试使用CMake管理自己的C++项目的记录"
 $ tree -L 3
 .
 ├── CMakeLists.txt
-├── compile_commands.json
 ├── src
+│   ├── CMakeLists.txt
+│   ├── cppcurl.cpp
 │   ├── include
 │   │   ├── cppcurl.h
-│   │   ├── errmsg.h
-│   │   └── os-detect.h
+│   │   ├── os-detect.h
+│   │   └── pack_core.h
 │   ├── main.cpp
-│   └── os-detect.cpp
+│   ├── os-detect.cpp
+│   └── pack_core.cpp
 ├── test
 │   ├── CMakeLists.txt
 │   └── main_test.cpp
 └── third_party
     ├── CMakeLists.txt
-    └── googletest
+    ├── googletest
+    │   ├── BUILD.bazel
+    │   ├── ci
+    │   ├── CMakeLists.txt
+    │   ├── CONTRIBUTING.md
+    │   ├── CONTRIBUTORS
+    │   ├── docs
+    │   ├── fake_fuchsia_sdk.bzl
+    │   ├── googlemock
+    │   ├── googletest
+    │   ├── googletest_deps.bzl
+    │   ├── LICENSE
+    │   ├── MODULE.bazel
+    │   ├── README.md
+    │   ├── WORKSPACE
+    │   └── WORKSPACE.bzlmod
+    └── json
         ├── BUILD.bazel
-        ├── ci
+        ├── ChangeLog.md
+        ├── CITATION.cff
+        ├── cmake
         ├── CMakeLists.txt
-        ├── CONTRIBUTING.md
-        ├── CONTRIBUTORS
         ├── docs
-        ├── fake_fuchsia_sdk.bzl
-        ├── googlemock
-        ├── googletest
-        ├── googletest_deps.bzl
-        ├── LICENSE
-        ├── MODULE.bazel
+        ├── include
+        ├── LICENSE.MIT
+        ├── LICENSES
+        ├── Makefile
+        ├── meson.build
+        ├── nlohmann_json.natvis
+        ├── Package.swift
         ├── README.md
-        ├── WORKSPACE
-        └── WORKSPACE.bzlmod
+        ├── single_include
+        ├── tests
+        ├── tools
+        ├── WORKSPACE.bazel
+        └── wsjcpp.yml
 ```
 
 上面这个就是我项目的基础结构，**src** 存放项目的源代码，**src/include** 从存放一些自定义的头文件，**test** 目录存放用于开发测试的代码文件，**third_party** 目录存放第三方库文件。
@@ -55,33 +77,51 @@ $ tree -L 3
 
 ```CMakeLists
 cmake_minimum_required(VERSION 3.11)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # For clang-tidy.
-set(CMAKE_CXX_STANDARD 20) # Compile as C++20.
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
 
-project(project)
+project(ReleaseButler
+    VERSION 2024.5
+    DESCRIPTION "package manager on GitHub"
+    LANGUAGES CXX
+)
+
+add_subdirectory(src)
+add_subdirectory(third_party)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-        message(STATUS "Setting build type to `Debug` as none was specified.")
-        set(CMAKE_BUILD_TYPE "Debug")
+    message(STATUS "Setting build type to `Debug` as none was specified.")
+    set(CMAKE_BUILD_TYPE "Debug")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Werror")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+    enable_testing()
+    add_subdirectory(test)
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "Configuring Release build")
+    # something come form https://airbus-seclab.github.io/c-compiler-security/clang_compilation.html
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -pipe -fPIE -Wall -Wextra -Wpedantic -Werror -Wthread-safety")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fstack-clash-protection -fstack-protector-all -fcf-protection=full")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -fvisibility=hidden -fsanitize=cfi")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fsanitize=integer -fsanitize-minimal-runtime -fno-sanitize-recover")
 endif()
 
 if(EMSCRIPTEN)
-        add_compile_options(-fexceptions)
-        add_link_options(-fexceptions)
+    add_compile_options(-fexceptions)
+    add_link_options(-fexceptions)
 endif()
 
 file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" PATH_TO_CMAKELISTS_TXT)
 
 if(EXISTS "${PATH_TO_CMAKELISTS_TXT}")
-        message(FATAL_ERROR "Run CMake from a build subdirectory! \"mkdir build ; cd build ; cmake ..\" \
+    message(FATAL_ERROR "Run CMake from a build subdirectory! \"mkdir build ; cd build ; cmake ..\" \
     Some junk files were created in this folder (CMakeCache.txt, CMakeFiles); you should delete those.")
 endif()
 
 # Compiler flags.
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Werror")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-parameter -Wno-attributes") # TODO: remove
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -fsanitize=${BUSTUB_SANITIZER} -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
@@ -89,26 +129,34 @@ message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
 message(STATUS "CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
 
-enable_testing()
+add_executable(ReleaseButler "src/main.cpp")
 
-add_executable(project "src/main.cpp")
-set(RB_THIRD_PARTY_INCLUDE_DIR
-        ${PROJECT_SOURCE_DIR}/third_party
-)
 set(
     RB_SRC_INCLUDE_DIR
     ${PROJECT_SOURCE_DIR}/src/include
 )
-include_directories(${RB_SRC_INCLUDE_DIR} ${RB_THIRD_PARTY_INCLUDE_DIR})
 
-add_subdirectory(third_party)
-add_subdirectory(test)
+include_directories(${RB_SRC_INCLUDE_DIR})
+
+set(ReleaseButler_LIBS
+    pack_core
+)
+
+find_package(Boost  REQUIRED)
+# include_directories(${Boost_INCLUDE_DIR})
+
+target_link_libraries(ReleaseButler ${Boost_LIBRARY} ${ReleaseButler_LIBS})
 ```
+
+这里我对Debug模式和Release模式都设置了不同的编译选项，我因为个人的原因很希望Release模式编译出来的是尽可能安全些的，所以找了一些安全方面的编译选项。我这里在开头就强制编译器是clang的原因就是Release模式的一些编译选项有些是gcc没有的。
 
 **third_party** 目录下的 **CMakeLists.txt** 只又一行内容，就是为了加入 **googletest**
 
 ```CMakeLists
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
 add_subdirectory(googletest)
+add_subdirectory(json)
 ```
 
 **test** 目录下还有些东西，因为遇到额外添加 **googletest** 中的include到编译过程中，还要启用testing
@@ -118,13 +166,23 @@ cmake_minimum_required(VERSION 3.11)
 
 set(TEST_TARGET_NAME main_test)
 
-file(GLOB_RECURSE TEST_SOURCES "*.cpp")
+set(TEST_SOURCE_FILES
+    main_test.cpp
+)
 
-add_executable(${TEST_TARGET_NAME} ${TEST_SOURCES})
+add_executable(${TEST_TARGET_NAME} ${TEST_SOURCE_FILES})
 
-include_directories(${PROJECT_SOURCE_DIR}/third_party/googletest/googletest/include)
+set(
+    TEST_INCLUDE_DIR
+    ${PROJECT_SOURCE_DIR}/src/include
+    ${PROJECT_SOURCE_DIR}/third_party/googletest/googletest/include
+)
 
-target_link_libraries(${TEST_TARGET_NAME} gtest gtest_main)
+include_directories(${TEST_INCLUDE_DIR})
+
+# find_package(pack_core REQUIRED)
+
+target_link_libraries(${TEST_TARGET_NAME} PRIVATE gtest gtest_main pack_core)
 
 set_target_properties(${TEST_TARGET_NAME} PROPERTIES
     CXX_STANDARD 20
@@ -139,21 +197,15 @@ add_test(NAME ${TEST_TARGET_NAME} COMMAND ${TEST_TARGET_NAME})
 ```cpp
 #include "gtest/gtest.h"
 
-// 定义一个测试用例
-TEST(ExampleTest, Addition) {
-    // 在这里编写测试逻辑
-    int result = 1 + 2;
-    // 使用 Google Test 提供的断言来验证结果是否符合预期
-    EXPECT_EQ(result, 3); // 期望结果为 3
+#include "gtest/gtest.h"
+#include "pack_core.h"
+
+TEST(ExampleTest, Install) {
+    EXPECT_EQ(Install("https://github.com/fastfetch-cli/fastfetch", "fastfetch-linux-amd64.deb", "true"), true);
 }
 
-// 可以定义更多的测试用例
-
-// main 函数用于运行所有测试用例
 auto main(int argc, char **argv) -> int {
-    // 初始化 Google Test 框架
     ::testing::InitGoogleTest(&argc, argv);
-    // 运行所有测试用例，并返回测试结果
     return RUN_ALL_TESTS();
 }
 ```
@@ -161,23 +213,24 @@ auto main(int argc, char **argv) -> int {
 在项目的根目录下，执行下边的语句:
 
 ```bash
-$ cmake --build build --config Debug --target all -j `nproc`
-[  8%] Building CXX object third_party/googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
-[ 16%] Building CXX object CMakeFiles/ReleaseButler.dir/src/main.cpp.o
-[ 25%] Linking CXX executable ReleaseButler
-[ 25%] Built target ReleaseButler
-[ 33%] Linking CXX static library ../../../lib/libgtest.a
-[ 33%] Built target gtest
-[ 41%] Building CXX object third_party/googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
-[ 50%] Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
-[ 58%] Linking CXX static library ../../../lib/libgtest_main.a
-[ 58%] Built target gtest_main
-[ 66%] Building CXX object test/CMakeFiles/main_test.dir/main_test.cpp.o
-[ 75%] Linking CXX static library ../../../lib/libgmock.a
-[ 75%] Built target gmock
-[ 83%] Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o
-[ 91%] Linking CXX executable main_test
-[ 91%] Built target main_test
+$ cmake --build build  -j `nproc`
+[ 15%] Building CXX object third_party/googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+[ 15%] Building CXX object src/CMakeFiles/pack_core.dir/cppcurl.cpp.o
+[ 23%] Building CXX object src/CMakeFiles/pack_core.dir/os-detect.cpp.o
+[ 30%] Building CXX object src/CMakeFiles/pack_core.dir/pack_core.cpp.o
+[ 30%] Built target pack_core
+[ 38%] Building CXX object CMakeFiles/ReleaseButler.dir/src/main.cpp.o
+[ 46%] Linking CXX static library ../../../lib/libgtest.a
+[ 46%] Built target gtest
+[ 61%] Building CXX object third_party/googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+[ 61%] Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
+[ 69%] Linking CXX static library ../../../lib/libgtest_main.a
+[ 69%] Built target gtest_main
+[ 76%] Linking CXX static library ../../../lib/libgmock.a
+[ 76%] Built target gmock
+[ 84%] Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o
+[ 92%] Linking CXX executable ReleaseButler
+[ 92%] Built target ReleaseButler
 [100%] Linking CXX static library ../../../lib/libgmock_main.a
 [100%] Built target gmock_main
 ```
