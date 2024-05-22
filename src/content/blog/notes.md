@@ -53,10 +53,15 @@ NVIDIA关于XWayland的GPU显示同步补丁已经在[Xorg](https://gitlab.freed
 不过这个开发者的评论还是有一点道理的:
 
 > Are there really that many native Wayland Vulkan applications out there right now? I didn't think there were. Of course, that will definitely change in the future, especially when Wine switches to using Wayland.
-> 
+>
 > -- https://github.com/NVIDIA/egl-wayland/pull/104#issuecomment-2073649862
 
-
 所以wine还不支持Wayland🐴，我没有用wine，我还真不知道
+
+---
+
+根据[phoronix的一篇文章介绍](https://www.phoronix.com/news/NVIDIA-555.42.02-Linux-Beta)，NVIDIA 555.42.02 Beta驱动已经发布了，这个就已经带有了Wayland显示同步的支持，莫非这个其实还真的是555 stable版本能有的功能？
+
+不管如何，本身的桌面管理器的还得支持才行，KDE Plasma已经发布了6.0的最后一个版本，没有一刻为6.0.5而感叹，接下来来到我电脑上的就是带有Wayland显示同步支持的6.1。
 
 ---
