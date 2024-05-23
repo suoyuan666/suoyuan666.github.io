@@ -4,7 +4,7 @@ title: "About"
 ---
 
 - 普通本科 大二在读 在一个算是科班的地方中的一个野路子
-- INFJ-T
+- INTJ-T
 
 ## Task
 
