@@ -1,5 +1,5 @@
 ---
-title: "CMake简单使用"
+title: "C++ 项目编写初步入门"
 author: suo yuan
 pubDatetime: 2024-05-12T14:23:43.439Z
 featured: false
@@ -7,80 +7,78 @@ draft: false
 tags:
   - Cpp notes
   - intro
-description: "我第一次尝试使用CMake管理自己的C++项目的记录"
+description: "我第一次尝试使用CMake等工具 管理自己的C++项目的记录"
 ---
 
-# CMake 简单使用
+# C++ 项目编写初步入门
 
 由于想要编写一个C++的项目，所以开始学习`cmake`管理项目的编译工作。我这里会把 **src** 和 **include** 分开，并且尝试使用[Google test](https://github.com/google/googletest)做一些项目的简单测试。
 
+并且我尝试使用 `clang-tidy` 和 `clang-format` 格式化我的代码，`doxygen` 生成项目 API 文档。
+
 ```bash
-$ tree -L 3
+$ tree -a -L 2
 .
+├── build/
+├── .cache/
+├── .clang-format
+├── .clang-tidy
 ├── CMakeLists.txt
+├── compile_commands.json -> build/compile_commands.json
+├── doc
+│   ├── doxygen-awesome-css/
+│   ├── html/
+│   └── man/
+├── Doxyfile
+├── .git/
+├── .github
+│   └── workflows
+├── .gitignore
+├── .gitmodules
+├── LICENSE
+├── README.md
+├── README_ZH_CN.md
 ├── src
 │   ├── CMakeLists.txt
 │   ├── cppcurl.cpp
-│   ├── include
-│   │   ├── cppcurl.h
-│   │   ├── os-detect.h
-│   │   └── pack_core.h
+│   ├── env.cpp
+│   ├── include/
+│   ├── log.cpp
 │   ├── main.cpp
 │   ├── os-detect.cpp
 │   └── pack_core.cpp
 ├── test
 │   ├── CMakeLists.txt
 │   └── main_test.cpp
-└── third_party
-    ├── CMakeLists.txt
-    ├── googletest
-    │   ├── BUILD.bazel
-    │   ├── ci
-    │   ├── CMakeLists.txt
-    │   ├── CONTRIBUTING.md
-    │   ├── CONTRIBUTORS
-    │   ├── docs
-    │   ├── fake_fuchsia_sdk.bzl
-    │   ├── googlemock
-    │   ├── googletest
-    │   ├── googletest_deps.bzl
-    │   ├── LICENSE
-    │   ├── MODULE.bazel
-    │   ├── README.md
-    │   ├── WORKSPACE
-    │   └── WORKSPACE.bzlmod
-    └── json
-        ├── BUILD.bazel
-        ├── ChangeLog.md
-        ├── CITATION.cff
-        ├── cmake
-        ├── CMakeLists.txt
-        ├── docs
-        ├── include
-        ├── LICENSE.MIT
-        ├── LICENSES
-        ├── Makefile
-        ├── meson.build
-        ├── nlohmann_json.natvis
-        ├── Package.swift
-        ├── README.md
-        ├── single_include
-        ├── tests
-        ├── tools
-        ├── WORKSPACE.bazel
-        └── wsjcpp.yml
+├── third_party
+│   ├── argparse/
+│   ├── CMakeLists.txt
+│   ├── googletest/
+│   └── json/
+└── .vscode
+    └── launch.json
 ```
 
 上面这个就是我项目的基础结构，**src** 存放项目的源代码，**src/include** 从存放一些自定义的头文件，**test** 目录存放用于开发测试的代码文件，**third_party** 目录存放第三方库文件。
+
+这里 `tree -a -L 2` 的输出，实际上我对它做了一些修改的工作，这里最后一级的文件夹我都加了 `/` 做区分，并且我认为不太重要的（如 **.build**, **.git** 文件夹）都删掉了它的下一级内容，并添加 `/` 表示它是文件夹。
+
+## CMake 简单使用
+
+> CMake is cross-platform free and open-source software for build automation, testing, packaging and installation of software by using a compiler-independent method. CMake is not a build system itself; it generates another system's build files. It supports directory hierarchies and applications that depend on multiple libraries. It can invoke native build environments such as Make, Qt Creator, Ninja, Android Studio, Apple's Xcode, and Microsoft Visual Studio. It has minimal dependencies, requiring only a C++ compiler on its own build system.
+>
+> [CMake](https://cmake.org/) 是跨平台的自由开源软件，用于使用独立于编译器的方法构建自动化、测试、打包和安装软件。 CMake 本身并不是一个构建系统，它只是生成另一个系统的构建文件。它支持依赖于多个库的目录层次结构和应用程序。它可以调用本机构建环境，例如 Make、Qt Creator、Ninja、Android Studio、Apple 的 Xcode 和 Microsoft Visual Studio。它具有最小的依赖性，仅需要其自己的构建系统上的 C++ 编译器。
+
+上面这段话来自 [WikiPedia](https://en.wikipedia.org/wiki/CMake)
 
 我根目录的 **CMakeLists.txt** 文件的内容是：
 
 ```CMakeLists
 cmake_minimum_required(VERSION 3.11)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_C_COMPILER clang)
-set(CMAKE_CXX_COMPILER clang++)
+
+set(PROGRAM_NAME releasebutler)
 
 project(ReleaseButler
     VERSION 2024.5
@@ -94,28 +92,31 @@ add_subdirectory(third_party)
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     message(STATUS "Setting build type to `Debug` as none was specified.")
     set(CMAKE_BUILD_TYPE "Debug")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Werror")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     enable_testing()
     add_subdirectory(test)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Werror")
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     message(STATUS "Configuring Release build")
     # something come form https://airbus-seclab.github.io/c-compiler-security/clang_compilation.html
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -pipe -fPIE -Wall -Wextra -Wpedantic -Werror -Wthread-safety")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -pipe -fPIE -Wall -Wextra -Wpedantic -Werror")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fstack-clash-protection -fstack-protector-all -fcf-protection=full")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -fvisibility=hidden -fsanitize=cfi")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fsanitize=integer -fsanitize-minimal-runtime -fno-sanitize-recover")
-endif()
-
-if(EMSCRIPTEN)
-    add_compile_options(-fexceptions)
-    add_link_options(-fexceptions)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fsanitize=integer -fsanitize-minimal-runtime -fno-sanitize-recover")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wthread-safety  -fvisibility=hidden -fsanitize=cfi")
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fsanitize=address -fsanitize=undefined")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fstack-protector-strong -D_FORTIFY_SOURCE=2")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wl,-z,relro,-z,now,-z,noexecstack")
+    endif()
 endif()
 
 file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" PATH_TO_CMAKELISTS_TXT)
-
 if(EXISTS "${PATH_TO_CMAKELISTS_TXT}")
     message(FATAL_ERROR "Run CMake from a build subdirectory! \"mkdir build ; cd build ; cmake ..\" \
     Some junk files were created in this folder (CMakeCache.txt, CMakeFiles); you should delete those.")
@@ -125,30 +126,36 @@ endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
-message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    message(STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
+endif()
 message(STATUS "CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
 
-add_executable(ReleaseButler "src/main.cpp")
+add_executable(${PROGRAM_NAME} "src/main.cpp")
 
 set(
     RB_SRC_INCLUDE_DIR
     ${PROJECT_SOURCE_DIR}/src/include
 )
 
-include_directories(${RB_SRC_INCLUDE_DIR})
+set(
+    RB_THIRD_PARTY_INCLUDE_DIR
+    ${PROJECT_SOURCE_DIR}/third_party/argparse/include
+)
+
+include_directories(${RB_SRC_INCLUDE_DIR} ${RB_THIRD_PARTY_INCLUDE_DIR})
 
 set(ReleaseButler_LIBS
     pack_core
 )
 
-find_package(Boost  REQUIRED)
-# include_directories(${Boost_INCLUDE_DIR})
-
-target_link_libraries(ReleaseButler ${Boost_LIBRARY} ${ReleaseButler_LIBS})
+target_link_libraries(${PROGRAM_NAME} ${ReleaseButler_LIBS})
 ```
 
-这里我对Debug模式和Release模式都设置了不同的编译选项，我因为个人的原因很希望Release模式编译出来的是尽可能安全些的，所以找了一些安全方面的编译选项。我这里在开头就强制编译器是clang的原因就是Release模式的一些编译选项有些是gcc没有的。
+这里我对 Debug 模式和 Release 模式都设置了不同的编译选项，我因为个人的原因很希望 Release 模式编译出来的是尽可能安全些的，所以找了一些安全方面的编译选项。由于 clang 实现了 CFI 保护，所以我这里检测当前编译环境的编译器如果是 clang 的话就启用该支持。 如果检测到是 GCC 环境的话也会启用相应的支持。
 
 **third_party** 目录下的 **CMakeLists.txt** 只又一行内容，就是为了加入 **googletest**
 
@@ -251,4 +258,146 @@ $ ./build/test/main_test
 [  PASSED  ] 1 test.
 ```
 
-这里有一个问题，我使用的是Visual Studio Code写代码，用clangd插件提高C/C++的编程，我一开始用`ln -s`给 **build/compile_commands.json** 文件在根目录建一个软链接，但是clangd的没有成功解析出 **test/main_test.cpp** 文件的头文件位置，后来我安装了bear，特地`bear -- cmake`生成了一个 **compile_commands.json** 才成功解析。
+这里有一个问题，我使用的是 Visual Studio Code 写代码，用 clangd 插件提高 C/C++ 的编程，我一开始用 `ln -s` 给 **build/compile_commands.json** 文件在根目录建一个软链接，但是 clangd 的没有成功解析出 **test/main_test.cpp** 文件的头文件位置，后来我安装了bear，特地 `bear -- cmake` 生成了一个 **compile_commands.json** 才成功解析。
+
+不过后来又好使了，不好评价那时候发生了什么。
+
+## `clang-tidy` 和 `clang-format`
+
+> `clang-tidy` is a clang-based C++ “linter” tool. Its purpose is to provide an extensible framework for diagnosing and fixing typical programming errors, like style violations, interface misuse, or bugs that can be deduced via static analysis. `clang-tidy` is modular and provides a convenient interface for writing new checks.
+>
+> `clang-tidy` 是一个基于 `clang` 的 C++ “linter” 工具。其目的是提供一个可扩展的框架，用于诊断和修复典型的编程错误，例如样式违规、接口误用或可以通过静态分析推断出的错误。 `clang-tidy` 是模块化的，并提供了一个方便的接口来编写新的检查。
+
+[clang-tidy](https://clang.llvm.org/extra/clang-tidy/) 是一个静态语法扫描器。我第一次听说它就是在一个文章中，那篇文章介绍了 C++ 目前面临的困境，其中一个就是 C++ 的学习者还在对着已经过时的例子学习，根本不怎么了解 "modern cpp"。之后那篇文章介绍 `clang-tidy` 一定程度上正在解决这个问题，我对它的理解就是会检查源文件的语法是否符合 `clang-tidy` 认为的好写法，它根据多种规则来检查。但是 `clang-tidy` 内置的部分规则是没有必要的，比如要求类的成员函数的首字母需要大写（至少我认为没什么必要，甚至我写函数就没有大写的习惯，宏写的函数除外，不过宏写的到底能不能叫函数🤔）。
+
+`clang-tidy` 支持项目根目录下存在一个 **.clang-tidy** 文件，该文件可以指定规则，检查的范围，对一些规则作具体的设置。
+
+[clang-format](https://clang.llvm.org/docs/ClangFormat.html) 就是一个专门的代码格式化工具了，`clang-format` 内置了多种代码风格，可以指定某个风格并做一些额外的修改，当然也是写在项目的根目录下的 **.clang-format**。
+
+下面是我 **.clang-tidy** 文件的内容：
+
+```txt
+Checks: '
+        bugprone-*,
+        clang-analyzer-*,
+        google-*,
+        modernize-*,
+        performance-*,
+        portability-*,
+        readability-*,
+        -bugprone-easily-swappable-parameters,
+        -bugprone-implicit-widening-of-multiplication-result,
+        -bugprone-narrowing-conversions,
+        -bugprone-reserved-identifier,
+        -bugprone-signed-char-misuse,
+        -bugprone-suspicious-include,
+        -bugprone-unhandled-self-assignment,
+        -clang-analyzer-cplusplus.NewDelete,
+        -clang-analyzer-cplusplus.NewDeleteLeaks,
+        -clang-analyzer-security.insecureAPI.rand,
+        -clang-diagnostic-implicit-int-float-conversion,
+        -google-readability-avoid-underscore-in-googletest-name,
+        -modernize-avoid-c-arrays,
+        -modernize-use-nodiscard,
+        -readability-convert-member-functions-to-static,
+        -readability-identifier-length,
+        -readability-function-cognitive-complexity,
+        -readability-magic-numbers,
+        -readability-make-member-function-const,
+        -readability-qualified-auto,
+        -readability-identifier-naming,
+        -readability-redundant-access-specifiers,
+        -bugprone-exception-escape,
+        -performance-avoid-endl,
+        -readability-use-anyofallof,
+        '
+CheckOptions:
+  - { key: readability-identifier-naming.ClassCase,           value: CamelCase  }
+  - { key: readability-identifier-naming.EnumCase,            value: CamelCase  }
+  - { key: readability-identifier-naming.FunctionCase,        value: CamelCase  }
+  - { key: readability-identifier-naming.GlobalConstantCase,  value: UPPER_CASE }
+  - { key: readability-identifier-naming.MemberCase,          value: lower_case }
+  - { key: readability-identifier-naming.MemberSuffix,        value: _          }
+  - { key: readability-identifier-naming.NamespaceCase,       value: lower_case }
+  - { key: readability-identifier-naming.StructCase,          value: CamelCase  }
+  - { key: readability-identifier-naming.UnionCase,           value: CamelCase  }
+  - { key: readability-identifier-naming.VariableCase,        value: lower_case }
+WarningsAsErrors: '*'
+HeaderFilterRegex: '/(src|test)/include'
+AnalyzeTemporaryDtors: true
+```
+
+下面则是 **.clang-format** 的内容
+
+```txt
+BasedOnStyle: Google
+ColumnLimit: 80
+```
+
+我对代码格式化还没有什么太高的需求，等我以后再好好研究如何更好的格式化吧，
+
+## `doxygen` 使用
+
+`doxygen` 是一个根据源文件的注释生成项目 API 文档的软件。我认为一定程度上这逼迫者我写注释😶‍🌫️。这个文档格式可以是 HTML，LaTeX，man pages 等，
+
+`doxygen` 是根据 **Doxyfile** 生成相关文档的。在项目的根目录下打开终端输入 `doxygen -g` 即可产生一份带有注释信息的 **Doxyfile**，可以根据注释了解一下 **Doxyfile** 的写法。
+
+下面是我 **Doxyfile** 的内容：
+
+```Doxyfile
+PROJECT_NAME           = "ReleaseButler"
+PROJECT_NUMBER         = "1.0"
+PROJECT_BRIEF          = "😙 package manager on GitHub 😙"
+
+# Project section
+# BRIEF_MEMBER_DESC = NO
+
+HTML_STYLESHEET = doc/doxygen-awesome-css/doxygen-awesome.css
+
+# 输入
+INPUT                  = src README.md README_ZH_CN.md
+FILE_PATTERNS          = *.cpp *.h
+RECURSIVE              = YES
+
+# 输出格式
+GENERATE_HTML          = YES
+HTML_OUTPUT            = doc/html
+GENERATE_LATEX         = NO
+GENERATE_XML           = NO
+GENERATE_RTF           = NO
+GENERATE_MAN           = YES
+MAN_OUTPUT            = doc/man
+
+# 文档风格
+OUTPUT_LANGUAGE        = English
+
+# 文档内容
+EXTRACT_ALL            = YES
+
+# 注释风格
+JAVADOC_AUTOBRIEF      = YES
+QT_AUTOBRIEF           = NO
+
+# 其他
+GENERATE_TREEVIEW      = YES
+GENERATE_LATEX         = NO
+GENERATE_HTMLHELP      = NO
+DISTRIBUTE_GROUP_DOC   = NO
+USE_MDFILE_AS_MAINPAGE = README.md
+```
+
+`doxygen` 生成的 HTML 网页好难看啊😢，所以我特地找了一个主题 [doxygen-awesome-css](https://github.com/jothepro/doxygen-awesome-css)，这样还能相对好看一些。
+
+`doxygen` 对注释格式也有些要求，这是我写的一个注释：
+
+```cpp
+/**
+ * @brief Simple encapsulation of std::getenv
+ *
+ * @param name Name of the environment variable
+ * @return The value of the environment variable
+ */
+[[nodiscard]] auto get_env2str(std::string_view name) -> std::string;
+```
+
+`@brief` 是简要说明，`@param` 是参数说明，`@return` 是对返回值的说明。其实还有 `@note` 等字段，也可以用来标示一种信息。
