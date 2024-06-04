@@ -12,7 +12,7 @@ description: "我第一次尝试使用CMake等工具 管理自己的C++项目的
 
 # C++ 项目编写初步入门
 
-由于想要编写一个C++的项目，所以开始学习`cmake`管理项目的编译工作。我这里会把 **src** 和 **include** 分开，并且尝试使用[Google test](https://github.com/google/googletest)做一些项目的简单测试。
+由于想要编写一个 C++ 的项目，所以开始学习 `cmake` 管理项目的编译工作。我这里会把 **src** 和 **include** 分开，并且尝试使用[Google test](https://github.com/google/googletest)做一些项目的简单测试。
 
 并且我尝试使用 `clang-tidy` 和 `clang-format` 格式化我的代码，`doxygen` 生成项目 API 文档。
 
