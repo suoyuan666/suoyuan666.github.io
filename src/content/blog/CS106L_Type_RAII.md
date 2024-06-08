@@ -47,7 +47,7 @@ Base* basePtr = static_cast<Base*>(&derivedObj);
   - 如果存在包含的值，则返回 true；否则返回 false。
 
 ```cpp
-std::optional<Student> lookupStudent(string name){//something}
+std::optional<Student> lookupStudent(string name){ /*something*/ }
 std::optional<Student> output = lookupStudent(“Keith”);
 if(student.has_value()){
     cout << output.value().name << “ is from “ <<
@@ -116,7 +116,9 @@ std::string EvaluateSalaryAndReturnName(int idNumber){
 
 不抛出异常：`noexcept` 关键字保证函数不会因为异常而导致一些 undefined behavior。这会出现在析构函数，swap，移动构造函数之类的。
 
-在 [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html#Exceptions) 中可以发现，Google 在这里提到不建议使用异常。理由：
+在 [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html#Exceptions) 中，Google 提到不建议使用异常。
+
+理由：
 
 > On their face, the benefits of using exceptions outweigh the costs, especially in new projects. However, for existing code, the introduction of exceptions has implications on all dependent code. If exceptions can be propagated beyond a new project, it also becomes problematic to integrate the new project into existing exception-free code. Because most existing C++ code at Google is not prepared to deal with exceptions, it is comparatively difficult to adopt new code that generates exceptions.
 > Given that Google's existing code is not exception-tolerant, the costs of using exceptions are somewhat greater than the costs in a new project. The conversion process would be slow and error-prone. We don't believe that the available alternatives to exceptions, such as error codes and assertions, introduce a significant burden.
@@ -128,7 +130,7 @@ std::string EvaluateSalaryAndReturnName(int idNumber){
 > 在表面上，使用异常的好处超过了成本，尤其是在新项目中。然而，对于现有的代码来说，引入异常会对所有相关的代码产生影响。如果异常可以传播到新项目之外，将新项目整合到现有的无异常代码中也会带来问题。由于 Google 大部分现有的 C++代码都没有准备好处理异常，采用生成异常的新代码相对困难。
 > 考虑到 Google 现有的代码不具备异常容忍性，使用异常的成本要略高于在新项目中的成本。转换过程将会缓慢且容易出错。我们认为，异常的替代方案（如错误码和断言）并不会引入重大负担。
 > 我们反对使用异常的建议并非基于哲学或道德的立场，而是出于实际考虑。因为我们希望在 Google 使用我们的开源项目，但如果这些项目使用异常，那么在使用过程中会变得困难。如果我们从头开始重新做，情况可能会有所不同。
-> 这个禁令也适用于与异常处理相关的特性，如`std::exception_ptr`和`std::nested_exception`。
+> 这个禁令也适用于与异常处理相关的特性，如 `std::exception_ptr` 和 `std::nested_exception`。
 
 ### RAII
 
