@@ -258,7 +258,7 @@ $ ./build/test/main_test
 [  PASSED  ] 1 test.
 ```
 
-这里有一个问题，我使用的是 Visual Studio Code 写代码，用 clangd 插件提高 C/C++ 的编程，我一开始用 `ln -s` 给 **build/compile_commands.json** 文件在根目录建一个软链接，但是 clangd 的没有成功解析出 **test/main_test.cpp** 文件的头文件位置，后来我安装了bear，特地 `bear -- cmake` 生成了一个 **compile_commands.json** 才成功解析。
+这里有一个问题，我使用的是 Visual Studio Code 写代码，用 clangd 插件提高 C/C++ 的编程体验，我一开始用 `ln -s` 给 **build/compile_commands.json** 文件在根目录建一个软链接，但是 clangd 的没有成功解析出 **test/main_test.cpp** 文件的头文件位置，后来我安装了bear，特地 `bear -- cmake` 生成了一个 **compile_commands.json** 才成功解析。
 
 不过后来又好使了，不好评价那时候发生了什么。
 

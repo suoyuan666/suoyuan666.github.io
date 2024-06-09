@@ -66,6 +66,10 @@ NVIDIA 关于 XWayland 的 GPU 显示同步补丁已经在 [Xorg](https://gitlab
 
 ---
 
-今天安装了 Arch Linux + KDE Plasma，这回我使用 archinstall 安装，感觉还不错。不得不说，AUR 软件是真多，我很多软件什么的都可以找到，直接用 paru 安装就行。而且我发现 NVIDIA + XWayland 好像没有那么难绷了。不过还是等到 nvidia-driver 到 555 版本以及 KDE Plasma 6.1 的吧。
+今天安装了 Arch Linux + KDE Plasma，这回我使用 [archinstall](https://github.com/archlinux/archinstall) 安装，感觉还不错。不得不说，AUR 软件是真多，我很多软件什么的都可以找到，直接用 `paru` 安装就行。而且我发现 NVIDIA + XWayland 好像没有那么难绷了。不过还是等到 nvidia-driver 到 555 版本以及 KDE Plasma 6.1 的吧。
+
+---
+
+NVIDIA + XWayland 还是很难绷，还是等到 nvidia-driver stable 更新到 555 的吧。
 
 ---
