@@ -27,6 +27,8 @@ description: "自己常用软件的记录及点评"
 
 [Geek Uninstaller](https://geekuninstaller.com/) 是一个更有效的卸载软件的解决方案，可以在卸载后检索是否有残留的文件或注册表。
 
+[LocalSend](https://github.com/localsend/localsend) 是用于局域网内互相传文件的，支持 Windows，macOS，Linux，Android 和 iOS。我没有 iOS 和 macOS的设备，所以很多时候我的需求都是 Windows 和 Android，或者是 Linux 和 Android 之间传文件，实际上这种情景可以用 [adb](https://developer.android.com/tools/adb) 来传文件，我曾经使用 Arch Linux 的时候，还是习惯于使用 `adb` 传文件的，但是在 Windows 下，我总是不习惯使用终端操作，所以会使用这个软件来传文件。
+
 ## GNU/Linux
 
 ### Browser
@@ -47,7 +49,7 @@ description: "自己常用软件的记录及点评"
 
 ### Video & Music
 
-[SMPlayer](https://www.smplayer.info/) 是 `mpv` 的前端，界面不咋好看，不过我播放视频的时候都全屏播放了，也就太没在意这个。
+[SMPlayer](https://www.smplayer.info/) 是 `mpv` 的前端，界面不好看，不过我播放视频的时候都全屏播放了，也就太没在意这个。
 
 [YesPlayMusic](https://github.com/qier222/YesPlayMusic) 是一个很漂亮的网易云第三方客户端，去除了一些社区相关的功能。它集成了一些第三方音乐源，可以播放其他源的音乐。不过它使用了 Electorn，如果介意的话，可以选择使用其他的软件。
 
@@ -55,7 +57,7 @@ description: "自己常用软件的记录及点评"
 
 ### Input Method
 
-[fcitx5](https://github.com/fcitx/fcitx5) 是一个输入法框架。都什么年代了还在用 fcitx4，都来用 fcitx5（bushi）。fcitx5 我会搭配 [fcitx5-rime](https://github.com/fcitx/fcitx5-rime) 使用，因为我倾向于用[雾凇拼音](https://github.com/iDvel/rime-ice)。
+[fcitx5](https://github.com/fcitx/fcitx5) 是一个输入法框架。都什么年代了还在用 fcitx4，都来用 fcitx5（bushi）。fcitx5 我会搭配 [fcitx5-rime](https://github.com/fcitx/fcitx5-rime) 使用，因为我倾向于用[雾凇拼音](https://github.com/iDvel/rime-ice)。不过很多人喜欢使用 fcitx + 搜狗输入法，但是搜狗仍不支持 fcitx5。
 
 [ibus](https://github.com/ibus/ibus) 是 GNOME 默认使用的输入法框架，目前我使用 GNOME 这个桌面环境的时候就会用 ibus，一般也是搭配 [ibus-rime](https://github.com/rime/ibus-rime) 使用，理由同上。
 
@@ -67,7 +69,7 @@ description: "自己常用软件的记录及点评"
 
 [IntelOne Mono](https://github.com/intel/intel-one-mono) 是一个在我看来很酷的字体🤗，它用它鲜明的形体在我心中占据了很大的位置，很长一段时间，我看其他字体没有那样鲜明的花括号总感觉不是很得劲。
 
-[gnome-tweaks](https://gitlab.gnome.org/GNOME/gnome-tweaks) 对于使用 GNOME 的我来说，真的是个好软件🥹。GNOME 自带的设置（gnome-control-center）并不可以分数缩放，我只能使用 gnome-tweaks，大多数发行版都是 gnome-tweaks 这个软件包名，不过有的可能前面带个 gnome3-。
+[gnome-tweaks](https://gitlab.gnome.org/GNOME/gnome-tweaks) 对于使用 GNOME 的我来说，真的是个好软件🥹。GNOME 自带的设置（`gnome-control-center`）并不可以分数缩放，我只能使用 `gnome-tweaks`，大多数发行版都是 `gnome-tweaks` 这个软件包名，不过有的可能前面带个 `gnome3-`。
 
 [lsd](https://github.com/lsd-rs/lsd) 是更加 modern 的 ls 的实现，使用的 Rust 编写，在 list 的同时还可以显示图标，而且还是彩色输出，而且文件大小还会带单位输出。
 
@@ -97,7 +99,7 @@ description: "自己常用软件的记录及点评"
 
 ### 2FA
 
-[Aegis](https://github.com/beemdevelopment/Aegis) 是一个 2FA 客户端，不过我也不是很常用双因素验证了。
+[Aegis](https://github.com/beemdevelopment/Aegis) 是一个 2FA 客户端，不过我也不常用双因素验证。
 
 ### Root/Xposed
 

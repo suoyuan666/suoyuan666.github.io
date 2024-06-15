@@ -16,6 +16,35 @@ description: "介绍了大部分主流发行版"
 
 选择 GNU/Linux 发行版很大程度上你是在选择软件包管理器，系统的更新策略。软件就在那里不会改变，OS 之间的不同很大程度上看的是使用什么软件包管理器，比如是直接装二进制软件包还是从源代码开始编译，系统的更新策略一般分成随版本的更新，比如 Ubuntu 的 LTS ( Long-term support )应该是会推送五年的安全更新，之后就要换更新的 LTS 版本了；或者滚动更新，这样会一直向前更新，也就不会有版本的概念。部分发行版会同时推出这两种半分的发行版。
 
+这里我先简单介绍一下为什么我特地加上 GNU/Linux，这就表明了一些 de-gnu 的 Linux 发行版不会在这里（de-gnu 也就是在系统中去掉 GNU 工具），而且我也没用过这样的发行版。
+
+> There really is a Linux, and these people are using it, but it is just a part of the system they use. Linux is the kernel: the program in the system that allocates the machine's resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. Linux is normally used in combination with the GNU operating system: the whole system is basically GNU with Linux added, or GNU/Linux. All the so-called “Linux” distributions are really distributions of GNU/Linux.
+>
+> -- https://www.gnu.org/gnu/linux-and-gnu.html
+
+从这里看到，GNU 认为应该将以 GNU 为基础的 “Linux 发行版” 都叫成 GNU/Linux，因为 Linux 指代的应该是 Linux kernel，而非一整套系统。GNU 工具链确实是基本上所有 Linux 发行版的必备了，不过依旧存在一些一定程度上要 de-gnu 的 Linux 发行版。
+
+这里我先说一下 GNU 为什么这么重要，**以下的部分内容是我的个人看法** 。我认为很大的原因是 GNU 的软件都很不错，而且出现的也足够早，这就是原因。在 Linux kernel 还没发布的时候，GNU 项目早就开始写了，它们的目的是要写一个完全自由的操作系统。它们先开始写一些操作系统必备的程序，比如文本编辑器，编译器等等，但当最后写操作系统内核的时候，由于想要实现一个微内核，导致调试起来很困难，从而极大的拖慢了开发进度。这个时候 Linux kernel 就已经发布出来，并且可以运行 GNU 的各种程序。
+
+GNU 这部分十分重要，而且一定程度上没太多替代品。Linux 发行版运行必备的 [libc](https://en.wikipedia.org/wiki/C_standard_library) 基本上都在用 GNU 开发的 glibc，编译器用的是 `gcc`，一些核心程序 用的是 [GNU core utilities](https://www.gnu.org/software/coreutils/)，这些都是很难避免的，你也许可以避免 glibc ——选择使用 [musl libc](https://www.musl-libc.org/) 或者其他 libc，可以不用 gcc，选择使用 clang/llvm，不使用 GNU core utilities 而使用 [BusyBox](https://www.busybox.net/)。但很少有这么做的，一方面是 glibc 现在很全面，并且还有一些不属于 ISO C 标准的部分。
+
+> The GNU C Library - The project provides the core libraries for the GNU system and GNU/Linux systems, as well as many other systems that use Linux as the kernel. These libraries provide critical APIs including ISO C11, POSIX.1-2008, BSD, OS-specific APIs and more. These APIs include such foundational facilities as open, read, write, malloc, printf, getaddrinfo, dlopen, pthread_create, crypt, login, exit and more.
+>
+> -- https://www.gnu.org/software/libc/
+
+从 [glibc 的文档](https://sourceware.org/glibc/manual/latest/html_node/Standards-and-Portability.html) 可以看出 glibc 除了对 ISO C 标准的支持外，还包括：
+
+- POSIX (The Portable Operating System Interface)
+- Berkeley Unix
+- SVID (The System V Interface Description)
+- XPG (The X/Open Portability Guide)
+
+这导致一些软件可能用到一些非标准的函数，使用 musl libc 的时候无法正常运行它们。
+
+[Alpine Linux](https://alpinelinux.org/) 就是使用的 musl libc 替换了 glibc，用 busybox 替换了 gnu-coreutils，不过软件支持的还不是很多。
+
+我不会介绍这种 Linux 发行版，GNU 对现在的开源社区影响深远，不是想要移除就那么简单移除的。
+
 ---
 
 下面这些段落写于 2024 年 2 月
@@ -28,7 +57,7 @@ description: "介绍了大部分主流发行版"
 
 NVIDIA 已经提交了 XWayland 显示同步的相关补丁，主流的桌面环境已经合并相关补丁，等到 NVIDIA 发布 560 版本的驱动应该就可用了。
 
-现在还不支持 HDR，浏览器对硬件解码的支持也不是很完美， NVIDIA 有自己的一套，其他显卡用另一套 (nvidia-libva-drover 可以让 NVIDIA 的 NVDEC 以 VAAPI 解码，但只支持解码，编码尚不支持，编码的话就还是用 NVDEC 了)，其中 FireFox 还支持了 VAAPI，但不支持 NVDEC（貌似），Chromium 内核的浏览器目前仍然处于实验状态，而且也是支持的 VAAPI，ChromiumOS 和其他 Linux 发行版的文档会有说明可以尝试添加哪些参数启用这个功能。Chromium 内核的浏览器默认还不是 Wayland。
+~~现在还不支持 HDR~~（现在有了实验性支持），浏览器对硬件解码的支持也不是很完美， NVIDIA 有自己的一套，其他显卡用另一套 (nvidia-libva-drover 可以让 NVIDIA 的 NVDEC 以 VAAPI 解码，但只支持解码，编码尚不支持，编码的话就还是用 NVDEC 了)，其中 FireFox 还支持了 VAAPI，但不支持 NVDEC（貌似），Chromium 内核的浏览器目前仍然处于实验状态，而且也是支持的 VAAPI，ChromiumOS 和其他 Linux 发行版的文档会有说明可以尝试添加哪些参数启用这个功能。Chromium 内核的浏览器默认还不是 Wayland。
 
 我不好评价 GNU/Linux 玩游戏会是怎样的体验，不过 Valve 公司基于 wine 搞了一个[Proton](<https://en.wikipedia.org/wiki/Proton_(software)>)，只要在 Steam Play 中勾选为所有应用启用 Steam Play 就可以玩那些只支持 Windows 平台的游戏了，但不好评价是否能一定起作用，Steam Deck 上搭载的系统 Steam OS 是基于 Arch Linux 做的，所以游戏方面也不至于那么难绷。有个非官方的网站[protondb](https://www.protondb.com/)，可以在这上面搜索一下特定游戏的评价，有玩家会在上面分享这个游戏运行起来的体验如何，并且还有给出他运行这个游戏的发行版的相关信息，如果是不太好运行的游戏，也许还会分享他们是如何让这个游戏跑起来的。
 
