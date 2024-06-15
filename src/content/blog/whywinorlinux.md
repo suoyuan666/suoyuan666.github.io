@@ -1,5 +1,5 @@
 ---
-title: 为什么你应该(不)使用GNU/Linux作为日用操作系统
+title: 为什么你应该(不)使用 GNU/Linux 作为日用操作系统
 author: suo yuan
 pubDatetime: 2024-04-13T11:58:25
 featured: false

@@ -1,5 +1,5 @@
 ---
-title: 我的NixOS安装记录
+title: 我的 NixOS 安装记录
 author: suo yuan
 pubDatetime: 2024-04-06T12:59:51
 featured: false
@@ -8,7 +8,7 @@ tags:
   - NixOS
   - Linux
   - intro
-description: "我这次安装NixOS做的额外的工作，也就是除官方文档之外的安装步骤。这里我用WM用的是Hyprland"
+description: "我这次安装 NixOS 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用 WM 用的是 Hyprland"
 ---
 
 # 我的 NixOS 安装记录
