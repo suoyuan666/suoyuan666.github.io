@@ -28,7 +28,7 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 我倾向于使用 Wayland 而不是 Xorg。Wayland 和 Xorg 是两套显示服务协议，虽然部分用户认为 Wayland 并不是用于取代 Xorg 的，但是我认为 Wayland 应该全面取代 Xorg，因为 Wayland 相比于 Xorg 无论是性能还是安全性都要优于 Xorg。
 
-但是 Chromium 对 Wayland 的支持还没有那么完美，这导致了 Electorn 的程序大概率也不会对 Wayland 支持那么完美（缩放存在问题）。并且 Chromium 不支持 text-input-v3（Wayland 输入法协议第 3 版）导致在 GNOME 下需要为其附加环境变量`QT_IM_MODULE`才能正常使用（印象中还需要附加`--gtk-version=4`）。但是`--gtk-version=4`并没有被 Electorn 所支持（目前是 2024 年 4 月，它并没有支持），所以 ibus 或者 fcitx5 是无法切换到中文输入的。
+但是 Chromium 对 Wayland 的支持还没有那么完美，这导致了 Electorn 的程序大概率也不会对 Wayland 支持那么完美（缩放存在问题）。并且 Chromium 不支持 text-input-v3（Wayland 输入法协议第 3 版）导致在 GNOME 下需要为其附加环境变量`QT_IM_MODULE`才能正常使用（印象中还需要附加`--gtk-version=4`）。但是 `--gtk-version=4` 并没有被 Electorn 所支持（目前是 2024 年 4 月，它并没有支持），所以 ibus 或者 fcitx5 是无法切换到中文输入的。
 
 但是 Plasma 5.27+支持 text-input-v1，text-input-v2 和 text-input-v3。所以只需要附加`--enable-wayland-ime`（这是因为 text-input-v1）即可使用。
 
@@ -36,11 +36,13 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 只有部分游戏是提供了原生的 Linux 版本（其中有一部分大概是因为 Steam Deck，Steam Deck 上的操作系统 Steam OS 是一个 GNU/Linux 发行版）。不过 Steam 提供了 Proton 兼容层以运行支持 Windows 的游戏。
 
-很多专业的软件可能处于没有 Linux 版本的状态。我又不是任何领域的专业人士，这个还是需要自己去搜集。如果是计算机相关还是有很多平替的，可以参考网站[AlternativeTo](https://alternativeto.net/)，这个网站列出了一些软件的替代品可供参考。
+很多专业的软件可能处于没有 Linux 版本的状态。我又不是任何领域的专业人士，这个还是需要自己去搜集。如果是计算机相关还是有很多平替的，可以参考网站 [AlternativeTo](https://alternativeto.net/)，这个网站列出了一些软件的替代品可供参考。
 
 ### 从硬件的层面来看
 
 对于 NVIDIA 不算老的卡，基本上都需要安装 NVIDIA 闭源的显卡驱动才能使其正常工作。目前来说，该驱动可以较为正常的工作。但是我在使用 GNOME Wayland 的时候，安装 NVIDIA 闭源的显卡驱动的情况下运行 XWayland 无法正常的工作。不过我需要 XWayland 运行的情况基本都是 Electorn 的软件。
+
+等到 NVIDIA 闭源驱动更新到 555 版本的时候应该是会解决无法正常运行 XWaylnad 的程序的问题。具体可以参考[我的随笔](../notes#nvidia-即将支持-xwaylnad-显示同步)中记载的
 
 对于硬件视频加速来说，Firefox 的支持还不错，Chromium 只是实验性支持（不过貌似也可以用）。这里 Intel 开发了一套 VAAPI，NVIDIA 开发了一套 VDPAU 和 NVDEC。不过貌似 VDPAU 那个 driver 好久不开发了，现在 NVIDIA 应该是安装 nvidia-vaapi-driver，但是我安装完还是有一点问题。
 
