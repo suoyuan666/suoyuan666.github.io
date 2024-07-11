@@ -19,10 +19,7 @@ description: "我第一次尝试使用CMake等工具 管理自己的C++项目的
 ```bash
 $ tree -a -L 2
 .
-├── build/
-├── .cache/
-├── .clang-format
-├── .clang-tidy
+├── build
 ├── CMakeLists.txt
 ├── compile_commands.json -> build/compile_commands.json
 ├── doc
@@ -30,33 +27,38 @@ $ tree -a -L 2
 │   ├── html/
 │   └── man/
 ├── Doxyfile
-├── .git/
-├── .github
-│   └── workflows
-├── .gitignore
-├── .gitmodules
 ├── LICENSE
 ├── README.md
 ├── README_ZH_CN.md
 ├── src
 │   ├── CMakeLists.txt
-│   ├── cppcurl.cpp
-│   ├── env.cpp
-│   ├── include/
-│   ├── log.cpp
+│   ├── core
+│   │   ├── CMakeLists.txt
+│   │   └── pack_core.cpp
+│   ├── curl_cpp
+│   │   ├── CMakeLists.txt
+│   │   └── cppcurl.cpp
+│   ├── include
+│   │   ├── cppcurl.h
+│   │   ├── env.h
+│   │   ├── log.h
+│   │   ├── misc.h
+│   │   ├── os-detect.h
+│   │   └── pack_core.h
 │   ├── main.cpp
-│   ├── os-detect.cpp
-│   └── pack_core.cpp
+│   └── utils
+│       ├── CMakeLists.txt
+│       ├── env.cpp
+│       ├── log.cpp
+│       └── os-detect.cpp
 ├── test
 │   ├── CMakeLists.txt
 │   └── main_test.cpp
-├── third_party
-│   ├── argparse/
-│   ├── CMakeLists.txt
-│   ├── googletest/
-│   └── json/
-└── .vscode
-    └── launch.json
+└── third_party
+    ├── argparse
+    ├── CMakeLists.txt
+    ├── googletest
+    └── json
 ```
 
 上面这个就是我项目的基础结构，**src** 存放项目的源代码，**src/include** 从存放一些自定义的头文件，**test** 目录存放用于开发测试的代码文件，**third_party** 目录存放第三方库文件。
@@ -74,11 +76,9 @@ $ tree -a -L 2
 我根目录的 **CMakeLists.txt** 文件的内容是：
 
 ```CMakeLists
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.13)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(PROGRAM_NAME releasebutler)
 
 project(ReleaseButler
     VERSION 2024.5
@@ -133,37 +133,23 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 message(STATUS "CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
-
-add_executable(${PROGRAM_NAME} "src/main.cpp")
-
-set(
-    RB_SRC_INCLUDE_DIR
-    ${PROJECT_SOURCE_DIR}/src/include
-)
-
-set(
-    RB_THIRD_PARTY_INCLUDE_DIR
-    ${PROJECT_SOURCE_DIR}/third_party/argparse/include
-)
-
-include_directories(${RB_SRC_INCLUDE_DIR} ${RB_THIRD_PARTY_INCLUDE_DIR})
-
-set(ReleaseButler_LIBS
-    pack_core
-)
-
-target_link_libraries(${PROGRAM_NAME} ${ReleaseButler_LIBS})
 ```
 
-这里我对 Debug 模式和 Release 模式都设置了不同的编译选项，我因为个人的原因很希望 Release 模式编译出来的是尽可能安全些的，所以找了一些安全方面的编译选项。由于 clang 实现了 CFI 保护，所以我这里检测当前编译环境的编译器如果是 clang 的话就启用该支持。 如果检测到是 GCC 环境的话也会启用相应的支持。
+这里我对 Debug 模式和 Release 模式都设置了不同的编译选项，我因为个人的原因很希望 Release 模式编译出来的是尽可能安全些的，所以找了一些安全方面的编译选项。
+由于 clang 实现了 CFI 保护，所以我这里检测当前编译环境的编译器如果是 clang 的话就启用该支持。 如果检测到是 GCC 环境的话也会启用相应的支持。
 
-**third_party** 目录下的 **CMakeLists.txt** 只又一行内容，就是为了加入 **googletest**
+根目录下的 **CMakeLists.txt** 只是设置好相关的编译选项和一些基础设置，而后添加各个子目录的 **CMakeLists.txt**。
+
+**third_party** 目录下的 **CMakeLists.txt** 判断如果是 Debug 的话就添加 googletest 库，并且把其他第三方库添加进去。
 
 ```CMakeLists
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 
-add_subdirectory(googletest)
-add_subdirectory(json)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_subdirectory(googletest)
+endif()
+
+add_subdirectory(argparse)
 ```
 
 **test** 目录下还有些东西，因为遇到额外添加 **googletest** 中的include到编译过程中，还要启用testing
@@ -187,14 +173,7 @@ set(
 
 include_directories(${TEST_INCLUDE_DIR})
 
-# find_package(pack_core REQUIRED)
-
-target_link_libraries(${TEST_TARGET_NAME} PRIVATE gtest gtest_main pack_core)
-
-set_target_properties(${TEST_TARGET_NAME} PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-)
+target_link_libraries(${TEST_TARGET_NAME} PRIVATE gtest gtest_main ${ReleaseButler_LIBS})
 
 add_test(NAME ${TEST_TARGET_NAME} COMMAND ${TEST_TARGET_NAME})
 ```
@@ -217,27 +196,97 @@ auto main(int argc, char **argv) -> int {
 }
 ```
 
+**src** 目录下的 **CMakeLists.txt** 设置了可执行文件的具体配置:
+
+```CMakeLists
+add_subdirectory(core)
+add_subdirectory(curl_cpp)
+add_subdirectory(utils)
+
+set(PROGRAM_NAME releasebutler)
+
+add_executable(${PROGRAM_NAME} "main.cpp")
+
+set(
+    RB_SRC_INCLUDE_DIR
+    ${PROJECT_SOURCE_DIR}/src/include
+)
+
+set(
+    RB_THIRD_PARTY_INCLUDE_DIR
+    ${PROJECT_SOURCE_DIR}/third_party/argparse/include
+)
+
+include_directories(${RB_SRC_INCLUDE_DIR} ${RB_THIRD_PARTY_INCLUDE_DIR})
+
+set(ReleaseButler_LIBS
+    core
+    utils
+    curl_cpp
+)
+
+target_link_libraries(${PROGRAM_NAME} ${ReleaseButler_LIBS})
+```
+
+这里设置好了可执行文件的名称，以及它依赖的库文件，并在最开始添加相关库的子目录进去，先把子目录的 lib 编译好。
+
+下边贴一个 **src/core/CMakeLists.txt** 的内容:
+
+```CMakeLists.txt
+set (
+    RB_CORE_SRC_INCLUDE
+    ${PROJECT_SOURCE_DIR}/src/include
+)
+
+set (
+    RB_CORE_TP_INCLUDE
+    ${PROJECT_SOURCE_DIR}/third_party/json/single_include/nlohmann
+)
+
+set (
+    RB_CORE_SRC
+    pack_core.cpp
+)
+
+include_directories(${RB_CORE_SRC_INCLUDE} ${RB_CORE_TP_INCLUDE})
+
+add_library(
+    core
+    OBJECT
+    ${RB_CORE_SRC}
+)
+```
+
+可以看到就是简单的设置 include 路径并编译成 object
+
 在项目的根目录下，执行下边的语句:
 
 ```bash
-$ cmake --build build  -j `nproc`
-[ 15%] Building CXX object third_party/googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
-[ 15%] Building CXX object src/CMakeFiles/pack_core.dir/cppcurl.cpp.o
-[ 23%] Building CXX object src/CMakeFiles/pack_core.dir/os-detect.cpp.o
-[ 30%] Building CXX object src/CMakeFiles/pack_core.dir/pack_core.cpp.o
-[ 30%] Built target pack_core
-[ 38%] Building CXX object CMakeFiles/ReleaseButler.dir/src/main.cpp.o
-[ 46%] Linking CXX static library ../../../lib/libgtest.a
-[ 46%] Built target gtest
-[ 61%] Building CXX object third_party/googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
-[ 61%] Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
-[ 69%] Linking CXX static library ../../../lib/libgtest_main.a
-[ 69%] Built target gtest_main
-[ 76%] Linking CXX static library ../../../lib/libgmock.a
-[ 76%] Built target gmock
-[ 84%] Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o
-[ 92%] Linking CXX executable ReleaseButler
-[ 92%] Built target ReleaseButler
+$ cmake --build build -j `nproc`
+[  5%] Building CXX object src/utils/CMakeFiles/utils.dir/log.cpp.o
+[ 11%] Building CXX object src/utils/CMakeFiles/utils.dir/os-detect.cpp.o
+[ 17%] Building CXX object src/utils/CMakeFiles/utils.dir/env.cpp.o
+[ 23%] Building CXX object src/core/CMakeFiles/core.dir/pack_core.cpp.o
+[ 29%] Building CXX object src/curl_cpp/CMakeFiles/curl_cpp.dir/cppcurl.cpp.o
+[ 35%] Building CXX object third_party/googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+[ 35%] Built target curl_cpp
+[ 35%] Built target core
+[ 35%] Built target utils
+[ 41%] Building CXX object src/CMakeFiles/releasebutler.dir/main.cpp.o
+[ 47%] Linking CXX static library ../../../lib/libgtest.a
+[ 47%] Built target gtest
+[ 58%] Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
+[ 58%] Building CXX object third_party/googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+[ 64%] Linking CXX executable releasebutler
+[ 64%] Built target releasebutler
+[ 70%] Linking CXX static library ../../../lib/libgtest_main.a
+[ 70%] Built target gtest_main
+[ 76%] Building CXX object test/CMakeFiles/main_test.dir/main_test.cpp.o
+[ 82%] Linking CXX executable main_test
+[ 82%] Built target main_test
+[ 88%] Linking CXX static library ../../../lib/libgmock.a
+[ 88%] Built target gmock
+[ 94%] Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o
 [100%] Linking CXX static library ../../../lib/libgmock_main.a
 [100%] Built target gmock_main
 ```
@@ -334,7 +383,7 @@ BasedOnStyle: Google
 ColumnLimit: 80
 ```
 
-我对代码格式化还没有什么太高的需求，等我以后再好好研究如何更好的格式化吧，
+我对代码格式化还没有什么太高的需求，等我以后再好好研究如何更好的格式化吧。
 
 ## `doxygen` 使用
 
