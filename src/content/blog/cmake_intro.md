@@ -152,7 +152,7 @@ endif()
 add_subdirectory(argparse)
 ```
 
-**test** 目录下还有些东西，因为遇到额外添加 **googletest** 中的include到编译过程中，还要启用testing
+**test** 目录下还有些东西，因为遇到额外添加 **googletest** 中的 include 到编译过程中，还要启用 testing
 
 ```CMakeLists
 cmake_minimum_required(VERSION 3.11)
@@ -450,3 +450,6 @@ USE_MDFILE_AS_MAINPAGE = README.md
 ```
 
 `@brief` 是简要说明，`@param` 是参数说明，`@return` 是对返回值的说明。其实还有 `@note` 等字段，也可以用来标示一种信息。
+
+而且实际上 `clangd` 目前不支持对 Doxygen 这样格式的注释的解析，导致 Visual Studio Code 读自己写的注释是没有什么好渲染的。
+不过貌似微软官方的 C/C++ 插件可以解析 Doxygen 的注释，并渲染出来，但我习惯使用 `clangd` 了。
