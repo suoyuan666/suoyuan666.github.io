@@ -71,3 +71,9 @@ NVIDIA 关于 XWayland 的 GPU 显示同步补丁已经在 [Xorg](https://gitlab
 ## NVIDIA + XWayland 的吐槽
 
 NVIDIA + XWayland 还是很难绷，还是等到 nvidia-driver stable 更新到 555 的吧。
+
+## zed stable for Linux 已发布
+
+zed stable for linux 已经发布，可以根据 [zed docs 上提供的办法](https://zed.dev/docs/linux)下载安装。
+
+我本身不是 Rust 开发者，所以就试着打开了我 C++ 的小项目，总体来说还是不错的，有我看得下去的主题，内置 `clangd` 的支持，不过貌似没有对 `clang-tidy` 和 `clang-format` 的支持，如果还能有对 CMake 的支持就更好了。
