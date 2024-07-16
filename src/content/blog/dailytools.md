@@ -17,11 +17,11 @@ description: "自己常用软件的记录及点评"
 
 [NVIDIA Broadcast](https://www.nvidia.com/en-us/geforce/broadcasting/broadcast-app/) 这个软件仅在 Windows 上可用，虽然我会给相机和麦克风开一些功能，不过目前也不太能用到说实话。
 
-[VMware](https://www.vmware.com/) 分为 [VMware Workstation Player](https://www.vmware.com/products/workstation-player/workstation-player-evaluation.html) 和 [VMware Workstation Pro](https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html)。前者免费使用，后者需要付费，虽然也可以知道体验一会的方法就是了。这是一个体验不错的虚拟机平台，提供了 Windows 版本和 Linux 版本，但是我也只是在 Windows 中使用它了。
+[VMware](https://www.vmware.com/) 分为 [VMware Workstation Player](https://www.vmware.com/products/workstation-player/workstation-player-evaluation.html) 和 [VMware Workstation Pro](https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html)。前者免费使用，~~后者需要付费，虽然也可以知道体验一会的方法就是了~~ VMware Workstation Pro 现在已经免费分发了。这是一个体验不错的虚拟机平台，提供了 Windows 版本和 Linux 版本，但是我也只是在 Windows 中使用它了。
 
 [Visual Studio](https://visualstudio.microsoft.com/) 是 Windows 上体验还不错的 IDE，就是对我来说功能有些繁杂了🫠。不过我在 Windows 上目前还不太习惯用这个 IDE，还是用 vscode 连 WSL 上的 Linux 虚拟机。
 
-[WingetUI](https://github.com/marticliment/WingetUI) 是一个图形化的 winegt 管理软件，不过它还支持 pip，npm 什么的。不过我主要用来打开并更新 winget 的包。
+[WingetUI](https://github.com/marticliment/WingetUI) 是一个图形化的 winegt 管理软件，不过它还支持 pip，npm 什么的。不过我主要用来更新 winget 的包。
 
 [Everything](https://www.voidtools.com/) 是一个高效地文件搜集工具，支持很多高级搜集的玩法，不过我一般都输入文件名来搜（逃
 
@@ -33,13 +33,13 @@ description: "自己常用软件的记录及点评"
 
 ### Browser
 
-[FireFox](https://www.mozilla.org/en-US/firefox/browsers/) 应该大多数人用的发行版的软件库中都会有自己构建的版本，也不用从这里下载了。我一般是搭配 [Arkenfox](https://github.com/arkenfox/user.js) 项目和一些插件（如[Ublock Origin](https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/)）使用。作为一个难得非 Chromium 内核的项目，FireFox 到现在总有一种落日余晖的样子，[Mozilla 宣言](https://www.mozilla.org/zh-CN/about/manifesto/) 还是说的很好的，上次看到类似的还是[网络独立宣言](https://en.wikipedia.org/wiki/A_Declaration_of_the_Independence_of_Cyberspace)。不过 FireFox 在安全性方面倒貌似一直在被吐槽的样子：比如这个关于 FireFox 和 Chromium 对比的文档：[Firefox and Chromium](https://madaidans-insecurities.github.io/firefox-chromium.html)；和 GrapheneOS 中对自己在浏览器选择的叙述：[Usage guide | GrapheneOS: Web browsing](https://grapheneos.org/usage#web-browsing)。不过在 GNU/Linux 中，Firefox 在 Wayland 桌面协议下的运行还基本正常，基于 Chromium 内核的浏览器现在默认还不是 Wayland。不过貌似 Mozilla 的工作重心已经不再是 Firefox 了？
+[FireFox](https://www.mozilla.org/en-US/firefox/browsers/) 应该大多数人用的发行版的软件库中都会有自己构建的版本，也不用从这里下载了。我一般是搭配 [Arkenfox](https://github.com/arkenfox/user.js) 项目和一些插件（如[Ublock Origin](https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/)）使用。作为一个难得非 Chromium 内核的项目，FireFox 到现在总有一种落日余晖的样子，[Mozilla 宣言](https://www.mozilla.org/zh-CN/about/manifesto/)还是说的很好的，上次看到类似的还是[网络独立宣言](https://en.wikipedia.org/wiki/A_Declaration_of_the_Independence_of_Cyberspace)。不过 FireFox 在安全性方面倒貌似一直在被吐槽的样子：比如这个关于 FireFox 和 Chromium 对比的文章：[Firefox and Chromium](https://madaidans-insecurities.github.io/firefox-chromium.html)；和 GrapheneOS 中对自己在浏览器选择的叙述：[Usage guide | GrapheneOS: Web browsing](https://grapheneos.org/usage#web-browsing)。不过在 GNU/Linux 中，Firefox 在 Wayland 桌面协议下的运行还基本正常，基于 Chromium 内核的浏览器现在默认还不是 Wayland。不过貌似 Mozilla 的工作重心已经不再是 Firefox 了？
 
 [Brave](https://github.com/brave/brave-browser) 是基于 Chromium 内核做的浏览器，内置 Brave 自己做的 [adblock-rust](https://github.com/brave/adblock-rust)，并且还做了很多其他对增强隐私方面的改动。在[一个浏览器默认情况下的隐私保护比较](https://privacytests.org/)中可以发现 Brave 的隐私保护做的比其他浏览器要好一些。不过 Brave 也被吐槽过（比如把网站显示的别人家的广告替换成自家的，虽然这是它盈利的手段）。[Hacker News的讨论中](https://news.ycombinator.com/item?id=26332183)中有提到一些。还有就是所有基于 Chromium 内核的软件在 Wayland 上都会存在一点点问题，比如默认没有使用 Wayland，使用了的话可能窗口缩放不太对并且 Fcitx5 使用不了等。
 
 ### Develop Tools
 
-[vscodium](https://github.com/VSCodium/vscodium) 去除了 Microsoft 加入的遥测跟踪等在他们看来不 FOSS 的东西，因此它的插件商店下载不到微软官方出的一些插件（比如 Remote-ssh 等），微软官方的 C/C++ 这个插件虽然无法从插件商店下载到，但可以手动从 [GitHub 上下载插件](https://github.com/microsoft/vscode-cpptools)，然后导入到 vscodium 中正常使用。但是 Remote-ssh 导入后是无法使用的。我使用的 [clangd](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd) 替代微软官方的 cpptools，结果本地的 `clangd` 所在目录不被 vscodium 检测，我还得在设置里手动指定是 _/usr/lib/llvm/17/bin/clangd_。不过 cpptools 在我认知中还是有东西的，比如对 GDB 的支持 😇，所以如果用 `clangd` 的话可以尝试全面拥抱 clang/llvm，用 `lldb`（逃
+[vscodium](https://github.com/VSCodium/vscodium) 去除了 Microsoft 加入的遥测跟踪等在他们看来不 FOSS 的东西，因此它的插件商店下载不到微软官方出的一些插件（比如 Remote-ssh 等），微软官方的 C/C++ 这个插件虽然无法从插件商店下载到，但可以手动从 [GitHub 上下载插件](https://github.com/microsoft/vscode-cpptools)，然后导入到 vscodium 中正常使用。但是 Remote-ssh 导入后是无法使用的。我使用的 [clangd](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd) 替代微软官方的 cpptools，结果本地的 `clangd` 所在目录不被 vscodium 检测，我还得在设置里手动指定是 _/usr/lib/llvm/17/bin/clangd_。不过 cpptools 在我认知中还是有东西的，比如对 GDB 的支持 😇，所以如果用 `clangd` 的话可以尝试全面拥抱 clang/llvm，用 `lldb`（逃。而且 cpptools 还支持对 Doxygen 注释格式的解析，clangd 还不支持这个功能。
 
 [Bear](https://github.com/rizsotto/Bear) 可以生成一个 `clang` 工具链解析的编译记录文件。用来让 vscode 的 `clangd` 解析并理清项目的编译依赖关系。
 
@@ -119,7 +119,7 @@ description: "自己常用软件的记录及点评"
 
 ### Anti-Ad
 
-[AdAway](https://github.com/AdAway/AdAway) 是一个可以使用 root 权限下替换 hosts 文件来做到拦截广告的目的的软件，它同样有个 VPN 模式，不过我没用过，说起 VPN 模式，[RethinkDNS](https://github.com/celzero/rethink-app) 就是 VPN 模式的，看起来蛮不错，可惜我的 VPN 模式已经有软件了。adaway 的功能主要就是替换 hosts 文件，不过 hosts 文件必须写死了 URL，无法做到匹配子域名等功能，还是很难绷的。
+[AdAway](https://github.com/AdAway/AdAway) 是一个可以使用 root 权限下替换 hosts 文件来做到拦截广告的目的的软件，它同样有个 VPN 模式，不过我没用过，说起 VPN 模式，[RethinkDNS](https://github.com/celzero/rethink-app) 就是 VPN 模式的，看起来蛮不错，可惜我的 VPN 模式已经有软件了。adaway 的功能主要就是替换 hosts 文件，不过 hosts 文件必须写死了 URL，无法做到匹配子域名等功能，对于 anti-ad 这样的软件来说，还是很难绷的。
 
 [blocker](https://github.com/lihenggui/blocker) 是一款操作 Android 应用程序四大组件的程序，比如一些广告，分析的服务直接可以禁掉。感觉 [Appmanager](https://github.com/MuntashirAkon/AppManager) 也能做到这一点，但是不像这位提供了规则仓库用于直接统一杀掉。
 
@@ -133,13 +133,13 @@ description: "自己常用软件的记录及点评"
 
 ### Video
 
-[PipePipe](https://github.com/InfinityLoop1308/PipePipe) 可以匿名播放 Youtube/BiliBili 等网站的视频，也可以关注那些 up主，可以将 Youtube和BiliBili 上的视频收藏到一个收藏夹里，可以的。但无法看到动态，这导致了我不怎么太使用这个软件。
+[PipePipe](https://github.com/InfinityLoop1308/PipePipe) 可以匿名播放 Youtube/BiliBili 等网站的视频，也可以关注那些 up主，可以将 Youtube 和 BiliBili 上的视频收藏到一个收藏夹里，可以的。但无法看到动态，这导致了我不怎么太使用这个软件。
 
 [mpv-android](https://github.com/mpv-android/mpv-android) 是使用 `libmpv` 的视频播放器，由于我在使用 GNU/Linux 发行版的时候基本都会选择使用 `mpv` 作为视频播放器的后端，所以手机 Android 上也如此了。
 
 ### Misc
 
-[StorageRedirect](https://sr.rikka.app/zh-hans/download/)。存储空间隔离就应该被 Android 实现成为自带的功能。貌似 [GrapheneOS](https://grapheneos.org/) 的 [storage-scopes](https://grapheneos.org/usage#storage-scopes) GrapheneOS 是给 Google Pixel 构建的，我目前还没用过 Pixel。
+[StorageRedirect](https://sr.rikka.app/zh-hans/download/)。存储空间隔离就应该被 Android 实现成为自带的功能。貌似 [GrapheneOS](https://grapheneos.org/) 的 [storage-scopes](https://grapheneos.org/usage#storage-scopes) 实现了类似的功能，可惜GrapheneOS 是给 Google Pixel 构建的，我目前还没用过 Google Pixel。
 
 [App Ops](https://appops.rikka.app/zh-hans/download/) 是一个很精细的权限控制软件，系统软件或是用户软件的权限都可以被调控，希望也可以成为默认的隐私控制面板。
 

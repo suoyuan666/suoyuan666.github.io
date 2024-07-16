@@ -30,7 +30,7 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 但是 Chromium 对 Wayland 的支持还没有那么完美，这导致了 Electorn 的程序大概率也不会对 Wayland 支持那么完美（缩放存在问题）。并且 Chromium 不支持 text-input-v3（Wayland 输入法协议第 3 版）导致在 GNOME 下需要为其附加环境变量`GTK_IM_MODULE`才能正常使用（印象中还需要附加`--gtk-version=4`）。但是 `--gtk-version=4` 并没有被 Electorn 所支持（目前是 2024 年 4 月，它并没有支持），所以 ibus 或者 fcitx5 是无法切换到中文输入的。
 
-Plasma 5.27+支持 text-input-v1，text-input-v2 和 text-input-v3。所以只需要附加`--enable-wayland-ime`（这是因为 text-input-v1）即可使用。
+Plasma 5.27+支持 text-input-v1，text-input-v2 和 text-input-v3。所以只需要附加`--enable-wayland-ime`（这是因为 text-input-v1）即可使用。GNOME 仍不支持 text-input-v1，根据 [Mutter 的一个 pr](https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3751) 上的讨论来看，他们貌似更倾向于让 Chromium 实现 text-input-v3，但自家的 mutter 不会合并其他协议实现的补丁。（mutter 是 GNOME 的窗口管理器）
 
 我这里说的 GNOME 和 Plasma 都是一种桌面环境，具体可以参考我在另一篇文章：[面向 beginner: GNU/Linux 发行版浅评与介绍](../distrointro/)中的图片，我在那篇文章的最后还介绍了一下桌面环境。
 
