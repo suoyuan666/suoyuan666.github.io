@@ -7,7 +7,7 @@ draft: false
 tags:
   - Cpp notes
   - intro
-description: "我第一次尝试使用CMake等工具 管理自己的C++项目的记录"
+description: "我第一次尝试使用 CMake 等工具管理自己的 C++ 项目的记录"
 ---
 
 # C++ 项目编写初步入门
@@ -19,7 +19,7 @@ description: "我第一次尝试使用CMake等工具 管理自己的C++项目的
 ```bash
 $ tree -a -L 2
 .
-├── build
+├── build/
 ├── CMakeLists.txt
 ├── compile_commands.json -> build/compile_commands.json
 ├── doc
@@ -55,10 +55,10 @@ $ tree -a -L 2
 │   ├── CMakeLists.txt
 │   └── main_test.cpp
 └── third_party
-    ├── argparse
+    ├── argparse/
     ├── CMakeLists.txt
-    ├── googletest
-    └── json
+    ├── googletest/
+    └── json/
 ```
 
 上面这个就是我项目的基础结构，**src** 存放项目的源代码，**src/include** 从存放一些自定义的头文件，**test** 目录存放用于开发测试的代码文件，**third_party** 目录存放第三方库文件。
@@ -307,7 +307,7 @@ $ ./build/test/main_test
 [  PASSED  ] 1 test.
 ```
 
-这里有一个问题，我使用的是 Visual Studio Code 写代码，用 clangd 插件提高 C/C++ 的编程体验，我一开始用 `ln -s` 给 **build/compile_commands.json** 文件在根目录建一个软链接，但是 clangd 的没有成功解析出 **test/main_test.cpp** 文件的头文件位置，后来我安装了bear，特地 `bear -- cmake` 生成了一个 **compile_commands.json** 才成功解析。
+这里有一个问题，我使用的是 Visual Studio Code 写代码，用 `clangd` 插件提高 C/C++ 的编程体验，我一开始用 `ln -s` 给 **build/compile_commands.json** 文件在根目录建一个软链接，但是 `clangd` 的没有成功解析出 **test/main_test.cpp** 文件的头文件位置，后来我安装了bear，特地 `bear -- cmake` 生成了一个 **compile_commands.json** 才成功解析。
 
 不过后来又好使了，不好评价那时候发生了什么。
 
@@ -317,7 +317,7 @@ $ ./build/test/main_test
 >
 > `clang-tidy` 是一个基于 `clang` 的 C++ “linter” 工具。其目的是提供一个可扩展的框架，用于诊断和修复典型的编程错误，例如样式违规、接口误用或可以通过静态分析推断出的错误。 `clang-tidy` 是模块化的，并提供了一个方便的接口来编写新的检查。
 
-[clang-tidy](https://clang.llvm.org/extra/clang-tidy/) 是一个静态语法扫描器。我第一次听说它就是在一个文章中，那篇文章介绍了 C++ 目前面临的困境，其中一个就是 C++ 的学习者还在对着已经过时的例子学习，根本不怎么了解 "modern cpp"。之后那篇文章介绍 `clang-tidy` 一定程度上正在解决这个问题，我对它的理解就是会检查源文件的语法是否符合 `clang-tidy` 认为的好写法，它根据多种规则来检查。但是 `clang-tidy` 内置的部分规则是没有必要的，比如要求类的成员函数的首字母需要大写（至少我认为没什么必要，甚至我写函数就没有大写的习惯，宏写的函数除外，不过宏写的到底能不能叫函数🤔）。
+[clang-tidy](https://clang.llvm.org/extra/clang-tidy/) 是一个静态语法扫描器。我第一次听说它就是在一个文章中，那篇文章介绍了 C++ 目前面临的困境，其中一个就是 C++ 的学习者还在对着已经过时的语法学习，根本不怎么了解 "modern cpp"。之后那篇文章介绍 `clang-tidy` 一定程度上正在解决这个问题，我对它的理解就是会检查源文件的语法是否符合 `clang-tidy` 认为的好写法，它根据多种规则来检查。但是 `clang-tidy` 内置的部分规则是没有必要的，比如要求类的成员函数的首字母需要大写（至少我认为没什么必要，甚至我写函数就没有大写的习惯，宏写的函数除外，不过宏写的到底能不能叫函数🤔）。
 
 `clang-tidy` 支持项目根目录下存在一个 **.clang-tidy** 文件，该文件可以指定规则，检查的范围，对一些规则作具体的设置。
 

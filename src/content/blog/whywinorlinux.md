@@ -22,29 +22,31 @@ description: "一个简单的评价文章，关于是否应该选择使用GNU/Li
 
 直到 2024 年 3 月，腾讯才正式推出 Linux 版本的微信，大致上的该有的功能基本都有，但是原生只能安装在部分国产操作系统上。如果使用的是其他的 Linux 发行版，可以使用 bwrap 套一层绕过检测。
 
-网易云音乐已经不再分发官方的 Linux 版本的软件包了，如果需要使用可以选择安装 yesplaymusic。
+网易云音乐已经不再分发官方的 Linux 版本的软件包了，如果需要使用可以选择安装其他的第三方网易云音乐客户端。
 
 Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 onlyoffice。虽然很多 Linux 用户貌似会用 libreoffice？
 
 我倾向于使用 Wayland 而不是 Xorg。Wayland 和 Xorg 是两套显示服务协议，虽然部分用户认为 Wayland 并不是用于取代 Xorg 的，但是我认为 Wayland 应该全面取代 Xorg，因为 Wayland 相比于 Xorg 无论是性能还是安全性都要优于 Xorg。
 
-但是 Chromium 对 Wayland 的支持还没有那么完美，这导致了 Electorn 的程序大概率也不会对 Wayland 支持那么完美（缩放存在问题）。并且 Chromium 不支持 text-input-v3（Wayland 输入法协议第 3 版）导致在 GNOME 下需要为其附加环境变量`QT_IM_MODULE`才能正常使用（印象中还需要附加`--gtk-version=4`）。但是 `--gtk-version=4` 并没有被 Electorn 所支持（目前是 2024 年 4 月，它并没有支持），所以 ibus 或者 fcitx5 是无法切换到中文输入的。
+但是 Chromium 对 Wayland 的支持还没有那么完美，这导致了 Electorn 的程序大概率也不会对 Wayland 支持那么完美（缩放存在问题）。并且 Chromium 不支持 text-input-v3（Wayland 输入法协议第 3 版）导致在 GNOME 下需要为其附加环境变量`GTK_IM_MODULE`才能正常使用（印象中还需要附加`--gtk-version=4`）。但是 `--gtk-version=4` 并没有被 Electorn 所支持（目前是 2024 年 4 月，它并没有支持），所以 ibus 或者 fcitx5 是无法切换到中文输入的。
 
-但是 Plasma 5.27+支持 text-input-v1，text-input-v2 和 text-input-v3。所以只需要附加`--enable-wayland-ime`（这是因为 text-input-v1）即可使用。
+Plasma 5.27+支持 text-input-v1，text-input-v2 和 text-input-v3。所以只需要附加`--enable-wayland-ime`（这是因为 text-input-v1）即可使用。
 
 我这里说的 GNOME 和 Plasma 都是一种桌面环境，具体可以参考我在另一篇文章：[面向 beginner: GNU/Linux 发行版浅评与介绍](../distrointro/)中的图片，我在那篇文章的最后还介绍了一下桌面环境。
 
-只有部分游戏是提供了原生的 Linux 版本（其中有一部分大概是因为 Steam Deck，Steam Deck 上的操作系统 Steam OS 是一个 GNU/Linux 发行版）。不过 Steam 提供了 Proton 兼容层以运行支持 Windows 的游戏。
+只有部分游戏是提供了原生的 Linux 版本（其中有一部分大概是因为 Steam Deck，Steam Deck 上的操作系统 Steam OS 是一个 GNU/Linux 发行版）。不过 Valve 公司开发了 Proton 兼容层以运行只支持 Windows 的游戏。
 
 很多专业的软件可能处于没有 Linux 版本的状态。我又不是任何领域的专业人士，这个还是需要自己去搜集。如果是计算机相关还是有很多平替的，可以参考网站 [AlternativeTo](https://alternativeto.net/)，这个网站列出了一些软件的替代品可供参考。
 
 ### 从硬件的层面来看
 
-对于 NVIDIA 不算老的卡，基本上都需要安装 NVIDIA 闭源的显卡驱动才能使其正常工作。目前来说，该驱动可以较为正常的工作。但是我在使用 GNOME Wayland 的时候，安装 NVIDIA 闭源的显卡驱动的情况下运行 XWayland 无法正常的工作。不过我需要 XWayland 运行的情况基本都是 Electorn 的软件。
+对于 NVIDIA 不算老的卡，基本上都需要安装 NVIDIA 闭源的显卡驱动才能使其正常工作。目前来说，该驱动可以较为正常的工作。~~但是我在使用 GNOME Wayland 的时候，安装 NVIDIA 闭源的显卡驱动的情况下运行 XWayland 无法正常的工作。不过我需要 XWayland 运行的情况基本都是 Electorn 的软件。~~
 
-等到 NVIDIA 闭源驱动更新到 555 版本的时候应该是会解决无法正常运行 XWaylnad 的程序的问题。具体可以参考[我的随笔](../notes#nvidia-即将支持-xwaylnad-显示同步)中记载的
+~~等到 NVIDIA 闭源驱动更新到 555 版本的时候应该是会解决无法正常运行 XWaylnad 的程序的问题。具体可以参考[我的随笔](../notes#nvidia-即将支持-xwaylnad-显示同步)中记载的。~~
 
-对于硬件视频加速来说，Firefox 的支持还不错，Chromium 只是实验性支持（不过貌似也可以用）。这里 Intel 开发了一套 VAAPI，NVIDIA 开发了一套 VDPAU 和 NVDEC。不过貌似 VDPAU 那个 driver 好久不开发了，现在 NVIDIA 应该是安装 nvidia-vaapi-driver，但是我安装完还是有一点问题。
+我尝试使用 KDE Plasma 6.1 + nvidia-driver 555.58.02，这个问题基本解决了。
+
+对于硬件视频加速来说，Firefox 的支持还可以，Chromium 只是实验性支持（不过貌似也可以用）。这里 Intel 开发了一套 VAAPI，NVIDIA 开发了一套 VDPAU 和 NVDEC。不过貌似 VDPAU 那个 driver 好久不开发了，NVIDIA 可以安装 nvidia-vaapi-driver，这样可以将 NVDEC 转成 VAAPI 供 Firefox 使用。视频播放器，录屏软件都支持 NVIDIA 原有的编解码格式。nvidia-vaapi-driver 只支持解码，不支持编码。
 
 ### 从安全的角度来看
 
@@ -74,13 +76,13 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
   - 这一点还好，现在应该都在使用 pipewire。
 - 应该使用 SELinux 或者 AppArmor 这样的软件更细致的管控权限。
 - flatpak 安装的软件，应该使用 flatseal 管理软件的权限。
-- 使用 sudo 这样的软件应该只允许用户执行部分软件，或者再用 doas 代替 sudo，不过是否用 doas 倒还是看自己了。
+- 使用 sudo 这样的软件应该只允许用户执行部分软件而不是直接允许执行全部软件，或者再用 doas 代替 sudo，不过是否用 doas 倒还是看自己了。
 - 应该尽可能不要用 Xorg。
 - 磁盘应该加密。
 - grub 这个 bootloader 也应该加密。
 - 一些文件目录挂载的时候可以禁用读写权限或者执行权限之类的。
 - 应该尝试使用 firejail 或者 bwrap 这样的沙盒程序。
-  - bwrap 貌似比 firejail 更好一些？
+  - bwrap 貌似比 firejail 更好一些。
 - 不应该使用 Xorg，应该使用 Wayland。
   - 这一点还好，现在大部分的桌面环境都带有 Wayland 的支持，最新版本的 KDE Plasma 和 GNOME 甚至默认就是 Wayland 会话。
 
@@ -100,7 +102,7 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 当然这样的大牛不止这一位，比如 [Linus Torvalds](https://en.wikipedia.org/wiki/Linus_Torvalds) 技术很强，但是还没有 Richard Stallman 的观点那么偏激（这句话不代表我认为 Richard Stallman 的观点偏激，我只是用偏激作为对比的词汇），Linus Torvalds 也吸引了很多 hacker。
 
-一定程度上，由于开发者目前使用的很多软件都是开源的，开源软件目前互相之间的配合还是可以的，所以作为同样是开源软件的 linux，它们之间的工作会更加顺畅。
+一定程度上，由于开发者目前使用的很多软件都是开源的，开源软件目前互相之间的配合还是可以的，所以作为同样是开源软件的 linux，它们之间的工作会更加顺畅。我认为这一定程度上也算是形成了一个圈子🤪。
 
 ### 从安全的角度来讲
 
@@ -114,6 +116,6 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 应用程序角度来看，目前 GNU/Linux 最友好的桌面环境应该是 KDE Plasma。目前国内软件大部分都可以在 Linux 找到官方分发的软件包，就算没有也有非官方的开源实现。部分软件没有 Linux 的版本，也许会有替代品，但效果可能会差一些。
 
-硬件上来看，NVIDIA 显卡的支持目前还是不错，不过还是有些小毛病。
+硬件上来看，NVIDIA 显卡的支持目前还是不错，不过还是有些小毛病，其他的芯片我不太了解，应该都还好。
 
 安全性还说，默认的还是不行，用户还是需要一定的自设定。我一直认为，如果真的追求安全性，应该装 QubesOS 这个操作系统。
