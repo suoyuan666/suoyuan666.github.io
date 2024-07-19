@@ -3,7 +3,7 @@ layout: ../layouts/AboutLayout.astro
 title: "About"
 ---
 
-- 普通本科 大二在读 在一个算是科班的地方中的学习的野路子
+- 普通本科 大二在读 在一个算是科班的地方学习的野路子
 - INTJ-T
 
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=suoyuan666&hide_border=true&card_width=750&hide=astro,typescript,css,javascript&locale=cn)](https://github.com/anuraghazra/github-readme-stats)
