@@ -1,7 +1,7 @@
 ---
 title: NVIDIA 在 GNU/Linux 发行版上工作的技巧
 author: suo yuan
-pubDatetime: 2024-07-19T07:19:25
+pubDatetime: 2024-07-19T01:21:25
 featured: false
 draft: false
 tags:
