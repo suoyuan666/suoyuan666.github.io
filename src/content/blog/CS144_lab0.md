@@ -32,6 +32,10 @@ clang-tidy clang-format pkg-config glibc-doc tcpdump tshark clangd
 
 ## Writing webget
 
+> In this lab, you will simply use the operating system’s pre-existing support for the Transmission Control Protocol. You’ll write a program called “webget” that creates a TCP stream socket, connects to a Web server, and fetches a page—much as you did earlier in this lab. In future labs, you’ll implement the other side of this abstraction, by implementing the Transmission Control Protocol yourself to create a reliable byte-stream out of not-so-reliable datagrams.
+>
+> 在本实验中，您将仅使用操作系统对传输控制协议的现有支持。您将编写一个名为“webget”的程序，该程序创建 TCP stream socket、连接到 Web 服务器并获取页面 - 就像您前面所做的一样。在未来的实验中，您将实现此抽象的另一面，通过自己实现传输控制协议来从不太可靠的数据报中创建可靠的字节流。
+
 ```cpp
 void get_URL( const string& host, const string& path )
 {
@@ -57,6 +61,10 @@ void get_URL( const string& host, const string& path )
 之前 `raw` 最后两个 `\r\n`，我只有一个，每次都是 408 超时，后来再这样加一个换行就没事了，难绷。
 
 ## An in-memory reliable byte stream
+
+> To finish off this week’s lab, you will implement, in memory on a single computer, an object that provides this abstraction. (You may have done something similar in CS 110/111.) Bytes are written on the “input” side and can be read, in the same sequence, from the “output” side. The byte stream is finite: the writer can end the input, and then no more bytes can be written. When the reader has read to the end of the stream, it will reach “EOF” (end of file) and no more bytes can be read.
+>
+> 为了完成本周的实验，您将在一台计算机的内存中实现一个提供此抽象的对象。（您可能在 CS 110/111 中做过类似的事情。）字节在“输入”端写入，并可以按照相同的顺序从“输出”端读取。字节流是有限的：写入器可以结束输入，然后就不能再写入字节了。当读取器读到流的末尾时，它将到达“EOF”（文件末尾），并且不能再读取字节了。
 
 首先在 **byte_stream.hh** 中多定义几个字段和函数，最后 `ByteStream` 类是这样:
 
