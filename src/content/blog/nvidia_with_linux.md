@@ -1,5 +1,5 @@
 ---
-title: NVIDIA 在 GNU/Linux 发行版上工作的技巧
+title: NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧
 author: suo yuan
 pubDatetime: 2024-07-19T01:21:25
 featured: false
@@ -7,7 +7,7 @@ draft: false
 tags:
   - linux
   - intro
-description: "就是如何在 GNU/Linux 发行版中舒服的使用 NVIDIA 驱动"
+description: "就是如何在 GNU/Linux 发行版使用 Wayland 的情况下中舒服的使用 NVIDIA 驱动"
 ---
 
 # NVIDIA 在 GNU/Linux 发行版上工作的技巧
@@ -72,3 +72,7 @@ options nvidia NVreg_PreserveVideoMemoryAllocations=1
 之后执行 `systemctl enable nvidia-resume.service` 并重启即可。
 
 根据 Arch wiki 所述，这个不能和 NVIDIA 早启动一起使用，但实际上我一起用了，感觉没什么问题。
+
+## 总结
+
+用 Xorg 保心安，我当初用 Xorg 的时候还没这么些事。
