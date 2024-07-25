@@ -18,11 +18,12 @@ description: "CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substr
 在 `Reassembler` 类中添加下面这些字段:
 
 ```cpp
-  std::unordered_map<uint64_t, char> buffer_ {};
-  uint64_t used_index {0};
+  std::deque<char> buffer_ {};
+  std::deque<bool> buf_enable_ {false};
+  uint64_t used_index_ {0};
   uint64_t wcount_ {0};
-  bool fetch_last {false};
-  uint64_t max_length {0};
+  bool fetch_last_ {false};
+  uint64_t max_length_ {0};
 ```
 
 对于 `insert()` 和 `bytes_pending()` 的实现:
@@ -30,38 +31,34 @@ description: "CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substr
 ```cpp
 void Reassembler::insert( uint64_t first_index, string data, bool is_last_substring )
 {
-  auto& write = output_.writer();
-  const auto& available_capacity = write.available_capacity();
-  if (available_capacity == 0) {
-    return;
+  const auto limit = std::min( data.size(), used_index_ + output_.writer().available_capacity() - first_index );
+
+  if (buffer_.size() < first_index + limit) {
+    buffer_.resize(first_index + limit);
+    buf_enable_.resize(first_index + limit);
   }
 
-  const auto &dlen = static_cast<int>(data.length());
-  for (auto i = 0; i < dlen; ++i){
-    const auto index = first_index + i;
-    if (buffer_.contains(index)) {
+  for ( uint64_t i = 0; i < limit; ++i ) {
+    if (buf_enable_.at(first_index + i)) {
       continue;
     }
-    if (index < used_index + available_capacity) {
-      buffer_.insert({index, data.at(i)});
-      wcount_ += 1;
-    }
+    buffer_[first_index + i] = data.at(i);
+    buf_enable_[first_index + i] = true;
+    wcount_ += 1;
   }
 
-  if (is_last_substring) {
-    fetch_last = true;
-    max_length = first_index + dlen;
+  if ( is_last_substring ) {
+    fetch_last_ = true;
+    max_length_ = first_index + data.size();
   }
-
-  std::string str {};
-  for (; buffer_.contains(used_index); ++used_index ) {
-    str.push_back(std::move(buffer_.at(used_index)));
+  for (; used_index_ < buf_enable_.size() && buf_enable_.at(used_index_); ++used_index_) {
+    output_.writer().push( std::string { buffer_.at( used_index_ ) } );
     --wcount_;
   }
-  write.push(std::move(str));
-  if (fetch_last && used_index == max_length) {
+  if ( fetch_last_ && used_index_ == max_length_ ) {
     buffer_.clear();
-    write.close();
+    buf_enable_.clear();
+    output_.writer().close();
   }
 }
 
@@ -71,26 +68,26 @@ uint64_t Reassembler::bytes_pending() const
 }
 ```
 
-不过这样得不到太高的速度，我等下次尝试优化一下吧（逃
+~~不过这样得不到太高的速度，我等下次尝试优化一下吧（逃~~ 我就是 C++ 菜狗，优化也优化不了什么，换了个数据结构，一开始用 `std::unordered_map<uint64_t, char>`，查找很方便，但是插入擦除貌似就不是很行了，我选择用了 `std::deque<char>` 和 `std::deque<bool>` 来代替，需要一个 bool 类型的 `std::deque<>` 是因为我为了让插入字符的位置就是该字符实际的索引位置，直接 `resize` 放大 buffer 的大小，我想通过 `std::deque<bool> buf_enable_` 标示一下哪个位是真实有效的，哪个是还没有值的。
 
 ```bash
 $ cmake --build build -j`nproc` --target check1
 Test project /home/zuos/codPjt/Cpp/minnow/build
 Connected to MAKE jobserver
       Start  1: compile with bug-checkers
- 1/17 Test  #1: compile with bug-checkers ........   Passed    2.79 sec
+ 1/17 Test  #1: compile with bug-checkers ........   Passed    0.17 sec
       Start  3: byte_stream_basics
  2/17 Test  #3: byte_stream_basics ...............   Passed    0.01 sec
       Start  4: byte_stream_capacity
  3/17 Test  #4: byte_stream_capacity .............   Passed    0.01 sec
       Start  5: byte_stream_one_write
- 4/17 Test  #5: byte_stream_one_write ............   Passed    0.02 sec
+ 4/17 Test  #5: byte_stream_one_write ............   Passed    0.01 sec
       Start  6: byte_stream_two_writes
  5/17 Test  #6: byte_stream_two_writes ...........   Passed    0.01 sec
       Start  7: byte_stream_many_writes
  6/17 Test  #7: byte_stream_many_writes ..........   Passed    0.04 sec
       Start  8: byte_stream_stress_test
- 7/17 Test  #8: byte_stream_stress_test ..........   Passed    0.26 sec
+ 7/17 Test  #8: byte_stream_stress_test ..........   Passed    0.25 sec
       Start  9: reassembler_single
  8/17 Test  #9: reassembler_single ...............   Passed    0.01 sec
       Start 10: reassembler_cap
@@ -104,18 +101,18 @@ Connected to MAKE jobserver
       Start 14: reassembler_overlapping
 13/17 Test #14: reassembler_overlapping ..........   Passed    0.01 sec
       Start 15: reassembler_win
-14/17 Test #15: reassembler_win ..................   Passed    6.99 sec
+14/17 Test #15: reassembler_win ..................   Passed    5.40 sec
       Start 37: compile with optimization
-15/17 Test #37: compile with optimization ........   Passed    1.80 sec
+15/17 Test #37: compile with optimization ........   Passed    0.11 sec
       Start 38: byte_stream_speed_test
-             ByteStream throughput: 0.66 Gbit/s
-16/17 Test #38: byte_stream_speed_test ...........   Passed    0.18 sec
+             ByteStream throughput: 0.59 Gbit/s
+16/17 Test #38: byte_stream_speed_test ...........   Passed    0.19 sec
       Start 39: reassembler_speed_test
-             Reassembler throughput: 0.12 Gbit/s
-17/17 Test #39: reassembler_speed_test ...........   Passed    1.19 sec
+             Reassembler throughput: 0.30 Gbit/s
+17/17 Test #39: reassembler_speed_test ...........   Passed    0.50 sec
 
 100% tests passed, 0 tests failed out of 17
 
-Total Test time (real) =  13.40 sec
+Total Test time (real) =   6.78 sec
 Built target check1
 ```
