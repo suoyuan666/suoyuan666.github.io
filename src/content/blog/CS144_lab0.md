@@ -39,17 +39,16 @@ clang-tidy clang-format pkg-config glibc-doc tcpdump tshark clangd
 ```cpp
 void get_URL( const string& host, const string& path )
 {
-  string raw =  "GET " + path + " HTTP/1.1\r\n" +
-                "Host: " + host + "\r\n" +
-                "Connection: close\r\n\r\n";
-  Address addr{host, "http"};
+  const string& raw = "GET " + path + " HTTP/1.1\r\n" +
+                      "Host: " + host + "\r\n" +
+                      "Connection: close\r\n\r\n";
   TCPSocket tcosocket{};
-  tcosocket.connect(addr);
+  tcosocket.connect({host, "http"});
   if (tcosocket.write(raw) != raw.length()) {
     cerr << "write error\n";
   }
   while (!tcosocket.eof()) {
-    string rs{""};
+    string rs;
     tcosocket.read(rs);
     cout << rs;
   }
@@ -75,8 +74,8 @@ public:
   explicit ByteStream( uint64_t capacity );
   ByteStream& operator=(const ByteStream& val);
   ByteStream(ByteStream& val);
-  ByteStream& operator=(ByteStream&& val);
-  ByteStream(ByteStream&& val);
+  ByteStream& operator=(ByteStream&& val) noexcept ;
+  ByteStream(ByteStream&& val) noexcept ;
 
   // Helper functions (provided) to access the ByteStream's Reader and Writer interfaces
   Reader& reader();
@@ -92,7 +91,7 @@ protected:
   uint64_t capacity_;
   uint64_t wcount_ {0};
   uint64_t rcount_ {0};
-  std::deque<char> buffer_ {};
+  std::deque<char> buffer_;
   bool closeed_ {false};
   bool error_ {};
 };
@@ -129,20 +128,20 @@ ByteStream& ByteStream::operator=(const ByteStream& val) {
   return *this;
 }
 
-ByteStream::ByteStream(ByteStream&& val )
-  : capacity_( std::move(val.capacity_) )
-  , wcount_( std::move(val.wcount_) )
-  , rcount_( std::move(val.rcount_) )
+ByteStream::ByteStream(ByteStream&& val ) noexcept
+  : capacity_( val.capacity_ )
+  , wcount_( val.wcount_ )
+  , rcount_( val.rcount_ )
   , buffer_(std::move(val.buffer_))
-  , closeed_( std::move(val.closeed_) )
+  , closeed_( val.closeed_ )
 {}
 
-ByteStream& ByteStream::operator=(ByteStream&& val) {
-  this->capacity_ = std::move(val.capacity_);
+ByteStream& ByteStream::operator=(ByteStream&& val) noexcept {
+  this->capacity_ =val.capacity_;
   this->buffer_ = std::move(val.buffer_);
-  this->wcount_ = std::move(val.wcount_);
-  this->rcount_ = std::move(val.rcount_);
-  this->closeed_ = std::move(val.closeed_);
+  this->wcount_ = val.wcount_;
+  this->rcount_ = val.rcount_;
+  this->closeed_ = val.closeed_;
   return *this;
 }
 
@@ -160,10 +159,11 @@ void Writer::push( string data )
   if (data.length() > available_capacity()) {
     data.erase(available_capacity(), data.size() - available_capacity());
   }
-  for (auto c : data) {
+
+  for (const auto& c : data) {
     buffer_.emplace_back(c);
   }
-  wcount_ += data.length();
+  wcount_ += data.size();
 }
 
 void Writer::close()
@@ -193,7 +193,7 @@ uint64_t Reader::bytes_popped() const
 
 string_view Reader::peek() const
 {
-  return {&buffer_.front(), 1};
+  return {&buffer_.front(), sizeof(char)};
 }
 
 void Reader::pop( uint64_t len )
@@ -213,15 +213,15 @@ uint64_t Reader::bytes_buffered() const
 ## 测评
 
 ```bash
-$ cmake --build build --target check0
+cmake --build build -j`nproc` --target check0
 Test project /home/zuos/codPjt/Cpp/minnow/build
 Connected to MAKE jobserver
       Start  1: compile with bug-checkers
- 1/10 Test  #1: compile with bug-checkers ........   Passed    0.93 sec
+ 1/10 Test  #1: compile with bug-checkers ........   Passed    0.19 sec
       Start  2: t_webget
- 2/10 Test  #2: t_webget .........................   Passed    2.25 sec
+ 2/10 Test  #2: t_webget .........................   Passed    1.07 sec
       Start  3: byte_stream_basics
- 3/10 Test  #3: byte_stream_basics ...............   Passed    0.01 sec
+ 3/10 Test  #3: byte_stream_basics ...............   Passed    0.02 sec
       Start  4: byte_stream_capacity
  4/10 Test  #4: byte_stream_capacity .............   Passed    0.01 sec
       Start  5: byte_stream_one_write
@@ -231,15 +231,15 @@ Connected to MAKE jobserver
       Start  7: byte_stream_many_writes
  7/10 Test  #7: byte_stream_many_writes ..........   Passed    0.04 sec
       Start  8: byte_stream_stress_test
- 8/10 Test  #8: byte_stream_stress_test ..........   Passed    0.26 sec
+ 8/10 Test  #8: byte_stream_stress_test ..........   Passed    0.20 sec
       Start 37: compile with optimization
- 9/10 Test #37: compile with optimization ........   Passed    0.74 sec
+ 9/10 Test #37: compile with optimization ........   Passed    0.10 sec
       Start 38: byte_stream_speed_test
-             ByteStream throughput: 0.61 Gbit/s
-10/10 Test #38: byte_stream_speed_test ...........   Passed    0.19 sec
+             ByteStream throughput: 0.69 Gbit/s
+10/10 Test #38: byte_stream_speed_test ...........   Passed    0.16 sec
 
 100% tests passed, 0 tests failed out of 10
 
-Total Test time (real) =   4.44 sec
+Total Test time (real) =   1.82 sec
 Built target check0
 ```

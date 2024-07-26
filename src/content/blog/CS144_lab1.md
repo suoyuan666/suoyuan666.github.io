@@ -116,3 +116,52 @@ Connected to MAKE jobserver
 Total Test time (real) =   6.78 sec
 Built target check1
 ```
+
+后来我换成 clang++ 编译，速度还有所提升
+
+```bash
+$ cmake --build build -j`nproc` --target check1
+Test project /home/zuos/codPjt/Cpp/minnow/build
+Connected to MAKE jobserver
+      Start  1: compile with bug-checkers
+ 1/17 Test  #1: compile with bug-checkers ........   Passed    0.19 sec
+      Start  3: byte_stream_basics
+ 2/17 Test  #3: byte_stream_basics ...............   Passed    0.01 sec
+      Start  4: byte_stream_capacity
+ 3/17 Test  #4: byte_stream_capacity .............   Passed    0.02 sec
+      Start  5: byte_stream_one_write
+ 4/17 Test  #5: byte_stream_one_write ............   Passed    0.02 sec
+      Start  6: byte_stream_two_writes
+ 5/17 Test  #6: byte_stream_two_writes ...........   Passed    0.01 sec
+      Start  7: byte_stream_many_writes
+ 6/17 Test  #7: byte_stream_many_writes ..........   Passed    0.04 sec
+      Start  8: byte_stream_stress_test
+ 7/17 Test  #8: byte_stream_stress_test ..........   Passed    0.20 sec
+      Start  9: reassembler_single
+ 8/17 Test  #9: reassembler_single ...............   Passed    0.01 sec
+      Start 10: reassembler_cap
+ 9/17 Test #10: reassembler_cap ..................   Passed    0.01 sec
+      Start 11: reassembler_seq
+10/17 Test #11: reassembler_seq ..................   Passed    0.01 sec
+      Start 12: reassembler_dup
+11/17 Test #12: reassembler_dup ..................   Passed    0.02 sec
+      Start 13: reassembler_holes
+12/17 Test #13: reassembler_holes ................   Passed    0.01 sec
+      Start 14: reassembler_overlapping
+13/17 Test #14: reassembler_overlapping ..........   Passed    0.01 sec
+      Start 15: reassembler_win
+14/17 Test #15: reassembler_win ..................   Passed    4.12 sec
+      Start 37: compile with optimization
+15/17 Test #37: compile with optimization ........   Passed    0.10 sec
+      Start 38: byte_stream_speed_test
+             ByteStream throughput: 0.72 Gbit/s
+16/17 Test #38: byte_stream_speed_test ...........   Passed    0.16 sec
+      Start 39: reassembler_speed_test
+             Reassembler throughput: 0.35 Gbit/s
+17/17 Test #39: reassembler_speed_test ...........   Passed    0.43 sec
+
+100% tests passed, 0 tests failed out of 17
+
+Total Test time (real) =   5.36 sec
+Built target check1
+```
