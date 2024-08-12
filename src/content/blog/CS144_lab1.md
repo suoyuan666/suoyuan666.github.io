@@ -68,7 +68,9 @@ uint64_t Reassembler::bytes_pending() const
 }
 ```
 
-~~不过这样得不到太高的速度，我等下次尝试优化一下吧（逃~~ 我就是 C++ 菜狗，优化也优化不了什么，换了个数据结构，一开始用 `std::unordered_map<uint64_t, char>`，查找很方便，但是插入擦除貌似就不是很行了，我选择用了 `std::deque<char>` 和 `std::deque<bool>` 来代替，需要一个 bool 类型的 `std::deque<>` 是因为我为了让插入字符的位置就是该字符实际的索引位置，直接 `resize` 放大 buffer 的大小，我想通过 `std::deque<bool> buf_enable_` 标示一下哪个位是真实有效的，哪个是还没有值的。
+~~不过这样得不到太高的速度，我等下次尝试优化一下吧（逃~~
+
+我就是 C++ 菜狗，优化也优化不了什么，换了个数据结构，一开始用 `std::unordered_map<uint64_t, char>`，查找很方便，但是插入擦除貌似就不是很行了，我选择用了 `std::deque<char>` 和 `std::deque<bool>` 来代替，需要一个 bool 类型的 `std::deque<>` 是因为我为了让插入字符的位置就是该字符实际的索引位置，直接 `resize` 放大 buffer 的大小，我想通过 `std::deque<bool> buf_enable_` 标示一下哪个位是真实有效的，哪个是还没有值的。
 
 ```bash
 $ cmake --build build -j`nproc` --target check1

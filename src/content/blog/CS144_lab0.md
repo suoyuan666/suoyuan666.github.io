@@ -18,11 +18,10 @@ description: "CS144 课程 Lab Assignment 中的  Checkpoint 0: networking warmu
 也比较简单，装完后执行以下下述命令装一些必要的软件即可:
 
 ```bash
-$ sudo apt update && sudo apt install git cmake gdb build-essential clang \
-clang-tidy clang-format pkg-config glibc-doc tcpdump tshark clangd
+$ sudo apt update && sudo apt install git cmake gdb build-essential clang clang-tidy clang-format pkg-config glibc-doc tcpdump tshark clangd
 ```
 
-我这里去掉了 `gcc-doc`，因为当初安装提示没有这个软件包，而且我也没认识到特地本机装 `GCC` 的文档的意义何在，我还加了 `clangd`，因为我习惯用 `clangd` 了。
+我这里去掉了 `gcc-doc`，因为我虚拟机装 Debian 的时候提示没有这个软件包，而且我也没认识到特地本机装 `GCC` 的文档的意义何在，我还加了 `clangd`，因为我习惯用 `clangd` 了。
 
 ## Networking by hand
 

@@ -3,10 +3,16 @@ layout: ../layouts/AboutLayout.astro
 title: "About"
 ---
 
-- 普通本科 大二在读 在一个算是科班的地方学习的野路子
-- INTJ-T
+- 普通本科 大二在读 在一个算是科班的地方学习的野路子，学校菜菜，我也菜菜 🤐
 
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=suoyuan666&hide_border=true&card_width=750&hide=astro,typescript,css,javascript&locale=cn)](https://github.com/anuraghazra/github-readme-stats)
+
+- 开发环境: Windows 11 & Arch Linux && Visual Studio Code
+  - 更习惯使用 Arch Linux，除非环境不太支持 GNU/Linux + Wayland
+- 编程语言
+  - C/C++: 三年 C/C++，五年 Segmentation fault 😭
+  - Python: ~~当我没写这行~~
+  - ~~Lua/Nix,...~~
 
 ## Task
 
