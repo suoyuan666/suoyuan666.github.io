@@ -4,7 +4,8 @@ title: "About"
 ---
 
 - 普通本科 大二在读 在一个算是科班的地方学习的野路子，学校菜菜，我也菜菜 🤐
-- 开发环境: Windows 11 & Arch Linux && Visual Studio Code
+- 开发环境
+  - Windows 11 & Arch Linux && Visual Studio Code
   - 更习惯使用 Arch Linux，除非环境不太支持 GNU/Linux + Wayland
 - 编程语言
   - C/C++: 三年 C/C++，五年 Segmentation fault 😭
