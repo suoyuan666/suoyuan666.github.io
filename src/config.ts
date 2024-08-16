@@ -1,14 +1,16 @@
 import type { Site, SocialObjects } from "./types";
 
 export const SITE: Site = {
-  website: "https://s5nblog.site", // replace this with your deployed domain
+  website: "https://s5nblog.site",
   author: "suo yuan",
   desc: "This's my blog. I'm learning computer science & internet of things.",
   title: "Suoyuan's Blog",
   ogImage: "astropaper-og.jpg",
   lightAndDarkMode: true,
   postPerPage: 6,
-  scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
+  scheduledPostMargin: 15 * 60 * 1000,
+  profile: "https://s5nblog.site/about/",
+  postPerIndex: 0,
 };
 
 export const LOCALE = {
@@ -35,5 +37,5 @@ export const SOCIALS: SocialObjects = [
     href: "mailto://BFoOcGEedpEfiKV@proton.me",
     linkTitle: ` ${SITE.title} on Proton Mail`,
     active: true,
-  }
+  },
 ];
