@@ -28,5 +28,4 @@ title: "About"
 
 ## Project
 
-- [ReleaseButler](https://github.com/suoyuan666/ReleaseButler) 是一款针对 GNU/Linux 发行版设计的软件安装工具，通过自动检测底层 GNU/Linux 发行版、从指定的项目主页获取并安装相应软件包，简化了安装过程。同时它支持更新操作，旨在适应各种安装场景，让你的软件保持最新状态。由于软件包信息都是记录在一个 JSON 文件中，所以允许在不同的机器中迁移，简化软件安装的过程。
-  - 该工具目前处于开发阶段，目前只支持 GitHub 项目的解析。
+Null
