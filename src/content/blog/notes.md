@@ -2,8 +2,7 @@
 title: 随笔记
 author: suo yuan
 pubDatetime: 2024-04-13T21:19:25
-featured: false
-pinned: true
+featured: true
 draft: false
 tags:
   - others
