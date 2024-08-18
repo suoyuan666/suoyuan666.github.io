@@ -44,9 +44,9 @@ musl libc 支持的 locale 还不是很多：
   [11]  en_GB.UTF-8
   [12]  it_IT.UTF-8
   [13]  pt_PT.UTF-8
-  [14]  en_US.UTF-8
+  [14]  en_US.UTF-8 *
   [15]  de_CH.UTF-8
-  [16]  es_ES.UTF-8 *
+  [16]  es_ES.UTF-8
   [17]  pt_BR.UTF-8
   [18]  ru_RU.UTF-8
 ```
@@ -96,6 +96,45 @@ www-client/firefox compiler-clang-firefox
 ```
 
 这样就可以使用指定的编译环境编译了。
+
+对于 [dev-libs/darts](https://packages.gentoo.org/packages/dev-libs/darts) 来说，由于 **src/lexicon.h** 中的 `std::random_shuffle` 在 `std` 中已经不存在，[cppreference](https://en.cppreference.com/w/cpp/algorithm/random_shuffle) 中也可以看到，该函数 从 C++ 17 开始就废除了。所以我给它写了个 patch。
+
+在 **/etc/portage/** 目录下新建一个 **patches** 的文件夹，然后在 **patches** 里新建 **dev-libs/darts** 这两级文件夹，之后把补丁放进去，安装的时候会自动 patch。
+
+```patch
+diff --git a/src/lexicon.h b/src/lexicon.h
+index a2935f4..2a30d1b 100644
+--- a/src/lexicon.h
++++ b/src/lexicon.h
+@@ -1,3 +1,4 @@
++// clang-format off
+ #ifndef DARTS_LEXICON_H_
+ #define DARTS_LEXICON_H_
+
+@@ -7,6 +8,7 @@
+ #include <ctime>
+ #include <iostream>
+ #include <limits>
++#include <random>
+ #include <vector>
+
+ #include "./mersenne-twister.h"
+@@ -58,9 +60,9 @@ class Lexicon {
+   }
+   // randomize() shuffles keys. Values are not affected.
+   void randomize() {
+-    Darts::MersenneTwister mt(
+-        static_cast<Darts::MersenneTwister::int_type>(std::time(NULL)));
+-    std::random_shuffle(keys_.begin(), keys_.end(), mt);
++    std::random_device rd;
++    std::mt19937 g(rd());
++    std::shuffle(keys_.begin(), keys_.end(), g);
+   }
+
+   void split();
+```
+
+我开头有 `// clang-format off` 的原因是我的 neovim 会保存时候自动调用 clang-format 格式化。
 
 ## 后记
 
