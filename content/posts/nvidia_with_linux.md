@@ -3,11 +3,17 @@ title: NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧
 author: suo yuan
 date: 2024-07-19T01:21:25
 draft: false
+categories:
+  - Linux_杂谈
 tags:
   - linux
   - intro
-description: "就是如何在 GNU/Linux 发行版使用 Wayland 的情况下中舒服的使用 NVIDIA 驱动"
+description: "如何在 GNU/Linux 发行版使用 Wayland 的情况下中舒服的使用 NVIDIA 驱动"
 ---
+
+<!--more-->
+如何在 GNU/Linux 发行版使用 Wayland 的情况下中舒服的使用 NVIDIA 驱动
+<!--more-->
 
 # NVIDIA 在 GNU/Linux 发行版上工作的技巧
 

@@ -3,11 +3,18 @@ title: "Xv6 book: Interrupts and device drivers"
 author: suo yuan
 date: 2023-04-04T03:42:51Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - Xv6_RISC-V
 description:
-  "Xv6 book的第五章节"
+  "Xv6 book 的第五章节"
 ---
+
+<!--more-->
+Xv6 book 的第五章节
+<!--more-->
+
 # Interrupts and device drivers
 
 驱动是操作系统中管理特定设备的代码，它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能正在等待来自设备的I/O的进程交互。驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档信息很少。

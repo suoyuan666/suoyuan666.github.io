@@ -3,12 +3,18 @@ title: "musl libc阅读记录: printf.c"
 author: suo yuan
 date: 2023-04-22T03:42:51Z
 draft: false
+categories:
+  - 源码阅读
 tags:
   - musl libc
-  - code readding
 description:
-  "不自量力阅读musl libc的记录"
+  "不自量力阅读 musl libc的记录"
 ---
+
+<!--more-->
+不自量力阅读 musl libc的记录
+<!--more-->
+
 # printf
 
 ## printf function

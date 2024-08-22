@@ -3,11 +3,18 @@ title: "Xv6 book: File system"
 author: suo yuan
 date: 2023-04-22T03:42:51Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - Xv6_RISC-V
 description:
   "Xv6 book的第八章节"
 ---
+
+<!--more-->
+Xv6 book 的第八章节
+<!--more-->
+
 # File system
 
 文件系统的目的是组织和存储数据。文件系统通常支持在用户和应用程序之间共享数据，以及持久性，以便在重新启动后数据仍然可用。

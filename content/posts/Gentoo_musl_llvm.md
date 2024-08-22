@@ -3,11 +3,18 @@ title: "在 Gentoo Linux 上尝试 musl libc + llvm 环境"
 author: suo yuan
 date: 2024-08-05T09:34:33Z
 draft: false
+categories:
+  - Linux_杂谈
 tags:
   - gentoo-linux
   - linux
+  - musl libc
 description: "尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统"
 ---
+
+<!--more-->
+尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统
+<!--more-->
 
 # 在 Gentooo Linux 上尝试 musl libc + llvm 环境
 

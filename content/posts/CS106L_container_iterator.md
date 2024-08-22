@@ -3,11 +3,18 @@ title: "CS106L: Containers & Iterators"
 author: suo yuan
 date: 2024-02-02T03:42:51Z
 draft: false
+categories:
+  - Cpp
+  - 刷课笔记
 tags:
   - CS106L notes
   - Cpp notes
-description: "CS106L中关于 container 和 iterators 的部分"
+description: "CS106L 中关于 container 和 iterators 的部分"
 ---
+
+<!--more-->
+CS106L 中关于 container 和 iterators 的部分
+<!--more-->
 
 # Containers
 

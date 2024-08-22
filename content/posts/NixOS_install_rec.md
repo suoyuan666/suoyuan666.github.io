@@ -3,12 +3,18 @@ title: 我的 NixOS 安装记录
 author: suo yuan
 date: 2024-04-06T12:59:51
 draft: false
+categories:
+  - Linux_杂谈
 tags:
   - NixOS
   - Linux
   - intro
 description: "我这次安装 NixOS 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用 WM 用的是 Hyprland"
 ---
+
+<!--more-->
+我这次安装 NixOS 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用 WM 用的是 Hyprland
+<!--more-->
 
 # 我的 NixOS 安装记录
 

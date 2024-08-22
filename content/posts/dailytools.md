@@ -3,10 +3,18 @@ title: "常用软件记录"
 author: suo yuan
 date: 2024-03-01T03:42:51Z
 draft: false
+categories:
+  - 杂谈
 tags:
   - misc
+  - linux
+  - intro
 description: "自己常用软件的记录及点评"
 ---
+
+<!--more-->
+自己常用软件的记录及点评
+<!--more-->
 
 # 常用软件记录
 

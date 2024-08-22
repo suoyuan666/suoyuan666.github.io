@@ -3,11 +3,18 @@ title: "Xv6 book: Operating system interfaces"
 author: suo yuan
 date: 2023-03-04T03:42:51Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - Xv6_RISC-V
 description:
-  "Xv6 book的第一章节"
+  "Xv6 book 的第一章节"
 ---
+
+<!--more-->
+Xv6 book 的第一章节
+<!--more-->
+
 # Operating system interfaces
 
 每个运行的程序叫做进程，它们在内存都包含指令、数据和栈。指令实现了程序的运算，数据是运算所依赖的变量，栈体现了程序的过程调用。一个计算机通常有很多进程，但只有一个内核。

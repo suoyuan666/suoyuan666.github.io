@@ -2,12 +2,15 @@
 title: 随笔记
 author: suo yuan
 date: 2024-04-13T21:19:25
-featured: true
 draft: false
 tags:
   - others
 description: "这是我日常生活的部分吐槽，由于内容分散而且不足以聚合成一个文章，故而在这里写"
 ---
+
+<!--more-->
+这是我日常生活的部分吐槽，由于内容分散而且不足以聚合成一个文章，故而在这里写
+<!--more-->
 
 ## 对双系统蓝牙的使用的吐槽
 
@@ -105,3 +108,7 @@ __overflow (FILE *f, int ch)
 ```
 
 虽然最后了解了一下貌似是为了检查这个 vtable 合不合理用的，但还是感慨，第一次看到这样的宏展开。
+
+## 从 AstroPaper 换到了 hugo
+
+由于每次 `npm install` 后都会输出一些依赖组件不被支持的 log，我就换到了 Hugo 生成我的博客。

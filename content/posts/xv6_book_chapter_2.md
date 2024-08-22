@@ -3,11 +3,18 @@ title: "Xv6 book: Operating system organization"
 author: suo yuan
 date: 2023-03-06T03:42:51Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - Xv6_RISC-V
 description:
-  "Xv6 book的第二章节"
+  "Xv6 book 的第二章节"
 ---
+
+<!--more-->
+Xv6 book 的第二章节
+<!--more-->
+
 # Operating system organization
 操作系统的关键在于能够同时支持多个活动、在进程之间共享计算机资源以及隔离进程，也就是多路复用、隔离和交互。
 

@@ -6,9 +6,15 @@ draft: false
 tags:
   - Web Security
   - PortSwigger Web Academy
+  - JWT
 description:
-  "PortSwigger Web Academy中关于JWT的部分"
+  "PortSwigger Web Academy 中关于 JWT 的部分"
 ---
+
+<!--more-->
+PortSwigger Web Academy 中关于 JWT 的部分
+<!--more-->
+
 # JWT attacks
 
 ## JWT

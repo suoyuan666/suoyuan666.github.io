@@ -3,11 +3,18 @@ title: "Xv6 book: scheduling"
 author: suo yuan
 date: 2023-04-12T03:42:51Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - Xv6_RISC-V
 description:
-  "Xv6 book的第七章节"
+  "Xv6 book的 第七章节"
 ---
+
+<!--more-->
+Xv6 book 的第七章节
+<!--more-->
+
 # scheduling
 
 任何操作系统都有可能运行比计算机拥有的CPU更多的进程，因此需要制定计划在这些进程之间进行CPU的时间共享。理想情况下，这种共享应对用户进程透明。一种常见的方法是通过将进程复用到硬件CPU上，为每个进程提供它拥有自己虚拟CPU的错觉。本章将解释xv6是如何实现这种多路复用的。

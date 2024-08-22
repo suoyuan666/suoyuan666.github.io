@@ -3,11 +3,18 @@ title: "Xv6 book: Traps and system calls"
 author: suo yuan
 date: 2023-03-26T03:42:51Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - Xv6_RISC-V
 description:
-  "Xv6 book的第四章节"
+  "Xv6 book 的第四章节"
 ---
+
+<!--more-->
+Xv6 book 的第四章节
+<!--more-->
+
 # Traps and system calls
 
 有三种情况可以让CPU放下普通的执行指令，强制将控制权转给处理该情况的特殊代码。一种情况是系统调用，用户程序执行`ecall`指令要求内核做一些事；另一种是指令执行了非法操作，比如除以0或者使用无效的虚拟地址。第三种情况是设备在发出需要的信号时的中断，例如硬盘完成了读写操作。

@@ -3,11 +3,17 @@ title: 为什么你应该(不)使用 GNU/Linux 作为日用操作系统
 author: suo yuan
 date: 2024-04-13T11:58:25
 draft: false
+categories:
+  - Linux_杂谈
 tags:
   - Linux
   - intro
-description: "一个简单的评价文章，关于是否应该选择使用GNU/Linux作为你的个人日用桌面操作系统"
+description: "一个简单的评价文章，关于是否应该选择使用 GNU/Linux 作为你的个人日用桌面操作系统"
 ---
+
+<!--more-->
+一个简单的评价文章，关于是否应该选择使用 GNU/Linux 作为你的个人日用桌面操作系统
+<!--more-->
 
 # 为什么你应该(不)使用 GNU/Linux 作为日用操作系统
 

@@ -8,6 +8,10 @@ tags:
 description: "尝试阅读 Linux kernel 文档中的代码规范"
 ---
 
+<!--more-->
+尝试阅读 Linux kernel 文档中的代码规范
+<!--more-->
+
 # Linux kernel 代码规范
 
 ## 背景

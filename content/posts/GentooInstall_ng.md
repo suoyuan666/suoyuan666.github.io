@@ -3,12 +3,18 @@ title: 我写的 Gentoo Linux 安装指南
 author: suo yuan
 date: 2024-03-28T20:05:47
 draft: false
+categories:
+  - Linux_杂谈
 tags:
   - Gentoo Linux
   - Linux
   - intro
 description: "我这次安装 Gentoo Linux 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用的 init 是 openrc，WM 用的是 Hyprland"
 ---
+
+<!--more-->
+我这次安装 Gentoo Linux 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用的 init 是 openrc，WM 用的是 Hyprland
+<!--more-->
 
 # 我写的 Gentoo Linux 安装指南
 

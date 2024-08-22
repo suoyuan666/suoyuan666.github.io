@@ -3,11 +3,17 @@ title: "面向 beginner: GNU/Linux 发行版浅评与介绍"
 author: suo yuan
 date: 2023-12-01T03:42:51Z
 draft: false
+categories:
+  - Linux_杂谈
 tags:
   - Linux
   - intro
 description: "介绍了大部分主流发行版"
 ---
+
+<!--more-->
+介绍了大部分主流发行版
+<!--more-->
 
 # 面向 beginner: GNU/Linux 发行版浅评与介绍
 

@@ -3,10 +3,16 @@ title: "网络应用协议 & 网络分层模型 & 设计原则"
 author: suo yuan
 date: 2024-07-22T00:31:31Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - CS144_notes
 description: "CS114 课程的课程笔记"
 ---
+
+<!--more-->
+CS114 课程的课程笔记
+<!--more-->
 
 # 网络应用协议 & 网络分层模型 & 设计原则
 

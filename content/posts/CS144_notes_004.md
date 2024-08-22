@@ -3,10 +3,16 @@ title: "TCP 的错误检测 & 流量控制 & 状态转换"
 author: suo yuan
 date: 2024-08-12T22:28:09Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - CS144_notes
 description: "CS114 课程的课程笔记"
 ---
+
+<!--more-->
+CS114 课程的课程笔记
+<!--more-->
 
 # TCP 的错误检测 & 流量控制 & 状态转换
 

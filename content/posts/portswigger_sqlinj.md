@@ -6,8 +6,13 @@ draft: false
 tags:
   - Web Security
   - PortSwigger Web Academy
-description: "PortSwigger Web Academy中关于SQL注入的部分"
+  - SQL
+description: "PortSwigger Web Academy 中关于 SQL 注入的部分"
 ---
+
+<!--more-->
+PortSwigger Web Academy 中关于 Client-side prototype pollution 的部分
+<!--more-->
 
 # SQL Injection
 

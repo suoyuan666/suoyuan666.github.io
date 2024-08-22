@@ -3,11 +3,18 @@ title: "Xv6 book: Operating system organization"
 author: suo yuan
 date: 2023-03-18T03:42:51Z
 draft: false
+categories:
+  - 刷课笔记
 tags:
   - Xv6_RISC-V
 description:
-  "Xv6 book的第三章节"
+  "Xv6 book 的第三章节"
 ---
+
+<!--more-->
+Xv6 book 的第三章节
+<!--more-->
+
 # Page tables
 
 操作系统通过页表给每个进程自己的私有地址空间和内存。Xv6依此可以隔离不同的进程地址空间并在单个物理内存上重复使用。页表这种设计因在一定程度上允许操作系统可以整活而流行。Xv6中就利用页表整了一些活：

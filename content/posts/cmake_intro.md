@@ -3,11 +3,18 @@ title: "C++ 项目编写初步入门"
 author: suo yuan
 date: 2024-05-12T14:23:43.439Z
 draft: false
+categories:
+  - Cpp
 tags:
   - Cpp notes
   - intro
+  - CMake
 description: "我第一次尝试使用 CMake 等工具管理自己的 C++ 项目的记录"
 ---
+
+<!--more-->
+我第一次尝试使用 CMake 等工具管理自己的 C++ 项目的记录
+<!--more-->
 
 # C++ 项目编写初步入门
 
