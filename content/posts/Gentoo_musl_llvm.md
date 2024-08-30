@@ -2,6 +2,7 @@
 title: "在 Gentoo Linux 上尝试 musl libc + llvm 环境"
 author: suo yuan
 date: 2024-08-05T09:34:33Z
+lastmod: 2024-08-29T22:58:02Z
 draft: false
 categories:
   - Linux_杂谈
@@ -141,6 +142,33 @@ index a2935f4..2a30d1b 100644
 ```
 
 我开头有 `// clang-format off` 的原因是我的 neovim 会保存时候自动调用 clang-format 格式化。
+
+如果遇到了 Hyprland 0.42 编译失败的情况，报错是 `copy_if` 等函数没有找到，可以使用我找到的这个 patch
+
+```patch
+From eb42adc4c090918ad6be9fcb24066da8cdfd9bd0 Mon Sep 17 00:00:00 2001
+From: Serenity Braesch <Serenity.Braesch@proton.me>
+Date: Sat, 24 Aug 2024 01:53:08 -0600
+Subject: [PATCH] Fix missing include needed by clang
+
+---
+ src/managers/XCursorManager.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/managers/XCursorManager.cpp b/src/managers/XCursorManager.cpp
+index 7fc21a28..1e7ca535 100644
+--- a/src/managers/XCursorManager.cpp
++++ b/src/managers/XCursorManager.cpp
+@@ -1,3 +1,4 @@
++#include <algorithm>
+ #include <cstring>
+ #include <dirent.h>
+ #include <filesystem>
+-- 
+2.44.2
+```
+
+这已经被 [合并到 Hyprland 主线](https://github.com/hyprwm/Hyprland/pull/7490) 里了，等下一个版本应该就没这个事情了。
 
 ## 后记
 
