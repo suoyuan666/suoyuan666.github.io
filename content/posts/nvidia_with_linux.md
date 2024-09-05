@@ -2,6 +2,7 @@
 title: NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧
 author: suo yuan
 date: 2024-07-19T01:21:25
+lastmod: 2024-09-05T05:06:25Z
 draft: false
 categories:
   - Linux_杂谈
@@ -51,6 +52,10 @@ MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 
 之后执行 `mkinitcpio -P`，重新生成一遍 initramfs。
 
+如果你是 Gentoo Linux，那么生成 initramfs 的方法可能不是这个，如果和我一样都是使用的 `dracut` 的话，可以参考 [Gentoo wiki 中的 nvidia-drivers 部分](https://wiki.gentoo.org/wiki/NVIDIA/nvidia-drivers#Dracut_configuration_.28optional.29)
+
+之后直接 `sudo dracut /path/to/initramfs`
+
 ## 正常休眠
 
 我发现休眠也不好使了，这让我很难受。我的问题是这样：休眠后启动需要花费很长时间，这段时间就是黑屏，终于不是黑屏了之后还不完全显示锁屏界面，我凭借着记忆解锁后，只有那些已打开的窗口能正常显示，连锁屏壁纸都不正常显示，`Ctrl + Alt + T` 倒还能正常启动终端，我用 `journalctl` 查看了下系统日志，去 [Arch Wiki 上](https://wiki.archlinux.org/title/NVIDIA/Troubleshooting#Black_screen_returning_from_suspend)找到了我的问题，就是日志显示:
@@ -73,6 +78,8 @@ archlinux kernel: NVRM: Xid (PCI:0000:08:00): 13, pid='<unknown>', name=<unknown
 ```txt
 options nvidia NVreg_PreserveVideoMemoryAllocations=1
 ```
+
+`NVreg_PreserveVideoMemoryAllocations` 也可以作为内核启动时的参数，可以直接写在 **/etc/default/grub** 中。
 
 之后执行 `systemctl enable nvidia-resume.service` 并重启即可。
 
