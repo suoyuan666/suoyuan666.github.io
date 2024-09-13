@@ -2,7 +2,7 @@
 title: NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧
 author: suo yuan
 date: 2024-07-19T01:21:25
-lastmod: 2024-09-05T05:06:25Z
+lastmod: 2024-09-13T01:42:36Z
 draft: false
 categories:
   - Linux_杂谈
@@ -52,7 +52,7 @@ MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 
 之后执行 `mkinitcpio -P`，重新生成一遍 initramfs。
 
-如果你是 Gentoo Linux，那么生成 initramfs 的方法可能不是这个，如果和我一样都是使用的 `dracut` 的话，可以参考 [Gentoo wiki 中的 nvidia-drivers 部分](https://wiki.gentoo.org/wiki/NVIDIA/nvidia-drivers#Dracut_configuration_.28optional.29)
+如果你是 Gentoo Linux，那么生成 initramfs 的方法可能不是这个，如果和我一样都是使用的 `dracut` 的话，可以参考 [Gentoo wiki 中的 nvidia-drivers 部分](https://wiki.gentoo.org/wiki/NVIDIA/nvidia-drivers#Dracut_configuration_.28optional.29) 和 [Arch wiki 中 dracut 条目](https://wiki.archlinux.org/title/Dracut)。
 
 之后直接 `sudo dracut /path/to/initramfs`
 
