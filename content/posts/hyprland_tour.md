@@ -2,6 +2,7 @@
 title: "使用 Hyprland"
 author: suo yuan
 date: 2024-09-13T10:50:42Z
+lastmod: 2024-09-14T15:20:50Z
 draft: false
 categories:
   - Linux_杂谈
@@ -19,6 +20,8 @@ summary: "目前也用 Hyprland 几个月了，故而写了这篇面向准备使
 [Hyprland](https://github.com/hyprwm/Hyprland) 是由 C++ 编写，少数不使用 [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots) 的平铺式窗口管理器。默认足够漂亮，并且也还好用。好用指的是实现了 text-input-v1，并且支持将 XWayland 的缩放设置为 0 而不是跟着全局的缩放走。实现了 text-input-v1 就可以让 Electron 的软件在跑在 Wayland 下也可以使用 fcitx 中文输入法。
 
 Hyprland 是在 0.42 版本开始完全不依赖于 wlroots 的，[0.43](https://github.com/hyprwm/Hyprland/releases/tag/v0.43.0) 就把编译所需的 C++ 标准提到 C++ 26 了，虽然本身我 C++ 的水平不高，但在它面前，我还是得说，我就像个新兵蛋子。由于我本身对 C++ 26 没有太多的关注，所以也不好评价这个决定。
+
+Hyprland 的功耗比 sway 大一些。
 
 ## 配置文件
 
@@ -69,7 +72,7 @@ env = INPUT_METHOD, fcitx
 env = GLFW_IM_MODULE, ibus
 ```
 
-`LIBVA_DRIVER_NAME` 是配合 [nvidia-vaapi-driver](https://github.com/elFarto/nvidia-vaapi-driver) 用的。`LANG` 是当前系统的语言，我通过这个设置系统语言为英文，但是我在 **.bashrc** 文件重新设置回英文了。
+`LIBVA_DRIVER_NAME` 是配合 [nvidia-vaapi-driver](https://github.com/elFarto/nvidia-vaapi-driver) 用的。`LANG` 是当前系统的语言，我通过这个设置系统语言为中文，但是我在 **.bashrc** 文件重新设置回英文了。
 
 对于自动启动的应用，只需要这么写:
 

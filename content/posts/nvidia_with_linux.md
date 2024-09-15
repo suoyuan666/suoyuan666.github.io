@@ -2,7 +2,7 @@
 title: NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧
 author: suo yuan
 date: 2024-07-19T01:21:25
-lastmod: 2024-09-13T01:42:36Z
+lastmod: 2024-09-14T15:20:50Z
 draft: false
 categories:
   - Linux_杂谈
@@ -79,9 +79,9 @@ archlinux kernel: NVRM: Xid (PCI:0000:08:00): 13, pid='<unknown>', name=<unknown
 options nvidia NVreg_PreserveVideoMemoryAllocations=1
 ```
 
-`NVreg_PreserveVideoMemoryAllocations` 也可以作为内核启动时的参数，可以直接写在 **/etc/default/grub** 中。
+`NVreg_PreserveVideoMemoryAllocations` 也可以作为内核启动时的参数，可以直接写在 **/etc/default/grub** 中，写在内核参数的话需要在前面加上 `nvidia`: `nvidia.NVreg_PreserveVideoMemoryAllocations=1`。
 
-之后执行 `systemctl enable nvidia-resume.service` 并重启即可。
+之后执行 `systemctl enable nvidia-resume.service nvidia-suspend.service nvidia-hibernate.service` 并重启即可。
 
 根据 Arch wiki 所述，这个不能和 NVIDIA 早启动一起使用，但实际上我一起用了，感觉没什么问题。
 
