@@ -3,6 +3,8 @@ title: "关于"
 author: suo yuan
 ---
 
+关于域名: 是 s5n(suoyuan) blog 而不是 s5 nb log 😡
+
 ## 关于
 
 - 普通本科 大三在读 在一个算是科班的地方学习的野路子，学校菜菜，我也菜菜 🤐
@@ -30,4 +32,4 @@ author: suo yuan
 
 ### Project
 
-Null
+NULL
