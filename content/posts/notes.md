@@ -2,6 +2,7 @@
 title: 随笔记
 author: suo yuan
 date: 2024-04-13T21:19:25
+lastmod: 2024-09-27T03:10:17Z
 draft: false
 tags:
   - others
@@ -112,3 +113,15 @@ __overflow (FILE *f, int ch)
 ## 从 AstroPaper 换到了 hugo
 
 由于每次 `npm install` 后都会输出一些依赖组件不被支持的 log，我就换到了 Hugo 生成我的博客。
+
+## pandoc 将 Markdown 转成 PDF
+
+我希望找到一个我较为喜欢的方式将 Markdown 转成 PDF，我目前使用中，其实曾经用的 Typora 的效果感觉还好，不过我希望用一个偏 free 一些的软件，于是选择使用了 pandoc。
+
+使用下边的这个命令就可以转了
+
+```bash
+$ pandoc test.md -o test.pdf --pdf-engine xelatex -V CJKmainfont="Noto Sans CJK SC" -V mainfont="Noto Sans Mono"
+```
+
+xelatex 需要相关的 Tex Live 包。
