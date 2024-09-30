@@ -26,8 +26,10 @@ author: suo yuan
   - [ ] Stanford CS144: Computer Network
   - [ ] UCB CS61C: Great Ideas in Computer Architecture
   - [ ] NJU: Static Program Analysis
-- [ ] ~~学习恶意软件分析，我要成为 Reverse 高手~~
-- [ ] 精进自己 coding 的功力
+- [ ] 通过一生一芯
+    - 目前完成了预学习阶段
+- [ ] 把 xv6-riscv 源码阅读的坑填上
+    - 一时半会是填补不上了
 
 ### Project
 
