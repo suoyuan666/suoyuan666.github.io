@@ -33,6 +33,8 @@ description: "这是我日常生活的部分吐槽，由于内容分散而且不
 
 刚刚发现汉字中间包着 `*xx*` 这样的 markdown 没有被翻译成斜体，难道汉字和英文字母中间隔一个空格还是一个蛮正确的选择？
 
+现在我认为就应该是中文和英文之间空一格，这样看着也舒服。
+
 ## 关于 KDE Plasma 6 的初步感受
 
 KDE Plasma 6 对 Wayland 的支持感觉比 Plasma5 要好很多。不过现在使用 NixOS 时，Plasma 6 还有点小问题，但总体上比 Plasma5 强很多。这建立在我倾向于使用 nvidia-driver 的情况下，也许使用 mesa 本来就会更好

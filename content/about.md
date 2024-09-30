@@ -9,12 +9,11 @@ author: suo yuan
 
 - 普通本科 大三在读 在一个算是科班的地方学习的野路子，学校菜菜，我也菜菜 🤐
 - 开发环境
-  - Windows 11 & Gentoo Linux && Visual Studio Code
+  - Windows 11 & Gentoo Linux && Visual Studio Code && Neovim
   - 更习惯使用 Gentoo Linux，除非环境不太支持 GNU/Linux + Wayland
 - 编程语言
   - C/C++: 三年 C/C++，五年 Segmentation fault 😭
-  - Python: ~~当我没写这行~~
-  - ~~Lua/Nix/Shell,...~~
+  - ~~Lua/Nix/Shell/Java/Python,...~~
 
 ### Task
 
