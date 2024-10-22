@@ -247,7 +247,7 @@ fullscreen = true
 [params.page.instantpage]
 enable = false
 
-[author]
+[params.author]
 name = "suo yuan"
 
 # 用于输出 Markdown 格式文档的设置
