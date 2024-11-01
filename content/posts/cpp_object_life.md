@@ -18,6 +18,8 @@ summary: "一篇讲 C++ 对象生命周期的译文"
 
 本篇为 https://basit.pro/cpp-object-lifecycle/ 的译文
 
+如果文章作者介意翻译转载，需要删除掉，可以选择以一些我能看到的方式（如评论）告知我
+
 ---
 
 关于 RAII/C++ 的大多数讨论都没涉及到维持对象存在所需的隐含条件。在实现自定义的容器，以及内存分配器和 "tag discriminated unions" 的时候就需要这些隐含条件(如 [`Result<T, E>`](https://github.com/lamarrr/ashura/blob/ec183d8cb6109c263e5b6b0f070079bf3db65230/ashura/std/result.h#L29), [`Option<T>`](https://github.com/lamarrr/ashura/blob/ec183d8cb6109c263e5b6b0f070079bf3db65230/ashura/std/option.h#L25), [`std::variant<T...>`](https://en.cppreference.com/w/cpp/utility/variant))
