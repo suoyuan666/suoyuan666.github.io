@@ -8,20 +8,22 @@ author: suo yuan
 ## 关于
 
 - 普通本科 大三在读 在一个算是科班的地方学习的野路子，学校菜菜，我也菜菜 🤐
-- 开发环境
+- 开发环境:
   -  Gentoo Linux && Visual Studio Code && Neovim
   - 更习惯使用 Gentoo Linux，除非环境不太支持 GNU/Linux + Wayland
   - 根据上一条，所以我还保留了 Windows 11 的环境以备不时之需
-- 编程语言
+- 编程语言:
   - C/C++: 三年 C/C++，五年 Segmentation fault 😭
   - ~~Shell/Java/Python/Nix,...~~
 
 ### Task
 
 - [ ] 刷课
-  - [x] MIT 6.1810: Operating System Engineering (差最后一个 lab 没做完)
+  - [x] MIT 6.1810: Operating System Engineering
+      - 差最后一个 lab 没做完
   - [ ] NJU OS: Operating System Design and Implementation
-  - [x] Stanford CS106L: Standard C++ Programming (没做这门课程的 HW)
+  - [x] Stanford CS106L: Standard C++ Programming
+      - 没做这门课程的 HW
   - [ ] Stanford CS144: Computer Network
   - [ ] UCB CS61C: Great Ideas in Computer Architecture
   - [ ] NJU: Static Program Analysis
