@@ -1,4 +1,4 @@
-baseURL = "https://s5nblog.site"
+baseURL = "https://blog.s5n.xyz"
 defaultContentLanguage = "zh-cn"
 languageCode = "zh-CN"
 hasCJKLanguage = true
