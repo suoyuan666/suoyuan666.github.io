@@ -3,7 +3,7 @@ title: "关于"
 author: suo yuan
 ---
 
-关于域名: 是 s5n(suoyuan) blog 而不是 s5 nb log 😡
+~~关于域名: 是 s5n(suoyuan) blog 而不是 s5 nb log 😡~~ (目前已经更换到 s5n.xyz)
 
 ## 关于
 
