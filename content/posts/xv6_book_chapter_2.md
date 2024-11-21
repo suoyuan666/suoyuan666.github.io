@@ -18,7 +18,7 @@ Xv6 book 的第二章节
 # Operating system organization
 操作系统的关键在于能够同时支持多个活动、在进程之间共享计算机资源以及隔离进程，也就是多路复用、隔离和交互。
 
-Xx6运行在多核的RISC-V微处理器上，有很多针对 RISC-V 的基地功能。Xv6 是用 "LP64"C (`long` 和指针是 64 位，`int` 是 32 位)编写的。
+Xx6 运行在多核的 RISC-V 微处理器上，有很多针对 RISC-V 的基地功能。Xv6 是用 "LP64"C (`long` 和指针是 64 位，`int` 是 32 位)编写的。
 
 Xv6 是为 qemu 的 `-machine virt` 选项模拟支持的硬件编写的。
 
@@ -32,7 +32,7 @@ Xv6 是为 qemu 的 `-machine virt` 选项模拟支持的硬件编写的。
 
 隔离还需要应用程序和操作系统之间划一道线。如果程序出错，不能导致其他程序甚至操作系统出错，操作系统应该清理失败的程序并继续运行其他的程序。程序之间也应该有一道线以保证数据不会被修改。
 
-CPU为隔离提供硬件支持。例如RISC-V有三种CPU执行指令的模式：*machine*、*supervisor* 和 *user*。Machine 代表完全的权限。CPU 在机器模式下启动，这个模式主要用来配置计算机。Xv6 会在 machine 模式执行几行代码后切换到 supervisor 模式。
+CPU 为隔离提供硬件支持。例如 RISC-V 有三种 CPU 执行指令的模式：*machine*、*supervisor* 和 *user*。Machine 代表完全的权限。CPU 在机器模式下启动，这个模式主要用来配置计算机。Xv6 会在 machine 模式执行几行代码后切换到 supervisor 模式。
 
 supervisor 模式允许 CPU 执行的特权指令：启动或禁用中断、读写保存页表地址的寄存器，等等。CPU 不会在 user 模式下执行特权指令，它会切换到supervisor 模式以便于让 supervisor 模式的代码可以终止程序。程序只能在用户空间执行 user 模式能执行的指令。在 supervisor 模式的软件可以在内核空间执行的指令比前者多一些特权指令。运行在内核空间的软件成为内核 (kernel)。
 

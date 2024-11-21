@@ -33,7 +33,6 @@ author: suo yuan
         - [CS 144: Introduction to Computer Networking,](https://cs144.github.io/)
     - [ ] PKU: 编译原理实践
         - [北大编译实践在线文档](https://pku-minic.github.io/online-doc/#/)
-    - [ ] UCB CS61C: Great Ideas in Computer Architecture
 - [ ] 通过一生一芯
     - [第六期"一生一芯"课程主页](https://ysyx.oscc.cc/docs/)
     - 目前完成了预学习阶段
