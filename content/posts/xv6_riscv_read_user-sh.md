@@ -271,7 +271,7 @@ parseexec(char **ps, char *es)
 find: ‘/etc/nftables’: Permission denied
 ```
 
-> 这里有一个点，就是我们日常很容易有一个需求，即向高权限可写的文件中写入一小段内容。写入一小段内容，`echo` 就可以满足我们的需求，但是直接在 `echo` 前加入 `sudo` 是不可行的，需要 `echo aaa | sudo tee /test.txt` 这样，`tee` 会从标准输入读取，并将其写入文件中。
+> 我们日常很容易有一个需求，即向高权限可写的文件中写入一小段内容。写入一小段内容，`echo` 就可以满足我们的需求，但是直接在 `echo` 前加入 `sudo` 是不可行的，需要 `echo aaa | sudo tee /test.txt` 这样，`tee` 会从标准输入读取内容，并将其写入文件中。
 
 > `while` 循环中则是对每个命令行参数遍历并保存起来。这里判断 `tok` 是否为 `a`，则是因为 `gettoken()` 设定好的:
 
@@ -413,7 +413,7 @@ while(!peek(ps, es, "|)&;")){
 
 ![xv6-user-sh-eargv](/img/xv6-riscv-read/user/xv6-user-sh-eargv.png)
 
-正常的 `argv` 并不是这个样子，我们日常写 C 语言，如果你尝试使用过 `int main(int argc, char *argv[])` 这个函数原型的话，应该知道 argv 不会将前面的 `echo` 这些带上。
+正常的 `argv` 并不是这个样子，我们日常写 C 语言的时候，如果你尝试使用过 `int main(int argc, char *argv[])` 这个函数原型的话，应该知道 argv 不会将前面的 `echo` 这些带上。
 
 为了让 `argv` 正常使用，`eargv` 会在之后派上用场。
 
@@ -517,7 +517,7 @@ runcmd(struct cmd *cmd)
 
 对于普通的命令（即 `EXEC` 类型），直接调用 `exec` 执行就好了，如果没有正常执行，就调用 `fprintf` 输出执行失败，毕竟 `exec` 系统调用会替换当前执行的程序，如果每成功替换，就会继续执行 `fprintf`。
 
-唯一有意思的是管道的处理:
+是管道的处理值得一提:
 
 ```c
 pcmd = (struct pipecmd*)cmd;
@@ -585,3 +585,5 @@ if(fork1() == 0){
 第二个进程也会做类似的操作，只不过是关闭的标准输入。
 
 两个进程在把管道的文件描述符复制了之后，就把管道的文件描述符都关闭，并运行对应的命令，由于 `exec` 后的程序会继承文件描述符，所以正常像文件描述符 1（也就是标准输出）的输出，会被传递给管道的另一端，另一端会从标准输入的文件描述符读到。
+
+自此，sh 的代码就大概说完了。
