@@ -9,6 +9,9 @@
     - [Cpp Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
     - [The C++ Object Lifecycle](https://basit.pro/cpp-object-lifecycle/)
     - [深入理解异步IO](https://microcai.org/2024/12/13/in-deepth-async.html)
+    - [彻底理解 C++ ABI](https://ykiko.me/zh-cn/articles/692886292/)
+    - [雾里看花：真正意义上的理解 C++ 模板](https://ykiko.me/zh-cn/articles/655902377/)
+    - [C++ 究竟代码膨胀在哪里？](https://ykiko.me/zh-cn/articles/686296374/)
 - GNU/Linux usage
     - [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)
     - [个人数据安全不完全指南](https://thiscute.world/posts/an-incomplete-guide-to-data-security/)
