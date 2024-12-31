@@ -20,6 +20,7 @@
     - [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)
     - [个人数据安全不完全指南](https://thiscute.world/posts/an-incomplete-guide-to-data-security/)
     - [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
+    - [Desktop Linux Hardening](https://privsec.dev/posts/linux/desktop-linux-hardening/)
 - Android
     - [Android](https://madaidans-insecurities.github.io/android.html)
         - 和 [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html) 是一个作者，这篇是对安卓上的安全加固方面做了评价

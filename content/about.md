@@ -10,8 +10,8 @@ author: suo yuan
 - 普通本科 大三在读 在一个算是科班的地方学习的野路子，学校菜菜，我也菜菜 🤐
 - 算是一个操作系统爱好者 😗
 - 开发环境:
-  - Fedora Linux && Visual Studio Code
-  - 几个 Windows 虚拟机以备不时之需
+  - Fedora Silverblue && Windows 双系统
+  - Visual Studio Code
 - 编程语言:
   - C/C++: 三年 C/C++，五年 Segmentation fault 😭
   - ~~Shell/Python/Nix,...~~
