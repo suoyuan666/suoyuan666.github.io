@@ -175,7 +175,7 @@ bwrap \
 
 ## sysctl
 
-我参考了一些文章给出的 sysctl 配置，新建目录 /etc/sysctl.d/，并新建文件 00-hardened.conf，文件内容如下：
+我参考了一些文章给出的 sysctl 配置，新建目录 /etc/sysctl.d/，并新建文件 99-hardened.conf，文件内容如下：
 
 ```conf
 kernel.kptr_restrict=2
