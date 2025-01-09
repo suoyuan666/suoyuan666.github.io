@@ -225,6 +225,7 @@ bwrap \
 --proc /proc \
 --ro-bind /sys/dev/char /sys/dev/char \
 --ro-bind /sys/devices/pci0000:00 /sys/devices/pci0000:00 \
+--ro-bind /run/dbus /run/dbus \
 --dir "$XDG_RUNTIME_DIR" \
 --ro-bind "$XDG_RUNTIME_DIR/wayland-1" "$XDG_RUNTIME_DIR/wayland-1" \
 --ro-bind "$XDG_RUNTIME_DIR/pipewire-0" "$XDG_RUNTIME_DIR/pipewire-0" \

@@ -7,14 +7,16 @@ author: suo yuan
 
 ## 关于
 
-- 普通本科 大三在读 在一个算是科班的地方学习的野路子，学校菜菜，我也菜菜 🤐
+- 普通本科 大三在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
 - 算是一个操作系统爱好者 😗
+- INTJ-T 🤔
 - 开发环境:
-  - Fedora Silverblue && Windows 双系统
+  - Gentoo Linux && Windows 双系统
   - Visual Studio Code
+    - 试图使用 neovim 但多次无果
 - 编程语言:
-  - C/C++: 三年 C/C++，五年 Segmentation fault 😭
-  - ~~Shell/Python/Nix,...~~
+  - C/C++
+  - ~~Python/Shell/Nix,...~~
 
 ### Task
 
@@ -28,11 +30,11 @@ author: suo yuan
         - [CS 162: Operating Systems and System Programming](https://cs162.org/)
         - [Welcome to Pintos](https://pkuflyingpig.gitbook.io/pintos)
     - [x] Stanford CS106L: Standard C++ Programming
-        - 没做这门课程的 HW
+        - 没做这门课程的作业
     - [ ] Stanford CS144: Computer Network
         - [CS 144: Introduction to Computer Networking,](https://cs144.github.io/)
-    - [ ] PKU: 编译原理实践
-        - [北大编译实践在线文档](https://pku-minic.github.io/online-doc/#/)
+    - [ ] NJU 编译原理
+        - [Compiler@NJU-SE](http://docs.compilers.cpl.icu/#/overview/main-page)
     - [ ] ASU CSE466: Computer Systems Security
         - [CSE 466 - Fall 2024](https://pwn.college/cse466-f2024/)
 - [ ] 通过一生一芯
