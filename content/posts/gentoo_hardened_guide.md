@@ -87,7 +87,7 @@ $ cp /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/systemd/grubx64.efi
 
 应用沙盒就这两位我还算熟悉，[Firejail](https://github.com/netblue30/firejail) 和 [Bubblewrap](https://github.com/containers/bubblewrap)。前者有令人诟病的 setuid 安全隐患，后者没有 Firejail 那样有社区提供好的沙盒模板（即部分应用自动就可以沙盒化，如 git，firefox 等）
 
-我选择了 Bubblewrap（也就是标题中的 bwrap），目前只用到了 FireFox 和 VSCodium 上，我目前的目标是，让使用的图形化软件基本都套一层 bwrap（除了终端模拟器还没这个想法）
+我选择了 Bubblewrap（也就是标题中的 bwrap），目前只用到了浏览器和我的代码编辑器上，我目前的目标是，让使用的图形化软件基本都套一层 bwrap（除了终端模拟器）
 
 这是 FireFox 的
 
@@ -307,9 +307,9 @@ intel_iommu=on amd_iommu=force_isolation efi=disable_early_pci_dma iommu=force i
 spectre_v2=on spec_store_bypass_disable=on tsx=off tsx_async_abort=full mds=full l1tf=full,force kvm.nx_huge_pages=force
 ```
 
-第一行中的启动参数是开启一些常见的安全防护机制，比如页表隔离，模块签名验证等，其实有更多的参数可以写，比如 `slab_nomerge` 和 `randomize_kstack_offset=on` 这些，不过由于我使用的内核是 hardened USE 变量的 gentoo-kernel，这些已经在编译的时候开启了，我就不在这里写了。
+第一行中的启动参数是开启一些常见的安全防护机制，比如页表隔离，模块签名验证等，其实有更多的参数可以写，比如 `slab_nomerge` 和 `randomize_kstack_offset=on` 这些，不过由于我使用的内核是 hardened USE 变量的 gentoo-kernel，这些已经在编译的时候开启了，我就不在这里写了
 
-第二行是开启 IOMMU 防护
+第二行是开启一些 IOMMU 防护
 
 第三行是开启 Spectre 漏洞缓解机制
 
@@ -337,3 +337,46 @@ ethernet.cloned-mac-address=random
 之后我安装了 gnome-extra/nm-applet 用来连接 WIFI，并使用网络编辑，在 WIFI 安全性中改成仅为该用户存储密码
 
 如果要安装 gnome-extra/nm-applet 的话，最好启用 `appindicator` USE 变量
+
+## 浏览器配置
+
+FireFox 我推荐 [arkenfox/user.js](https://github.com/arkenfox/user.js) 项目，搭配 [uBlock Origin](https://github.com/gorhill/uBlock)
+
+如果为了防止跟踪，可以选择使用 Mullvad Browser，这位是和 Tor Project 联合开发，并去除了 Tor 的部分
+
+Chromium 的话，我选择根据 [Policy Templates](https://www.chromium.org/administrators/policy-templates/) 配置一些策略
+
+```json
+{
+  "PrivacySandboxAdMeasurementEnabled": false,
+  "PrivacySandboxAdTopicsEnabled": false,
+  "PrivacySandboxPromptEnabled": true,
+  "PrivacySandboxSiteEnabledAdsEnabled": false,
+
+  "AudioSandboxEnabled": true,
+  "NetworkServiceSandboxEnabled": true,
+
+  "AutoplayAllowed": false,
+  "BlockThirdPartyCookies": true,
+  "SavingBrowserHistoryDisabled": true,
+
+  "EncryptedClientHelloEnabled": true,
+  "HttpsUpgradesEnabled": true,
+  
+  "WebRtcIPHandling": "disable_non_proxied_udp",
+
+  "SafeBrowsingEnabled": true,
+  "SafeBrowsingProtectionLevel": 2,
+  "SafeBrowsingProxiedRealTimeChecksAllowed": true,
+
+  "CACertificateManagementAllowed": 2
+}
+```
+
+写晚可以用 `jq` 验证一下 JSON 格式对不对 `cat test.json | jq`
+
+我在 Chromium 上依旧在使用 uBlock Origin，也不知道 Chromium 什么时候开始停止支持 Mainfest V2 标准的浏览器扩展
+
+## SELinux/AppArmor
+
+TODO 我自己还没太准备学习这二位
