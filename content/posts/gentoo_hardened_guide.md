@@ -373,7 +373,7 @@ Chromium 的话，我选择根据 [Policy Templates](https://www.chromium.org/ad
 }
 ```
 
-写晚可以用 `jq` 验证一下 JSON 格式对不对 `cat test.json | jq`
+写完可以用 `jq` 验证一下 JSON 格式对不对 `cat test.json | jq`
 
 我在 Chromium 上依旧在使用 uBlock Origin，也不知道 Chromium 什么时候开始停止支持 Mainfest V2 标准的浏览器扩展
 
