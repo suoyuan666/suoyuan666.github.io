@@ -2,7 +2,7 @@
 title: 随笔记
 author: suo yuan
 date: 2024-04-13T21:19:25
-lastmod: 2024-09-27T03:10:17Z
+lastmod: 2025-01-10T10:31:22Z
 draft: false
 tags:
   - others
@@ -127,3 +127,9 @@ $ pandoc test.md -o test.pdf --pdf-engine xelatex -V CJKmainfont="Noto Sans CJK 
 ```
 
 xelatex 需要相关的 Tex Live 包。
+
+## 尝试了安全启动的 Gentoo Linux
+
+终于，家人们，我用上了安全启动 + 硬盘加密的 Gentoo Linux
+
+下一步就是不使用 gentoo-kernel，使用 gentoo-source 编译内核（为了 CFI）

@@ -2,6 +2,7 @@
 title: "Verilator 使用"
 author: suo yuan
 date: 2024-09-20T04:54:29Z
+lastmod: 2025-01-10T10:31:22Z
 draft: false
 tags:
   - Verilator
@@ -41,6 +42,10 @@ CFLAGS="-O3 -march=x86-64-v3 -pipe -fstack-protector-strong -fstack-clash-protec
 CXXFLAGS="${CFLAGS}"
 LDFLAGS="-Wl,-O3,-z,now"
 ```
+
+> 2025 年 1 月 10 号
+>
+> 我今天重装了一遍，发现用 GCC 就行，不需要 nolto，我开了 `-flto` 编译也可以成功，不过 Clang 编译失败
 
 ## 使用 Verilator
 

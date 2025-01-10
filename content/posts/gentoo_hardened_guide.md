@@ -2,7 +2,7 @@
 title: "Gentoo Linux 安全加固指南"
 author: suo yuan
 date: 2025-01-07T10:00:36Z
-lastmod: 2025-01-09T02:03:25Z
+lastmod: 2025-01-10T10:31:22Z
 draft: false
 tags:
   - gentoo-linux
@@ -13,10 +13,9 @@ summary: "我本次安装 Gentoo Linux 所做的一些安全加固手段"
 
 # Gentoo Linux 安全加固指南
 
-> - 2025 年 1 月 8 号修改
+> - 2025 年 1 月 8/9/10 号修改
 >   - 添加了 VSCodium 的 bwrap 启动参数
 >   - 修改了 sysctl 和内核启动参数部分
-> - 2025 年 1 月 9 号修改
 >   - 添加了 Chromium 的 bwrap 启动参数
 >   - 添加了 NetworkManager 部分
 
@@ -24,7 +23,7 @@ summary: "我本次安装 Gentoo Linux 所做的一些安全加固手段"
 
 在我看来，Qubes OS 很不错，但是网络配置看起来不是很容易，并且社区貌似不是很大。
 
-Fedora Silverblue 也是个不错的选择，原子更新，桌面应用大多是从 Flatpak 安装的等，不过我对 Fedora 官方软件仓库没有我想要的软件一直有些介意，虽然有 COPR 源，但我不是特别想用。
+Fedora Silverblue 也是个不错的选择，原子更新，桌面应用大多是从 Flatpak 安装，不过我对 Fedora 官方软件仓库没有我想要的软件这一情况一直有些介意，虽然有 COPR 源，但我不是特别想用。
 
 NixOS 也是个选择，同样是不可变发行版，nixpkg 提供了很多软件包，包括 linux-hardened、hardened-malloc 等，NixOS 官方有一套 security profile，不过我还没尝试，印象中是使用了 linux-hardened 内核，启用了一些安全相关的 sysctl 设置，将内存分配器改成 scudo（好像还启用了 AppArmor？）
 
@@ -71,7 +70,7 @@ kernel_cmdline+=" root=UUID=cb070f9e-da0e-4bc5-825c-b01bb2707704 rd.luks.uuid=4b
 
 ## 安全启动
 
-安全启动是个耳熟能详的名词，我在刚接触到给自己的笔记本电脑安装 GNU/Linux 发行版的教程的时候，一般都是在 BIOS 中关闭快速启动和安全启动，一般社区支持的发行版无法在开启安全启动的情况下安装，部分商业公司支持的（如 Fedora，OpenSUSE，Deepin 等）发行版可以直接启动安装。
+安全启动是个耳熟能详的名词，我在刚接触到给自己的笔记本电脑安装 GNU/Linux 发行版的教程的时候，一般都是在 BIOS 中关闭快速启动和安全启动，一般社区支持的发行版无法在开启安全启动的情况下安装，商业公司支持的（如 Fedora，OpenSUSE，Deepin 等）发行版应该是都可以直接启动安装。
 
 安全启动是 UEFI 下才有的安全验证机制，旨在确保引导的文件是可信的。
 
@@ -89,7 +88,9 @@ $ cp /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/systemd/grubx64.efi
 
 我选择了 Bubblewrap（也就是标题中的 bwrap），目前只用到了浏览器和我的代码编辑器上，我目前的目标是，让使用的图形化软件基本都套一层 bwrap（除了终端模拟器）
 
-这是 FireFox 的
+对于到底应该 `--ro-bind` 什么文件，可以用 `strace -e openat` 看一下该程序到底尝试打开什么文件，然后决定到底要不要映射过去
+
+### FireFox
 
 ```bash
 $ bwrap \
@@ -141,7 +142,9 @@ $ bwrap \
 /usr/bin/firefox
 ```
 
-VSCodium
+### VSCodium
+
+vscodium 基本照搬的 下面的 Chromium 的配置
 
 ```bash
 bwrap \
@@ -154,12 +157,28 @@ bwrap \
 --ro-bind /usr/lib64 /usr/lib64 \
 --ro-bind /usr/share/applications /usr/share/applications \
 --ro-bind /usr/share/gtk-3.0 /usr/share/gtk-3.0 \
---ro-bind /usr/share/glib-2.0 /usr/share/glib-2.0 \
+--ro-bind /usr/share/icu /usr/share/icu \
+--ro-bind /usr/share/drirc.d /usr/share/drirc.d \
 --ro-bind /usr/share/fonts /usr/share/fonts \
+--ro-bind /usr/share/glib-2.0 /usr/share/glib-2.0 \
+--ro-bind /usr/share/glvnd /usr/share/glvnd \
 --ro-bind /usr/share/icons /usr/share/icons \
 --ro-bind /usr/share/mime /usr/share/mime \
 --ro-bind /usr/share/X11/xkb /usr/share/X11/xkb \
+--ro-bind /usr/share/icons /usr/share/icons \
+--ro-bind /usr/share/locale /usr/share/locale \
+--ro-bind /usr/share/zoneinfo /usr/share/zoneinfo \
+--ro-bind /usr/share/vulkan /usr/share/vulkan \
+--ro-bind /usr/share/verilator /usr/share/verilator \
+--ro-bind /usr/include /usr/include \
+--ro-bind /etc/ssl /etc/ssl \
+--ro-bind /etc/ca-certificates.conf /etc/ca-certificates.conf \
 --ro-bind /etc/fonts /etc/fonts \
+--ro-bind /etc/resolv.conf /etc/resolv.conf \
+--ro-bind /etc/chromium /etc/chromium \
+--ro-bind /etc/localtime /etc/localtime \
+--ro-bind /etc/ld.so.conf /etc/ld.so.conf \
+--ro-bind /etc/ld.so.cache /etc/ld.so.cache \
 --ro-bind /opt/vscodium/ /opt/vscodium/ \
 --dir "$XDG_RUNTIME_DIR" \
 --ro-bind "$XDG_RUNTIME_DIR/wayland-1" "$XDG_RUNTIME_DIR/wayland-1" \
@@ -169,23 +188,21 @@ bwrap \
 --ro-bind /sys/devices/pci0000:00 /sys/devices/pci0000:00 \
 --proc /proc \
 --tmpfs /tmp \
---bind /home/example/.config/VSCodium /home/example/.config/VSCodium \
---bind /home/example/.vscode-oss /home/example/.vscode-oss \
---bind /home/example/Downloads /home/example/Downloads \
---bind /home/example/Documents /home/example/Documents \
---bind /home/example/codpjt /home/example/codpjt \
---bind /home/example/git_repo /home/example/git_repo \
---setenv HOME /home/example \
+--bind $HOME/.config/VSCodium $HOME/.config/VSCodium \
+--bind $HOME/.vscode-oss $HOME/.vscode-oss \
+--bind $HOME/Downloads $HOME/Downloads \
+--bind $HOME/Documents $HOME/Documents \
+--bind $HOME/codpjt $HOME/codpjt \
+--bind $HOME/git_repo $HOME/git_repo \
 --setenv GTK_THEME Papirus:light \
---setenv LD_LIBRARY_PATH /usr/lib/gcc/x86_64-pc-linux-gnu/14 \
 --hostname RESTRICTED \
 --unshare-all \
 --share-net \
 --new-session \
-/opt/vscodium/codium --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime --wayland-text-input-version=3 --use-gl=egl
+/opt/vscodium/codium --ozone-platform=wayland --use-gl=angle --use-angle=vulkan --enable-features=AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE --ignore-gpu-blocklist --disable-gpu-driver-bug-workaround --enable-wayland-ime
 ```
 
-Chromium
+### Chromium
 
 ```bash
 bwrap \
@@ -243,14 +260,14 @@ bwrap \
 
 使用 FireFox 的时候还在用我的 NVIDIA 显卡驱动，由于 FireFox 官方并不支持 NVENC 视频解码（虽然可以通过安装 media-libs/nvidia-vaapi-driver 实现翻译）
 
-由于使用 FireFox 打开部分网站速度不佳，我选择了 Chromium（由于 libpng 依赖问题，我把 FireFox 删除了）
+由于使用 FireFox 打开部分网站速度不佳，我选择了 Chromium（由于 media-libs/libpng 依赖问题，我把 FireFox 删除了）
 
 使用 Chromium 的时候是 Intel 的核显驱动，安装了 media-libs/libva-intel-media-driver 软件包，这套 bwrap 参数可以让 Chromium 用到显卡的视频解码，由于 Gentoo 的 Chromium 会读取 /etc/chromium/ 下的文件作为 Chromium 启动时的命令行参数，所以我把参数都放到那里了
 
 我这套选项可能有的有些多余，不过我懒得再裁剪了
 
 ```txt
---use-gl=angle --use-angle=vulkan --enable-features=AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE --ignore-gpu-blocklist --disable-gpu-driver-bug-workaround --enable-wayland-ime --wayland-text-input-version=3
+--ozone-platform=wayland --use-gl=angle --use-angle=vulkan --enable-features=AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE --ignore-gpu-blocklist --disable-gpu-driver-bug-workaround --enable-wayland-ime --wayland-text-input-version=3
 ```
 
 ## sysctl
