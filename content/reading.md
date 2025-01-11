@@ -21,9 +21,14 @@
     - [个人数据安全不完全指南](https://thiscute.world/posts/an-incomplete-guide-to-data-security/)
     - [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
     - [Desktop Linux Hardening](https://privsec.dev/posts/linux/desktop-linux-hardening/)
+    - [Linux 发行版劝退指南](https://imbearchild.cyou/archives/2022/07/linux-fa-xing-ban-quan-tui-zhi-nan/)
+- GNU/Linux security
+    - [谈一谈Linux与suid提权](https://www.leavesongs.com/PENETRATION/linux-suid-privilege-escalation.html)
+    - [How the XZ backdoor works](https://lwn.net/Articles/967192/)
 - Android
     - [Android](https://madaidans-insecurities.github.io/android.html)
         - 和 [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html) 是一个作者，这篇是对安卓上的安全加固方面做了评价
 - misc
     - [Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
     - [忍者代码](https://zh.javascript.info/ninja-code)
+    - [BSD 与 GPL：圣人与常人](https://imbearchild.cyou/archives/2023/04/on-bsd-and-gpl/)
