@@ -2,7 +2,7 @@
 title: "Gentoo Linux 安全加固指南"
 author: suo yuan
 date: 2025-01-07T10:00:36Z
-lastmod: 2025-01-10T10:31:22Z
+lastmod: 2025-01-13T03:39:37Z
 draft: false
 tags:
   - gentoo-linux
@@ -18,6 +18,10 @@ summary: "我本次安装 Gentoo Linux 所做的一些安全加固手段"
 >   - 修改了 sysctl 和内核启动参数部分
 >   - 添加了 Chromium 的 bwrap 启动参数
 >   - 添加了 NetworkManager 部分
+> - 2025 年 1 月 13 号修改
+>   - 修改了bwrap 中 FireFox 部分，让它可以响应 `xdg-open`
+>   - 添加了禁止核心转储 (core dump) 的段落
+>   - 添加了面向安全的编译选项部分
 
 我一直在寻求一个尽可能不影响日常使用的同时尽量做到安全的操作系统。单论安全性，我认为 [Qubes OS](https://www.qubes-os.org/) 就很不错，但日常使用起来不是很方便。
 
@@ -93,7 +97,15 @@ $ cp /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/systemd/grubx64.efi
 ### FireFox
 
 ```bash
-$ bwrap \
+xdg-dbus-proxy \
+    unix:path=/var/run/user/$UID/bus \
+    /run/user/$UID/.dbus-proxy/session-bus-proxy-6271 \
+    --filter \
+    --own="org.mpris.MediaPlayer2.firefox.*" \
+    --own="org.mozilla.firefox.*" \
+    --own="org.mozilla.firefox_beta.*" &
+
+bwrap \
 --symlink usr/lib /lib \
 --symlink usr/lib64 /lib64 \
 --symlink usr/bin /bin \
@@ -101,7 +113,7 @@ $ bwrap \
 --ro-bind /usr/lib /usr/lib \
 --ro-bind /usr/lib64 /usr/lib64 \
 --ro-bind /usr/bin /usr/bin \
---ro-bind /usr/lib64/firefox /usr/lib64/firefox \
+--ro-bind /opt/bin /opt/bin \
 --ro-bind /usr/share/applications /usr/share/applications \
 --ro-bind /usr/share/gtk-3.0 /usr/share/gtk-3.0 \
 --ro-bind /usr/share/icu /usr/share/icu \
@@ -114,23 +126,33 @@ $ bwrap \
 --ro-bind /usr/share/X11/xkb /usr/share/X11/xkb \
 --ro-bind /usr/share/icons /usr/share/icons \
 --ro-bind /usr/share/mime /usr/share/mime \
+--ro-bind /usr/share/vulkan /usr/share/vulkan \
+--ro-bind /usr/share/egl /usr/share/egl \
+--ro-bind /usr/share/nvidia /usr/share/nvidia \
+--ro-bind /usr/share/ca-certificates /usr/share/ca-certificates \
+--ro-bind /etc/ld.so.conf /etc/ld.so.conf \
+--ro-bind /etc/ld.so.cache /etc/ld.so.cache \
 --ro-bind /etc/fonts /etc/fonts \
 --ro-bind /etc/resolv.conf /etc/resolv.conf \
---ro-bind /usr/share/ca-certificates /usr/share/ca-certificates \
 --ro-bind /etc/ssl /etc/ssl \
 --ro-bind /etc/ca-certificates.conf /etc/ca-certificates.conf \
 --dir "$XDG_RUNTIME_DIR" \
---ro-bind "$XDG_RUNTIME_DIR/pulse" "$XDG_RUNTIME_DIR/pulse" \
+--bind "$XDG_RUNTIME_DIR/pulse" "$XDG_RUNTIME_DIR/pulse" \
+--ro-bind /run/user/$UID/bus /run/user/$UID/bus \
 --ro-bind "$XDG_RUNTIME_DIR/wayland-1" "$XDG_RUNTIME_DIR/wayland-1" \
 --dev /dev \
 --dev-bind /dev/dri /dev/dri \
---ro-bind /sys/dev/char /sys/dev/char \
---ro-bind /sys/devices/pci0000:00 /sys/devices/pci0000:00 \
+--dev-bind /dev/shm /dev/shm \
+--dev-bind /dev/nvidia0 /dev/nvidia0 \
+--dev-bind /dev/nvidiactl /dev/nvidiactl \
+--dev-bind /dev/nvidia-uvm /dev/nvidia-uvm \
+--ro-bind /sys /sys \
 --proc /proc \
 --tmpfs /tmp \
---bind /home/example/.mozilla /home/example/.mozilla \
---bind /home/example/Downloads /home/example/Downloads \
---setenv HOME /home/example \
+--ro-bind $HOME/.config/dconf $HOME/.config/dconf \
+--ro-bind $HOME/.config/user-dirs.dirs $HOME/.config/user-dirs.dirs \
+--bind $HOME/.mozilla $HOME/.mozilla \
+--bind $HOME/Downloads $HOME/Downloads \
 --setenv GTK_THEME Papirus:light \
 --setenv MOZ_ENABLE_WAYLAND 1 \
 --setenv PATH /usr/bin \
@@ -139,8 +161,14 @@ $ bwrap \
 --share-net \
 --die-with-parent \
 --new-session \
-/usr/bin/firefox
+/usr/bin/firefox $@
 ```
+
+Chromium 的编译时间实在太长了（虽然 FireFox 的也没差到哪去，开启了 LTO 和 PGO 之后编译进度感人），我又用回来了这位
+
+由于我有了其他软件从系统默认浏览器打开链接的需求，所以就用 xdg-dbus-proxy 设置了相关服务，并且我 waybar 的 mpris 组件也能显示 FireFox 播放的媒体了。
+
+我使用了 nvidia-vaapi-driver，所以设备上暴露了一些 nvidia 的，这个 /dev/nvidia-uvm 一开始是没有的，我运行了 `vainfo` 之后就会出现，所以现在有一个抽象的事情就是我会先在 foot 上执行一遍 vainfo，之后打开 FireFox。这套是可以用上 nvidia-vaapi-driver 的硬件视频解码的，如果 FireFox 能支持 nvenc 就更好了。
 
 ### VSCodium
 
@@ -275,6 +303,7 @@ bwrap \
 我参考了一些文章给出的 sysctl 配置，新建目录 /etc/sysctl.d/，并新建文件 99-hardened.conf，文件内容如下：
 
 ```conf
+kernel.core_pattern=|/bin/false
 kernel.kptr_restrict=2
 kernel.dmesg_restrict=1
 kernel.unprivileged_bpf_disabled=1
@@ -359,7 +388,7 @@ ethernet.cloned-mac-address=random
 
 FireFox 我推荐 [arkenfox/user.js](https://github.com/arkenfox/user.js) 项目，搭配 [uBlock Origin](https://github.com/gorhill/uBlock)
 
-如果为了防止跟踪，可以选择使用 Mullvad Browser，这位是和 Tor Project 联合开发，并去除了 Tor 的部分
+如果为了防止被网站跟踪，可以选择使用 Mullvad Browser，这位是和 Tor Project 联合开发，并去除了 Tor 的部分
 
 Chromium 的话，我选择根据 [Policy Templates](https://www.chromium.org/administrators/policy-templates/) 配置一些策略
 
@@ -393,6 +422,60 @@ Chromium 的话，我选择根据 [Policy Templates](https://www.chromium.org/ad
 写完可以用 `jq` 验证一下 JSON 格式对不对 `cat test.json | jq`
 
 我在 Chromium 上依旧在使用 uBlock Origin，也不知道 Chromium 什么时候开始停止支持 Mainfest V2 标准的浏览器扩展
+
+## 禁用 core dump
+
+禁用 core dump 貌似是为了防止有写私密数据也被 dump 下来了。不过就我个人而言，我只是很讨厌这种在我不知道的时候 dump 的行为，不知不觉运行 `coredumpctl` 一看，python、firefox 这些软件都 dump 过，难绷。
+
+新建 /etc/systemd/coredump.conf.d/disable.conf 中写入
+
+```conf
+[Coredump]
+Storage=none
+ProcessSizeMax=0
+```
+
+上面 sysctl 的 `kernel.core_pattern=|/bin/false` 也是在禁用 core dump
+
+不得不说，禁用了之后，我自己开发的软件 core dump 了也没存。有一说一，core dump 还是有助于开发的，等之后我手动临时开启试试看吧。
+
+## 面向安全的编译选项
+
+在我最先写这个文章的时候，我就想写这部分，但是由于我对 GCC 和 LLVM 的了解还太少，导致我有些迟疑（当然，现在也了解不多，只是感觉应该加上而已）
+
+```conf
+COMMON_FLAGS="-O3 -pipe -march=x86-64-v3 -flto=thin -fstack-protector-strong -fstack-clash-protection -fcf-protection=full -D_FORTIFY_SOURCE=3"
+RUSTFLAGS="${RUSTFLAGS} -C target-cpu=native"
+CFLAGS="${COMMON_FLAGS}"
+CXXFLAGS="${COMMON_FLAGS}"
+FCFLAGS="${COMMON_FLAGS}"
+FFLAGS="${COMMON_FLAGS}"
+LDFLAGS="-Wl,-O3,-z,now,--as-needed,--lto-O3,--icf=safe,--gc-sections"
+```
+
+我使用的是 LLVM/systemd profile，所以这里用了 thinlto
+
+上面就是我个人的编译选项了，我本身就开启了 `hardened` USE 变量，说实话，这里的部分 USE 变量是重复的
+
+只要开启了 `hardened` USE 变量，这里面有些选项是默认就加上的
+
+> 运行 `clang --version` 可以看到
+>
+> Configuration file: /etc/clang/x86_64-pc-linux-gnu-clang.cfg
+>
+>从那个文件中可以看到它依赖于 @gentoo-common.cfg @gentoo-common-ld.cfg 和 @gentoo-cet.cfg
+>
+> 我这里的 -fstack-clash-protection -fstack-protector-strong -fcf-protection=all 在在上面的文件中
+
+`fstack-protector-*` 都是对栈溢出的防御，而 `fcf-protection` 则是对控制流劫持（也不知道是不是这个名字，就是 ROP 之类的）攻击的防御
+
+LLVM 中也有一个应对 ROP 这种攻击的技术，就是 [CFI](https://clang.llvm.org/docs/ControlFlowIntegrity.html)，CFI 必须在开启了 LTO 的情况下才能使用，我感觉为特定的软件开 CFI，倒也可以接收。Linux kernel 有实验性的 CFI，Chromium 也实施了 CFI。
+
+CFI 还分前端和后端，我也没太仔细研究，也不太清楚区别
+
+我使用了 `O3` 编译，虽然说 O3 的提升空间不大，不过我个人希望试试看效果如何。
+
+`march=x86-64-v3` 表示了我本机 CPU 的指令集是这位，其实用 `march=native` 就行，编译器会自动选择适合的指令集
 
 ## SELinux/AppArmor
 
