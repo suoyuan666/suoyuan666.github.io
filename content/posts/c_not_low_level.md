@@ -2,7 +2,7 @@
 title: "译文: C 不是一个底层编程语言"
 author: suo yuan
 date: 2024-12-19T02:30:08Z
-lastmod: 2025-01-10T10:31:22Z
+lastmod: 2025-01-17T11:45:06Z
 draft: false
 tags:
   - C
@@ -30,7 +30,7 @@ summary: "一篇题为 C Is Not a Low-level Language 的译文"
 >
 > 虽然我们希望执行错误的分支后应该恢复到执行前的状态，但实际上可能会有一些副作用残留。Spectre 利用了这一点，将一些不可读的数据提前加载到缓存中，方便后续读取。
 >
-> Spectre 不易修复，它指代的是一类的漏洞，直到今年（也就是 2024 年），依旧可以看到它。实际上 Spectre 十分依赖于对芯片行为的研究，开发者需要诱导 CPU 认为应该执行分支里的代码。
+> Spectre 不易修复，它指代的是一类的漏洞，直到今年（也就是 2024 年），依旧可以看到它。Spectre 依赖于对芯片行为的研究，开发者需要诱导 CPU 认为应该执行分支里的代码。
 >
 > 如果想了解更多，可以参考 Meltdown 和 Spectre 的论文: [Meltdown](https://arxiv.org/abs/1801.01207) 和 [Spectre Attacks: Exploiting Speculative Execution](https://arxiv.org/abs/1801.01203)
 
