@@ -2,7 +2,7 @@
 title: "Gentoo Linux 安全加固指南"
 author: suo yuan
 date: 2025-01-07T10:00:36Z
-lastmod: 2025-01-13T03:39:37Z
+lastmod: 2025-01-19T08:06:05Z
 draft: false
 tags:
   - gentoo-linux
@@ -22,6 +22,9 @@ summary: "我本次安装 Gentoo Linux 所做的一些安全加固手段"
 >   - 修改了bwrap 中 FireFox 部分，让它可以响应 `xdg-open`
 >   - 添加了禁止核心转储 (core dump) 的段落
 >   - 添加了面向安全的编译选项部分
+> - 2025 年 1 月 19 号修改
+>   - 添加了 NetworkManager 下开启 IPV6 隐私扩展的描述
+>   - 修改了 编译选项 的部分
 
 我一直在寻求一个尽可能不影响日常使用的同时尽量做到安全的操作系统。单论安全性，我认为 [Qubes OS](https://www.qubes-os.org/) 就很不错，但日常使用起来不是很方便。
 
@@ -384,6 +387,27 @@ ethernet.cloned-mac-address=random
 
 如果要安装 gnome-extra/nm-applet 的话，最好启用 `appindicator` USE 变量
 
+之后是开启 IPV6 隐私扩展
+
+新建 /etc/NetworkManager/conf.d/ip6-privacy.conf，其内容为
+
+```conf
+[connection]
+ipv6.ip6-privacy=2
+```
+
+在 /etc/NetworkManager/system-connections/ 下编辑已有的连接
+
+```conf
+...
+[ipv6]
+method=auto
+ip6-privacy=2
+...
+```
+
+添加这个 `ip6-privacy=2`
+
 ## 浏览器配置
 
 FireFox 我推荐 [arkenfox/user.js](https://github.com/arkenfox/user.js) 项目，搭配 [uBlock Origin](https://github.com/gorhill/uBlock)
@@ -469,13 +493,15 @@ LDFLAGS="-Wl,-O3,-z,now,--as-needed,--lto-O3,--icf=safe,--gc-sections"
 
 `fstack-protector-*` 都是对栈溢出的防御，而 `fcf-protection` 则是对控制流劫持（也不知道是不是这个名字，就是 ROP 之类的）攻击的防御
 
-LLVM 中也有一个应对 ROP 这种攻击的技术，就是 [CFI](https://clang.llvm.org/docs/ControlFlowIntegrity.html)，CFI 必须在开启了 LTO 的情况下才能使用，我感觉为特定的软件开 CFI，倒也可以接收。Linux kernel 有实验性的 CFI，Chromium 也实施了 CFI。
+LLVM 中也有一个应对 ROP 这种攻击的技术，就是 [CFI](https://clang.llvm.org/docs/ControlFlowIntegrity.html)，CFI 必须在开启了 LTO 的情况下才能使用（我印象中 KCFI 不需要 LTO，它被用在操作系统内核等底层软件，检测的范围更小），我感觉为特定的软件开 CFI，倒也可以接受。Linux kernel 有专门的 CFI 的选项，Chromium 也实施了 CFI。
 
 CFI 还分前端和后端，我也没太仔细研究，也不太清楚区别
 
-我使用了 `O3` 编译，虽然说 O3 的提升空间不大，不过我个人希望试试看效果如何。
+我使用了 `O3` 编译，虽然说 O3 的提升空间不大，不过我个人希望试试看。
 
 `march=x86-64-v3` 表示了我本机 CPU 的指令集是这位，其实用 `march=native` 就行，编译器会自动选择适合的指令集
+
+`D_FORTIFY_SOURCE=3` 用于应用 libc 的一种强化措施，主要用于检测某些库函数的缓冲区溢出问题。具体可以参考 glibc 的文档：https://www.gnu.org/software/libc/manual/html_node/Source-Fortification.html
 
 ## SELinux/AppArmor
 
