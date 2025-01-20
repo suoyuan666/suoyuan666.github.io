@@ -22,6 +22,7 @@
     - [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
     - [Desktop Linux Hardening](https://privsec.dev/posts/linux/desktop-linux-hardening/)
     - [Linux 发行版劝退指南](https://imbearchild.cyou/archives/2022/07/linux-fa-xing-ban-quan-tui-zhi-nan/)
+    - [ GNU/Linux Sandboxing - A Brief Review](https://hardenedlinux.org/blog/2024-08-20-gnu/linux-sandboxing-a-brief-review/)
 - GNU/Linux security
     - [谈一谈Linux与suid提权](https://www.leavesongs.com/PENETRATION/linux-suid-privilege-escalation.html)
     - [How the XZ backdoor works](https://lwn.net/Articles/967192/)

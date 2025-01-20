@@ -33,15 +33,12 @@ author: suo yuan
         - 没做这门课程的作业
     - [ ] Stanford CS144: Computer Network
         - [CS 144: Introduction to Computer Networking,](https://cs144.github.io/)
-    - [ ] NJU 编译原理
-        - [Compiler@NJU-SE](http://docs.compilers.cpl.icu/#/overview/main-page)
+    - [ ] PKU 编译原理实践
+        - [北大编译实践在线文档](https://pku-minic.github.io/online-doc/)
     - [ ] ASU CSE466: Computer Systems Security
         - [CSE 466 - Fall 2024](https://pwn.college/cse466-f2024/)
-- [ ] 通过一生一芯
-    - [第六期"一生一芯"课程主页](https://ysyx.oscc.cc/docs/)
-    - 目前完成了预学习阶段
 - [ ] 把 xv6-riscv 源码阅读的坑填上
-    - 一时半会是填补不上了
+    - 已经完成了用户态的部分，现在就差内核态了
 
 ### Project
 
