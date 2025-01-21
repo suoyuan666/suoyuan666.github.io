@@ -9,8 +9,8 @@ series:
   - xv6-riscv_源码阅读
 tags:
   - Xv6_RISC-V
-description: "尝试把 xv6-riscv 读一遍，这是 mkfs 的源码阅读"
-summary: "尝试把 xv6-riscv 读一遍，这是 mkfs 的源码阅读"
+description: "尝试把 xv6-riscv 读一遍，这是 mkfs 部分，用来生成硬盘镜像的"
+summary: "尝试把 xv6-riscv 读一遍，这是 mkfs 部分，用来生成硬盘镜像的"
 ---
 # mkfs
  mkfs 用来生成硬盘镜像文件 fs.img

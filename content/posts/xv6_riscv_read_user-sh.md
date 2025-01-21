@@ -9,8 +9,8 @@ series:
   - xv6-riscv_源码阅读
 tags:
   - Xv6_RISC-V
-description: "尝试把 xv6-riscv 读一遍，这是用户态的 sh 的源码阅读"
-summary: "尝试把 xv6-riscv 读一遍，这是用户态的 sh 的源码阅读"
+description: "尝试把 xv6-riscv 读一遍，这是用户态的 sh 部分，一个十分简单的 shell"
+summary: "尝试把 xv6-riscv 读一遍，这是用户态的 sh 部分，一个十分简单的 shell"
 ---
 
 ## 概述

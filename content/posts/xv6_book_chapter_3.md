@@ -1,5 +1,5 @@
 ---
-title: "Xv6 book: Operating system organization"
+title: "Xv6 book: Page tables"
 author: suo yuan
 date: 2023-03-18T03:42:51Z
 draft: false

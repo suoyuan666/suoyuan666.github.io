@@ -9,8 +9,8 @@ series:
   - xv6-riscv_源码阅读
 tags:
   - Xv6_RISC-V
-description: "尝试把 xv6-riscv 读一遍，这是用户态的部分实用程序的源码阅读"
-summary: "尝试把 xv6-riscv 读一遍，这是用户态的部分实用程序的源码阅读"
+description: "尝试把 xv6-riscv 读一遍，这是用户态的部分实用程序，cat ls 什么的"
+summary: "尝试把 xv6-riscv 读一遍，这是用户态的部分实用程序，cat ls 什么的"
 ---
 
 # xv6-riscv 源码阅读 —— 用户态: utils
