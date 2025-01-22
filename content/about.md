@@ -25,7 +25,6 @@ author: suo yuan
         - 没做最后一个 lab
     - [ ] NJU OS: Operating System Design and Implementation
         - [操作系统：设计与实现 (2024 春季学期)](https://jyywiki.cn/OS/2024/)
-        - 22 年看了一次之后就十分喜欢 jyy 老师的上课风格，之后每年的课程视频都会在我闲暇之余当背景音来使用（比如看小说时
     - [ ] Stanford CS162: Operating System
         - [CS 162: Operating Systems and System Programming](https://cs162.org/)
         - [Welcome to Pintos](https://pkuflyingpig.gitbook.io/pintos)
