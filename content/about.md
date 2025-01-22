@@ -3,8 +3,6 @@ title: "关于"
 author: suo yuan
 ---
 
-~~关于域名: 是 s5n(suoyuan) blog 而不是 s5 nb log 😡~~ (目前已经更换到 s5n.xyz)
-
 ## 关于
 
 - 普通本科 大三在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
@@ -16,16 +14,18 @@ author: suo yuan
     - 试图使用 neovim 但多次无果
 - 编程语言:
   - C/C++
-  - ~~Python/Shell/Nix,...~~
+  - ~~Python/Shell~~
+  - ~~Java/C# ?~~
 
 ### Task
 
 - [ ] 刷课
     - [x] MIT 6.1810: Operating System Engineering
         - [6.1810](https://pdos.csail.mit.edu/6.828/)
-        - 差最后一个 lab 没做完
+        - 没做最后一个 lab
     - [ ] NJU OS: Operating System Design and Implementation
         - [操作系统：设计与实现 (2024 春季学期)](https://jyywiki.cn/OS/2024/)
+        - 22 年看了一次之后就十分喜欢 jyy 老师的上课风格，之后每年的课程视频都会在我闲暇之余当背景音来使用（比如看小说时
     - [ ] Stanford CS162: Operating System
         - [CS 162: Operating Systems and System Programming](https://cs162.org/)
         - [Welcome to Pintos](https://pkuflyingpig.gitbook.io/pintos)
@@ -37,8 +37,11 @@ author: suo yuan
         - [北大编译实践在线文档](https://pku-minic.github.io/online-doc/)
     - [ ] ASU CSE466: Computer Systems Security
         - [CSE 466 - Fall 2024](https://pwn.college/cse466-f2024/)
-- [ ] 把 xv6-riscv 源码阅读的坑填上
+- [ ] 把 [xv6-riscv 源码阅读](../series/xv6-riscv_源码阅读/)的坑填上
     - 已经完成了用户态的部分，现在就差内核态了
+- [ ] 完成 [os-cpp](https://github.com/suoyuan666/os-cpp)
+    - 先写内核态，之后写 libcxx（当然不完全实现，实现一部分够我的 coreutils 用先），之后写 coreutils
+    - 然后在此之上再看看写些别的，~~比如完善内核，把 musl libc 等移植过来~~
 
 ### Project
 
