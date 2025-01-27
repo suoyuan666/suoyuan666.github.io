@@ -2,7 +2,7 @@
 title: "Gentoo Linux 安全加固指南"
 author: suo yuan
 date: 2025-01-07T10:00:36Z
-lastmod: 2025-01-19T08:06:05Z
+lastmod: 2025-01-27T11:24:11Z
 draft: false
 tags:
   - gentoo-linux
@@ -25,10 +25,12 @@ summary: "我本次安装 Gentoo Linux 所做的一些安全加固手段"
 > - 2025 年 1 月 19 号修改
 >   - 添加了 NetworkManager 下开启 IPV6 隐私扩展的描述
 >   - 修改了 编译选项 的部分
+> - 2025 年 1 月 27 号修改
+>   - 在 sysctl 和内核参数部分添加了更多的解释
 
-我一直在寻求一个尽可能不影响日常使用的同时尽量做到安全的操作系统。单论安全性，我认为 [Qubes OS](https://www.qubes-os.org/) 就很不错，但日常使用起来不是很方便。
+我一直在寻求一个尽可能不影响日常使用的同时尽量做到安全的操作系统。
 
-在我看来，Qubes OS 很不错，但是网络配置看起来不是很容易，并且社区貌似不是很大。
+单论安全性，我认为 [Qubes OS](https://www.qubes-os.org/) 很不错，但是网络配置看起来不是很容易，并且社区貌似不是很大。
 
 Fedora Silverblue 也是个不错的选择，原子更新，桌面应用大多是从 Flatpak 安装，不过我对 Fedora 官方软件仓库没有我想要的软件这一情况一直有些介意，虽然有 COPR 源，但我不是特别想用。
 
@@ -348,6 +350,65 @@ fs.protected_fifos=2
 fs.protected_regular=2
 ```
 
+`kernel.yama.ptrace_scope=1` 貌似是默认的？为了更安全可以选择 `2` 或 `3`，我印象中 2 是不允许非 root 用户，而 3 这是不允许该行为
+
+我设置为 1 是允许父子进程关系才可以查看进程的内存和运行状态等信息，这是因为我仍然有调试软件的需求，如果没有的话设置死也是个选择 🤔
+
+可以安装 [checksec](https://github.com/slimm609/checksec) 查看当前运行的 kernel 的安全性（当然，该工具检查的并不全面）
+
+```bash
+$ checksec --kernel 
+* Kernel protection information:
+
+  Description - List the status of kernel protection mechanisms. Rather than
+  inspect kernel mechanisms that may aid in the prevention of exploitation of
+  userspace processes, this option lists the status of kernel configuration
+  options that harden the kernel itself against attack.
+
+  Kernel config:
+/proc/config.gz
+
+  Vanilla Kernel ASLR:                    Full
+  NX protection:                          Enabled
+  Protected symlinks:                     Enabled
+  Protected hardlinks:                    Enabled
+  Protected fifos:                        Enabled
+  Protected regular:                      Enabled
+  Ipv4 reverse path filtering:            Enabled
+  Kernel heap randomization:              Enabled
+  GCC stack protector support:            Enabled
+  GCC stack protector strong:             Enabled
+  SLAB freelist randomization:            Enabled
+  Virtually-mapped kernel stack:          Enabled
+  Restrict /dev/mem access:               Enabled
+  Restrict I/O access to /dev/mem:        Enabled
+  Exec Shield:                            Unsupported
+  YAMA:                                   Active
+
+  Hardened Usercopy:                      Enabled
+  Harden str/mem functions:               Enabled
+
+* X86 only:            
+  Address space layout randomization:     Enabled
+
+* SELinux:                                Disabled
+
+  SELinux infomation available here: 
+    http://selinuxproject.org/
+```
+
+这里除了 SELinux 没有开启之外，其他都是通过检查的
+
+印象中还有一个项目，它检查内核配置比这个更全面，除了基本的这些之外，还有 KSPP (Kenrel Self Protection Project) 和 PAX 等项目的建议，不过我没用它
+
+checksec 还可以检查指定的可执行文件的安全配置情况
+
+```bash
+$ checksec --file=/usr/bin/sway
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	    Symbols	     FORTIFY	 Fortified  Fortifiable	FILE
+Full RELRO      Canary found      NX enabled    PIE enabled     No RPATH   No RUNPATH   No Symbols	Partial	9		18		/usr/bin/sway
+```
+
 ## 内核命令行参数
 
 ```txt
@@ -360,7 +421,13 @@ spectre_v2=on spec_store_bypass_disable=on tsx=off tsx_async_abort=full mds=full
 
 第二行是开启一些 IOMMU 防护
 
-第三行是开启 Spectre 漏洞缓解机制
+第三行是开启 Spectre 等 CPU 漏洞的缓解机制
+
+如果要检查当前运行的 CPU 是否受到已知漏洞的影响，可以运行
+
+```bash
+$ grep -r . /sys/devices/system/cpu/vulnerabilities/
+```
 
 ## NetworkManager
 
