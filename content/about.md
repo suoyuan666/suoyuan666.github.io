@@ -9,9 +9,10 @@ author: suo yuan
 - 算是一个操作系统爱好者 😗
 - INTJ-T 🤔
 - 开发环境:
-  - Gentoo Linux && Windows 双系统
-  - Visual Studio Code
-    - 试图使用 neovim 但多次无果
+  - Fedora Silverblue && Windows 双系统
+  - Visual Studio Code/neovim
+    - ~~试图使用 neovim 但多次无果~~
+    - 现在正在 toolbx 下尽量习惯 neovim
 - 编程语言:
   - C/C++
   - ~~Python/Shell~~
@@ -38,8 +39,9 @@ author: suo yuan
         - [CSE 466 - Fall 2024](https://pwn.college/cse466-f2024/)
 - [ ] 把 [xv6-riscv 源码阅读](../series/xv6-riscv_源码阅读/)的坑填上
     - 已经完成了用户态的部分，现在就差内核态了
+    - 现在正在赶 os-cpp 的进度，应该得等到 os-cpp 写的差不多了再更新了
 - [ ] 完成 [os-cpp](https://github.com/suoyuan666/os-cpp)
-    - 先写内核态，之后写 libcxx（当然不完全实现，实现一部分够我的 coreutils 用先），之后写 coreutils
+    - 先写内核态，之后写 libcxx（当然不完全实现，实现一部分够我用的先），之后写 coreutils
     - 然后在此之上再看看写些别的，~~比如完善内核，把 musl libc 等移植过来~~
 
 ### Project
