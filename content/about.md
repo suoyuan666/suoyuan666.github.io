@@ -15,7 +15,7 @@ author: suo yuan
     - 现在正在 toolbx 下尽量习惯 neovim
 - 编程语言:
   - C/C++
-  - ~~Python/Shell~~
+  - Python/Shell
   - ~~Java/C# ?~~
 
 ### Task
@@ -23,14 +23,12 @@ author: suo yuan
 - [ ] 刷课
     - [x] MIT 6.1810: Operating System Engineering
         - [6.1810](https://pdos.csail.mit.edu/6.828/)
-        - 没做最后一个 lab
     - [ ] NJU OS: Operating System Design and Implementation
         - [操作系统：设计与实现 (2024 春季学期)](https://jyywiki.cn/OS/2024/)
     - [ ] Stanford CS162: Operating System
         - [CS 162: Operating Systems and System Programming](https://cs162.org/)
         - [Welcome to Pintos](https://pkuflyingpig.gitbook.io/pintos)
     - [x] Stanford CS106L: Standard C++ Programming
-        - 没做这门课程的作业
     - [ ] Stanford CS144: Computer Network
         - [CS 144: Introduction to Computer Networking,](https://cs144.github.io/)
     - [ ] PKU 编译原理实践
