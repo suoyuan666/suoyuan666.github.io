@@ -16,6 +16,8 @@
     - [雾里看花：真正意义上的理解 C++ 模板](https://ykiko.me/zh-cn/articles/655902377/)
     - [C++ 究竟代码膨胀在哪里？](https://ykiko.me/zh-cn/articles/686296374/)
     - [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
+- Linux
+    - [内核学习经验](https://martins3.github.io/kernel/learn-linux-kernel.html)
 - GNU/Linux usage
     - [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)
     - [个人数据安全不完全指南](https://thiscute.world/posts/an-incomplete-guide-to-data-security/)
@@ -29,7 +31,11 @@
 - Android
     - [Android](https://madaidans-insecurities.github.io/android.html)
         - 和 [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html) 是一个作者，这篇是对安卓上的安全加固方面做了评价
+- Debug
+    - [Skipping boring functions in debuggers](https://maskray.me/blog/2024-12-30-skipping-boring-functions-in-debuggers)
+    - [Debugger 的理念，原理和使用](https://martins3.github.io/linux/gdb.html)
 - misc
     - [Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
     - [忍者代码](https://zh.javascript.info/ninja-code)
     - [BSD 与 GPL：圣人与常人](https://imbearchild.cyou/archives/2023/04/on-bsd-and-gpl/)
+    - [阅读 musl 学到的一些东西](https://martins3.github.io/linux/musl.html)
