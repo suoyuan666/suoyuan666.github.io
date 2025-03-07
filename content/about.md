@@ -27,12 +27,16 @@ author: suo yuan
         - [CS 162: Operating Systems and System Programming](https://cs162.org/)
         - [Welcome to Pintos](https://pkuflyingpig.gitbook.io/pintos)
     - [x] Stanford CS106L: Standard C++ Programming
+        - [CS106L: Standard C++ Programming](https://web.stanford.edu/class/cs106l/)
     - [ ] Stanford CS144: Computer Network
         - [CS 144: Introduction to Computer Networking,](https://cs144.github.io/)
     - [ ] PKU 编译原理实践
         - [北大编译实践在线文档](https://pku-minic.github.io/online-doc/)
     - [ ] ASU CSE466: Computer Systems Security
         - [CSE 466 - Fall 2024](https://pwn.college/cse466-f2024/)
+    - [ ] MIT 6.824: Distributed System
+        - [6.5840: Distributed Systems](https://pdos.csail.mit.edu/6.824/)
+        - [简介 | MIT6.824](https://mit-public-courses-cn-translatio.gitbook.io/mit6-824)
 - [ ] 把 [xv6-riscv 源码阅读](../series/xv6-riscv_源码阅读/)的坑填上
     - 已经完成了用户态的部分，现在就差内核态了
     - 现在正在赶 os-cpp 的进度，应该得等到 os-cpp 写的差不多了再更新了
