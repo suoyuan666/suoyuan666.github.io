@@ -3,6 +3,7 @@ title: 随笔记
 author: suo yuan
 pubDatetime: 2024-04-13T21:19:25
 lastmod: 2025-01-10T10:31:22Z
+featured: true
 draft: false
 tags:
   - others
