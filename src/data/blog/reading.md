@@ -10,6 +10,7 @@ description: "一些感觉看起来不错的文章"
 ## C
 
 - [C Is Not a Low-level Language](https://queue.acm.org/detail.cfm?id=3212479)
+- [C23 is Finished: Here is What is on the Menu](https://thephd.dev/c23-is-coming-here-is-what-is-on-the-menu)
 
 ## C++
 
@@ -19,6 +20,7 @@ description: "一些感觉看起来不错的文章"
 - [使用 Clang 工具自由的支配 C++ 代码吧](https://ykiko.me/zh-cn/articles/669360731/)
 - [C++ 成员指针完全解析](https://ykiko.me/zh-cn/articles/659510753/)
 - [C++ 禁忌黑魔法：STMP （上）](https://ykiko.me/zh-cn/articles/646752343/)
+- [Coroutine Theory](https://lewissbaker.github.io/2017/09/25/coroutine-theory)
 
 ## kernel
 
