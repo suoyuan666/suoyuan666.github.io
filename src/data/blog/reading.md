@@ -41,3 +41,4 @@ description: "一些感觉看起来不错的文章"
 
 - [个人数据安全不完全指南](https://thiscute.world/posts/an-incomplete-guide-to-data-security/)
 - [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)
+- [Compiler Options Hardening Guide for C and C++](https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Guide-for-C-and-C++.html)
