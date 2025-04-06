@@ -1,11 +1,11 @@
 ---
-title: 腾讯云智_后台开发_一面
+title: 腾讯云智 后台开发 一面
 author: suo yuan
 pubDatetime: 2025-03-28T11:38:22Z
 draft: false
 tags:
     - 面经
-description: "这次应该是不会过了"
+description: "属于是一面凉经，因为我并没有通过面试"
 ---
 
 首先当然是自我介绍了，然后就是：
