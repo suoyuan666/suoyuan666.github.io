@@ -1,5 +1,5 @@
 ---
-title: "musl libc阅读记录: printf.c"
+title: "musl libc 阅读记录: printf"
 author: suo yuan
 pubDatetime: 2023-04-22T03:42:51Z
 draft: false
@@ -8,7 +8,7 @@ categories:
 tags:
   - musl libc
 description:
-  "不自量力阅读 musl libc的记录"
+  "不自量力阅读 musl libc 的记录"
 ---
 
 <!--more-->
