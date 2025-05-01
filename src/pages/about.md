@@ -37,9 +37,8 @@ title: "About"
         - [简介 | MIT6.824](https://mit-public-courses-cn-translatio.gitbook.io/mit6-824)
 - [ ] 把 [xv6-riscv 源码阅读](../series/xv6-riscv_源码阅读/)的坑填上
     - 已经完成了用户态的部分，现在就差内核态了
-    - 现在正在赶 os-cpp 的进度，应该得等到 os-cpp 写的差不多了再更新了
-- [ ] 完成 [os-cpp](https://github.com/suoyuan666/os-cpp)
-    - 简单的内核态实现的差不多了，现在准备把 coreutils 简单的实现一下
+    - ~~现在正在赶 os-cpp 的进度，应该得等到 os-cpp 写的差不多了再更新了~~
+    - 等我有时间的吧
 
 ### Project
 
