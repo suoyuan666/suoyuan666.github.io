@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>C&#43;&#43; 项目编写初步入门 - 索元的博客</title><meta name="Description" content="我第一次尝试使用 CMake 等工具管理自己的 C&#43;&#43; 项目的记录"><meta property="og:url" content="http://localhost:1313/posts/cmake_intro/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="C&#43;&#43; 项目编写初步入门">
+  <meta property="og:description" content="我第一次尝试使用 CMake 等工具管理自己的 C&#43;&#43; 项目的记录">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-05-12T14:23:43+00:00">
+    <meta property="article:modified_time" content="2024-05-12T14:23:43+00:00">
+    <meta property="article:tag" content="Cpp Notes">
+    <meta property="article:tag" content="Intro">
+    <meta property="article:tag" content="CMake">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="C&#43;&#43; 项目编写初步入门">
+  <meta name="twitter:description" content="我第一次尝试使用 CMake 等工具管理自己的 C&#43;&#43; 项目的记录">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/cmake_intro/" /><link rel="prev" href="http://localhost:1313/posts/notes/" /><link rel="next" href="http://localhost:1313/posts/nvidia_with_linux/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "C++ 项目编写初步入门",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/cmake_intro\/"
+        },"genre": "posts","keywords": "Cpp notes, intro, CMake","wordcount":  3042 ,
+        "url": "http:\/\/localhost:1313\/posts\/cmake_intro\/","datePublished": "2024-05-12T14:23:43+00:00","dateModified": "2024-05-12T14:23:43+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "我第一次尝试使用 CMake 等工具管理自己的 C++ 项目的记录"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">C++ 项目编写初步入门</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/cpp/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Cpp</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-05-12">2024-05-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3042 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;7 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#cmake-简单使用">CMake 简单使用</a></li>
+    <li><a href="#clang-tidy-和-clang-format"><code>clang-tidy</code> 和 <code>clang-format</code></a></li>
+    <li><a href="#doxygen-使用"><code>doxygen</code> 使用</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>我第一次尝试使用 CMake 等工具管理自己的 C++ 项目的记录</p>
+<h1 id="c-项目编写初步入门">C++ 项目编写初步入门</h1>
+<p>由于想要编写一个 C++ 的项目，所以开始学习 <code>cmake</code> 管理项目的编译工作。我这里会把 <strong>src</strong> 和 <strong>include</strong> 分开，并且尝试使用<a href="https://github.com/google/googletest" target="_blank" rel="noopener noreffer ">Google test</a>做一些项目的简单测试。</p>
+<p>并且我尝试使用 <code>clang-tidy</code> 和 <code>clang-format</code> 格式化我的代码，<code>doxygen</code> 生成项目 API 文档。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ tree -a -L <span class="m">2</span>
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">├── build/
+</span></span><span class="line"><span class="cl">├── CMakeLists.txt
+</span></span><span class="line"><span class="cl">├── compile_commands.json -&gt; build/compile_commands.json
+</span></span><span class="line"><span class="cl">├── doc
+</span></span><span class="line"><span class="cl">│   ├── doxygen-awesome-css/
+</span></span><span class="line"><span class="cl">│   ├── html/
+</span></span><span class="line"><span class="cl">│   └── man/
+</span></span><span class="line"><span class="cl">├── Doxyfile
+</span></span><span class="line"><span class="cl">├── LICENSE
+</span></span><span class="line"><span class="cl">├── README.md
+</span></span><span class="line"><span class="cl">├── README_ZH_CN.md
+</span></span><span class="line"><span class="cl">├── src
+</span></span><span class="line"><span class="cl">│   ├── CMakeLists.txt
+</span></span><span class="line"><span class="cl">│   ├── core
+</span></span><span class="line"><span class="cl">│   │   ├── CMakeLists.txt
+</span></span><span class="line"><span class="cl">│   │   └── pack_core.cpp
+</span></span><span class="line"><span class="cl">│   ├── curl_cpp
+</span></span><span class="line"><span class="cl">│   │   ├── CMakeLists.txt
+</span></span><span class="line"><span class="cl">│   │   └── cppcurl.cpp
+</span></span><span class="line"><span class="cl">│   ├── include
+</span></span><span class="line"><span class="cl">│   │   ├── cppcurl.h
+</span></span><span class="line"><span class="cl">│   │   ├── env.h
+</span></span><span class="line"><span class="cl">│   │   ├── log.h
+</span></span><span class="line"><span class="cl">│   │   ├── misc.h
+</span></span><span class="line"><span class="cl">│   │   ├── os-detect.h
+</span></span><span class="line"><span class="cl">│   │   └── pack_core.h
+</span></span><span class="line"><span class="cl">│   ├── main.cpp
+</span></span><span class="line"><span class="cl">│   └── utils
+</span></span><span class="line"><span class="cl">│       ├── CMakeLists.txt
+</span></span><span class="line"><span class="cl">│       ├── env.cpp
+</span></span><span class="line"><span class="cl">│       ├── log.cpp
+</span></span><span class="line"><span class="cl">│       └── os-detect.cpp
+</span></span><span class="line"><span class="cl">├── <span class="nb">test</span>
+</span></span><span class="line"><span class="cl">│   ├── CMakeLists.txt
+</span></span><span class="line"><span class="cl">│   └── main_test.cpp
+</span></span><span class="line"><span class="cl">└── third_party
+</span></span><span class="line"><span class="cl">    ├── argparse/
+</span></span><span class="line"><span class="cl">    ├── CMakeLists.txt
+</span></span><span class="line"><span class="cl">    ├── googletest/
+</span></span><span class="line"><span class="cl">    └── json/</span></span></code></pre></div></div>
+<p>上面这个就是我项目的基础结构，<strong>src</strong> 存放项目的源代码，<strong>src/include</strong> 从存放一些自定义的头文件，<strong>test</strong> 目录存放用于开发测试的代码文件，<strong>third_party</strong> 目录存放第三方库文件。</p>
+<p>这里 <code>tree -a -L 2</code> 的输出，实际上我对它做了一些修改的工作，这里最后一级的文件夹我都加了 <code>/</code> 做区分，并且我认为不太重要的（如 <strong>.build</strong>, <strong>.git</strong> 文件夹）都删掉了它的下一级内容，并添加 <code>/</code> 表示它是文件夹。</p>
+<h2 id="cmake-简单使用">CMake 简单使用</h2>
+<blockquote>
+<p>CMake is cross-platform free and open-source software for build automation, testing, packaging and installation of software by using a compiler-independent method. CMake is not a build system itself; it generates another system&rsquo;s build files. It supports directory hierarchies and applications that depend on multiple libraries. It can invoke native build environments such as Make, Qt Creator, Ninja, Android Studio, Apple&rsquo;s Xcode, and Microsoft Visual Studio. It has minimal dependencies, requiring only a C++ compiler on its own build system.</p>
+<p><a href="https://cmake.org/" target="_blank" rel="noopener noreffer ">CMake</a> 是跨平台的自由开源软件，用于使用独立于编译器的方法构建自动化、测试、打包和安装软件。 CMake 本身并不是一个构建系统，它只是生成另一个系统的构建文件。它支持依赖于多个库的目录层次结构和应用程序。它可以调用本机构建环境，例如 Make、Qt Creator、Ninja、Android Studio、Apple 的 Xcode 和 Microsoft Visual Studio。它具有最小的依赖性，仅需要其自己的构建系统上的 C++ 编译器。</p>
+</blockquote>
+<p>上面这段话来自 <a href="https://en.wikipedia.org/wiki/CMake" target="_blank" rel="noopener noreffer ">WikiPedia</a></p>
+<p>我根目录的 <strong>CMakeLists.txt</strong> 文件的内容是：</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-CMakeLists">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="cl"><span class="nf">cmake_minimum_required</span><span class="p">(</span><span class="n">VERSION</span><span class="w"> </span><span class="mi">3</span><span class="p">.</span><span class="mi">13</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_STANDARD</span><span class="w"> </span><span class="mi">17</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_STANDARD_REQUIRED</span><span class="w"> </span><span class="k">ON</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">project</span><span class="p">(</span><span class="n">ReleaseButler</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">VERSION</span><span class="w"> </span><span class="mi">2024</span><span class="p">.</span><span class="mi">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">DESCRIPTION</span><span class="w"> </span><span class="s2">&#34;package manager on GitHub&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">LANGUAGES</span><span class="w"> </span><span class="n">CXX</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">add_subdirectory</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">add_subdirectory</span><span class="p">(</span><span class="n">third_party</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">if</span><span class="p">(</span><span class="k">NOT</span><span class="w"> </span><span class="n">CMAKE_BUILD_TYPE</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="n">CMAKE_CONFIGURATION_TYPES</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">message</span><span class="p">(</span><span class="n">STATUS</span><span class="w"> </span><span class="s2">&#34;Setting build type to `Debug` as none was specified.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_BUILD_TYPE</span><span class="w"> </span><span class="s2">&#34;Debug&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">endif</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">if</span><span class="p">(</span><span class="n">CMAKE_BUILD_TYPE</span><span class="w"> </span><span class="n">STREQUAL</span><span class="w"> </span><span class="s2">&#34;Debug&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">enable_testing</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">add_subdirectory</span><span class="p">(</span><span class="n">test</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_DEBUG</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Werror&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">endif</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">if</span><span class="p">(</span><span class="n">CMAKE_BUILD_TYPE</span><span class="w"> </span><span class="n">STREQUAL</span><span class="w"> </span><span class="s2">&#34;Release&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">message</span><span class="p">(</span><span class="n">STATUS</span><span class="w"> </span><span class="s2">&#34;Configuring Release build&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1"># something come form https://airbus-seclab.github.io/c-compiler-security/clang_compilation.html
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_RELEASE} -O2 -pipe -fPIE -Wall -Wextra -Wpedantic -Werror&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_RELEASE} -fstack-clash-protection -fstack-protector-all -fcf-protection=full&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_RELEASE} -flto&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">CMAKE_CXX_COMPILER_ID</span><span class="w"> </span><span class="n">STREQUAL</span><span class="w"> </span><span class="s2">&#34;Clang&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_RELEASE} -fsanitize=integer -fsanitize-minimal-runtime -fno-sanitize-recover&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_RELEASE} -Wthread-safety  -fvisibility=hidden -fsanitize=cfi&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">elseif</span><span class="p">(</span><span class="n">CMAKE_CXX_COMPILER_ID</span><span class="w"> </span><span class="n">STREQUAL</span><span class="w"> </span><span class="s2">&#34;GNU&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_RELEASE} -fsanitize=address -fsanitize=undefined&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_RELEASE} -fstack-protector-strong -D_FORTIFY_SOURCE=2&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="w"> </span><span class="s2">&#34;${CMAKE_CXX_FLAGS_RELEASE} -Wl,-z,relro,-z,now,-z,noexecstack&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">endif</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">endif</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">file</span><span class="p">(</span><span class="n">TO_CMAKE_PATH</span><span class="w"> </span><span class="s2">&#34;${PROJECT_BINARY_DIR}/CMakeLists.txt&#34;</span><span class="w"> </span><span class="n">PATH_TO_CMAKELISTS_TXT</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">if</span><span class="p">(</span><span class="k">EXISTS</span><span class="w"> </span><span class="s2">&#34;${PATH_TO_CMAKELISTS_TXT}&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">message</span><span class="p">(</span><span class="n">FATAL_ERROR</span><span class="w"> </span><span class="s2">&#34;Run CMake from a build subdirectory! \&#34;</span><span class="n">mkdir</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">cd</span><span class="w"> </span><span class="n">build</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">cmake</span><span class="w"> </span><span class="p">..</span><span class="err">\</span><span class="s2">&#34; \
+</span></span></span><span class="line"><span class="cl"><span class="s2">    Some junk files were created in this folder (CMakeCache.txt, CMakeFiles); you should delete those.&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">endif</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1"># Compiler flags.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">set</span><span class="p">(</span><span class="n">CMAKE_POSITION_INDEPENDENT_CODE</span><span class="w"> </span><span class="k">ON</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">message</span><span class="p">(</span><span class="n">STATUS</span><span class="w"> </span><span class="s2">&#34;CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">if</span><span class="p">(</span><span class="n">CMAKE_BUILD_TYPE</span><span class="w"> </span><span class="n">STREQUAL</span><span class="w"> </span><span class="s2">&#34;Debug&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">message</span><span class="p">(</span><span class="n">STATUS</span><span class="w"> </span><span class="s2">&#34;CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">elseif</span><span class="p">(</span><span class="n">CMAKE_BUILD_TYPE</span><span class="w"> </span><span class="n">STREQUAL</span><span class="w"> </span><span class="s2">&#34;Release&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nf">message</span><span class="p">(</span><span class="n">STATUS</span><span class="w"> </span><span class="s2">&#34;CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">endif</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">message</span><span class="p">(</span><span class="n">STATUS</span><span class="w"> </span><span class="s2">&#34;CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nf">message</span><span class="p">(</span><span class="n">STATUS</span><span class="w"> </span><span class="s2">&#34;CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}&#34;</span><span class="p">)</span></span></span></code></pre></div></div>
+<p>这里我对 Debug 模式和 Release 模式都设置了不同的编译选项，我因为个人的原因很希望 Release 模式编译出来的是尽可能安全些的，所以找了一些安全方面的编译选项。
+由于 clang 实现了 CFI 保护，所以我这里检测当前编译环境的编译器如果是 clang 的话就启用该支持。 如果检测到是 GCC 环境的话也会启用相应的支持。</p>
+<p>根目录下的 <strong>CMakeLists.txt</strong> 只是设置好相关的编译选项和一些基础设置，而后添加各个子目录的 <strong>CMakeLists.txt</strong>。</p>
+<p><strong>third_party</strong> 目录下的 <strong>CMakeLists.txt</strong> 判断如果是 Debug 的话就添加 googletest 库，并且把其他第三方库添加进去。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-CMakeLists">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">set(JSON_BuildTests OFF CACHE INTERNAL &#34;&#34;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">if(CMAKE_BUILD_TYPE STREQUAL &#34;Debug&#34;)
+</span></span><span class="line"><span class="cl">    add_subdirectory(googletest)
+</span></span><span class="line"><span class="cl">endif()
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add_subdirectory(argparse)</span></span></code></pre></div></div>
+<p><strong>test</strong> 目录下还有些东西，因为遇到额外添加 <strong>googletest</strong> 中的 include 到编译过程中，还要启用 testing</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-CMakeLists">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cmake_minimum_required(VERSION 3.11)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set(TEST_TARGET_NAME main_test)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set(TEST_SOURCE_FILES
+</span></span><span class="line"><span class="cl">    main_test.cpp
+</span></span><span class="line"><span class="cl">)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add_executable(${TEST_TARGET_NAME} ${TEST_SOURCE_FILES})
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set(
+</span></span><span class="line"><span class="cl">    TEST_INCLUDE_DIR
+</span></span><span class="line"><span class="cl">    ${PROJECT_SOURCE_DIR}/src/include
+</span></span><span class="line"><span class="cl">    ${PROJECT_SOURCE_DIR}/third_party/googletest/googletest/include
+</span></span><span class="line"><span class="cl">)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">include_directories(${TEST_INCLUDE_DIR})
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">target_link_libraries(${TEST_TARGET_NAME} PRIVATE gtest gtest_main ${ReleaseButler_LIBS})
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add_test(NAME ${TEST_TARGET_NAME} COMMAND ${TEST_TARGET_NAME})</span></span></code></pre></div></div>
+<p><strong>test</strong> 目录下的示例程序:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;gtest/gtest.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;gtest/gtest.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;pack_core.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">TEST</span><span class="p">(</span><span class="n">ExampleTest</span><span class="p">,</span> <span class="n">Install</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">Install</span><span class="p">(</span><span class="s">&#34;https://github.com/fastfetch-cli/fastfetch&#34;</span><span class="p">,</span> <span class="s">&#34;fastfetch-linux-amd64.deb&#34;</span><span class="p">,</span> <span class="s">&#34;true&#34;</span><span class="p">),</span> <span class="nb">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">auto</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">InitGoogleTest</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">RUN_ALL_TESTS</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><strong>src</strong> 目录下的 <strong>CMakeLists.txt</strong> 设置了可执行文件的具体配置:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-CMakeLists">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">add_subdirectory(core)
+</span></span><span class="line"><span class="cl">add_subdirectory(curl_cpp)
+</span></span><span class="line"><span class="cl">add_subdirectory(utils)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set(PROGRAM_NAME releasebutler)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add_executable(${PROGRAM_NAME} &#34;main.cpp&#34;)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set(
+</span></span><span class="line"><span class="cl">    RB_SRC_INCLUDE_DIR
+</span></span><span class="line"><span class="cl">    ${PROJECT_SOURCE_DIR}/src/include
+</span></span><span class="line"><span class="cl">)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set(
+</span></span><span class="line"><span class="cl">    RB_THIRD_PARTY_INCLUDE_DIR
+</span></span><span class="line"><span class="cl">    ${PROJECT_SOURCE_DIR}/third_party/argparse/include
+</span></span><span class="line"><span class="cl">)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">include_directories(${RB_SRC_INCLUDE_DIR} ${RB_THIRD_PARTY_INCLUDE_DIR})
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">set(ReleaseButler_LIBS
+</span></span><span class="line"><span class="cl">    core
+</span></span><span class="line"><span class="cl">    utils
+</span></span><span class="line"><span class="cl">    curl_cpp
+</span></span><span class="line"><span class="cl">)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">target_link_libraries(${PROGRAM_NAME} ${ReleaseButler_LIBS})</span></span></code></pre></div></div>
+<p>这里设置好了可执行文件的名称，以及它依赖的库文件，并在最开始添加相关库的子目录进去，先把子目录的 lib 编译好。</p>
+<p>下边贴一个 <strong>src/core/CMakeLists.txt</strong> 的内容:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-CMakeLists.txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-CMakeLists.txt" data-lang="CMakeLists.txt"><span class="line"><span class="cl"><span class="nb">set</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">RB_CORE_SRC_INCLUDE</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="o">}</span><span class="s">/src/include</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">RB_CORE_TP_INCLUDE</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="o">}</span><span class="s">/third_party/json/single_include/nlohmann</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">set</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">RB_CORE_SRC</span>
+</span></span><span class="line"><span class="cl">    <span class="s">pack_core.cpp</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">RB_CORE_SRC_INCLUDE</span><span class="o">}</span> <span class="o">${</span><span class="nv">RB_CORE_TP_INCLUDE</span><span class="o">}</span><span class="p">)</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="nb">add_library</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">core</span>
+</span></span><span class="line"><span class="cl">    <span class="s">OBJECT</span>
+</span></span><span class="line"><span class="cl">    <span class="o">${</span><span class="nv">RB_CORE_SRC</span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span></span></span></code></pre></div></div>
+<p>可以看到就是简单的设置 include 路径并编译成 object</p>
+<p>在项目的根目录下，执行下边的语句:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ cmake --build build -j <span class="sb">`</span>nproc<span class="sb">`</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>  5%<span class="o">]</span> Building CXX object src/utils/CMakeFiles/utils.dir/log.cpp.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 11%<span class="o">]</span> Building CXX object src/utils/CMakeFiles/utils.dir/os-detect.cpp.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 17%<span class="o">]</span> Building CXX object src/utils/CMakeFiles/utils.dir/env.cpp.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 23%<span class="o">]</span> Building CXX object src/core/CMakeFiles/core.dir/pack_core.cpp.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 29%<span class="o">]</span> Building CXX object src/curl_cpp/CMakeFiles/curl_cpp.dir/cppcurl.cpp.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 35%<span class="o">]</span> Building CXX object third_party/googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 35%<span class="o">]</span> Built target curl_cpp
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 35%<span class="o">]</span> Built target core
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 35%<span class="o">]</span> Built target utils
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 41%<span class="o">]</span> Building CXX object src/CMakeFiles/releasebutler.dir/main.cpp.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 47%<span class="o">]</span> Linking CXX static library ../../../lib/libgtest.a
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 47%<span class="o">]</span> Built target gtest
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 58%<span class="o">]</span> Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 58%<span class="o">]</span> Building CXX object third_party/googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 64%<span class="o">]</span> Linking CXX executable releasebutler
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 64%<span class="o">]</span> Built target releasebutler
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 70%<span class="o">]</span> Linking CXX static library ../../../lib/libgtest_main.a
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 70%<span class="o">]</span> Built target gtest_main
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 76%<span class="o">]</span> Building CXX object test/CMakeFiles/main_test.dir/main_test.cpp.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 82%<span class="o">]</span> Linking CXX executable main_test
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 82%<span class="o">]</span> Built target main_test
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 88%<span class="o">]</span> Linking CXX static library ../../../lib/libgmock.a
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 88%<span class="o">]</span> Built target gmock
+</span></span><span class="line"><span class="cl"><span class="o">[</span> 94%<span class="o">]</span> Building CXX object third_party/googletest/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o
+</span></span><span class="line"><span class="cl"><span class="o">[</span>100%<span class="o">]</span> Linking CXX static library ../../../lib/libgmock_main.a
+</span></span><span class="line"><span class="cl"><span class="o">[</span>100%<span class="o">]</span> Built target gmock_main</span></span></code></pre></div></div>
+<p>这样在 <strong>build/test</strong> 目录下就会生成一个用于测试的程序。执行即可</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ ./build/test/main_test
+</span></span><span class="line"><span class="cl"><span class="o">[==========]</span> Running <span class="m">1</span> <span class="nb">test</span> from <span class="m">1</span> <span class="nb">test</span> suite.
+</span></span><span class="line"><span class="cl"><span class="o">[</span>----------<span class="o">]</span> Global <span class="nb">test</span> environment set-up.
+</span></span><span class="line"><span class="cl"><span class="o">[</span>----------<span class="o">]</span> <span class="m">1</span> <span class="nb">test</span> from ExampleTest
+</span></span><span class="line"><span class="cl"><span class="o">[</span> RUN      <span class="o">]</span> ExampleTest.Addition
+</span></span><span class="line"><span class="cl"><span class="o">[</span>       OK <span class="o">]</span> ExampleTest.Addition <span class="o">(</span><span class="m">0</span> ms<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>----------<span class="o">]</span> <span class="m">1</span> <span class="nb">test</span> from ExampleTest <span class="o">(</span><span class="m">0</span> ms total<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>----------<span class="o">]</span> Global <span class="nb">test</span> environment tear-down
+</span></span><span class="line"><span class="cl"><span class="o">[==========]</span> <span class="m">1</span> <span class="nb">test</span> from <span class="m">1</span> <span class="nb">test</span> suite ran. <span class="o">(</span><span class="m">0</span> ms total<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>  PASSED  <span class="o">]</span> <span class="m">1</span> test.</span></span></code></pre></div></div>
+<p>这里有一个问题，我使用的是 Visual Studio Code 写代码，用 <code>clangd</code> 插件提高 C/C++ 的编程体验，我一开始用 <code>ln -s</code> 给 <strong>build/compile_commands.json</strong> 文件在根目录建一个软链接，但是 <code>clangd</code> 的没有成功解析出 <strong>test/main_test.cpp</strong> 文件的头文件位置，后来我安装了bear，特地 <code>bear -- cmake</code> 生成了一个 <strong>compile_commands.json</strong> 才成功解析。</p>
+<p>不过后来又好使了，不好评价那时候发生了什么。</p>
+<h2 id="clang-tidy-和-clang-format"><code>clang-tidy</code> 和 <code>clang-format</code></h2>
+<blockquote>
+<p><code>clang-tidy</code> is a clang-based C++ “linter” tool. Its purpose is to provide an extensible framework for diagnosing and fixing typical programming errors, like style violations, interface misuse, or bugs that can be deduced via static analysis. <code>clang-tidy</code> is modular and provides a convenient interface for writing new checks.</p>
+<p><code>clang-tidy</code> 是一个基于 <code>clang</code> 的 C++ “linter” 工具。其目的是提供一个可扩展的框架，用于诊断和修复典型的编程错误，例如样式违规、接口误用或可以通过静态分析推断出的错误。 <code>clang-tidy</code> 是模块化的，并提供了一个方便的接口来编写新的检查。</p>
+</blockquote>
+<p><a href="https://clang.llvm.org/extra/clang-tidy/" target="_blank" rel="noopener noreffer ">clang-tidy</a> 是一个静态语法扫描器。我第一次听说它就是在一个文章中，那篇文章介绍了 C++ 目前面临的困境，其中一个就是 C++ 的学习者还在对着已经过时的语法学习，根本不怎么了解 &ldquo;modern cpp&rdquo;。之后那篇文章介绍 <code>clang-tidy</code> 一定程度上正在解决这个问题，我对它的理解就是会检查源文件的语法是否符合 <code>clang-tidy</code> 认为的好写法，它根据多种规则来检查。但是 <code>clang-tidy</code> 内置的部分规则是没有必要的，比如要求类的成员函数的首字母需要大写（至少我认为没什么必要，甚至我写函数就没有大写的习惯，宏写的函数除外，不过宏写的到底能不能叫函数🤔）。</p>
+<p><code>clang-tidy</code> 支持项目根目录下存在一个 <strong>.clang-tidy</strong> 文件，该文件可以指定规则，检查的范围，对一些规则作具体的设置。</p>
+<p><a href="https://clang.llvm.org/docs/ClangFormat.html" target="_blank" rel="noopener noreffer ">clang-format</a> 就是一个专门的代码格式化工具了，<code>clang-format</code> 内置了多种代码风格，可以指定某个风格并做一些额外的修改，当然也是写在项目的根目录下的 <strong>.clang-format</strong>。</p>
+<p>下面是我 <strong>.clang-tidy</strong> 文件的内容：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">Checks: &#39;
+</span></span><span class="line"><span class="cl">        bugprone-*,
+</span></span><span class="line"><span class="cl">        clang-analyzer-*,
+</span></span><span class="line"><span class="cl">        google-*,
+</span></span><span class="line"><span class="cl">        modernize-*,
+</span></span><span class="line"><span class="cl">        performance-*,
+</span></span><span class="line"><span class="cl">        portability-*,
+</span></span><span class="line"><span class="cl">        readability-*,
+</span></span><span class="line"><span class="cl">        -bugprone-easily-swappable-parameters,
+</span></span><span class="line"><span class="cl">        -bugprone-implicit-widening-of-multiplication-result,
+</span></span><span class="line"><span class="cl">        -bugprone-narrowing-conversions,
+</span></span><span class="line"><span class="cl">        -bugprone-reserved-identifier,
+</span></span><span class="line"><span class="cl">        -bugprone-signed-char-misuse,
+</span></span><span class="line"><span class="cl">        -bugprone-suspicious-include,
+</span></span><span class="line"><span class="cl">        -bugprone-unhandled-self-assignment,
+</span></span><span class="line"><span class="cl">        -clang-analyzer-cplusplus.NewDelete,
+</span></span><span class="line"><span class="cl">        -clang-analyzer-cplusplus.NewDeleteLeaks,
+</span></span><span class="line"><span class="cl">        -clang-analyzer-security.insecureAPI.rand,
+</span></span><span class="line"><span class="cl">        -clang-diagnostic-implicit-int-float-conversion,
+</span></span><span class="line"><span class="cl">        -google-readability-avoid-underscore-in-googletest-name,
+</span></span><span class="line"><span class="cl">        -modernize-avoid-c-arrays,
+</span></span><span class="line"><span class="cl">        -modernize-use-nodiscard,
+</span></span><span class="line"><span class="cl">        -readability-convert-member-functions-to-static,
+</span></span><span class="line"><span class="cl">        -readability-identifier-length,
+</span></span><span class="line"><span class="cl">        -readability-function-cognitive-complexity,
+</span></span><span class="line"><span class="cl">        -readability-magic-numbers,
+</span></span><span class="line"><span class="cl">        -readability-make-member-function-const,
+</span></span><span class="line"><span class="cl">        -readability-qualified-auto,
+</span></span><span class="line"><span class="cl">        -readability-identifier-naming,
+</span></span><span class="line"><span class="cl">        -readability-redundant-access-specifiers,
+</span></span><span class="line"><span class="cl">        -bugprone-exception-escape,
+</span></span><span class="line"><span class="cl">        -performance-avoid-endl,
+</span></span><span class="line"><span class="cl">        -readability-use-anyofallof,
+</span></span><span class="line"><span class="cl">        &#39;
+</span></span><span class="line"><span class="cl">CheckOptions:
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.ClassCase,           value: CamelCase  }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.EnumCase,            value: CamelCase  }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.FunctionCase,        value: CamelCase  }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.GlobalConstantCase,  value: UPPER_CASE }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.MemberCase,          value: lower_case }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.MemberSuffix,        value: _          }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.NamespaceCase,       value: lower_case }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.StructCase,          value: CamelCase  }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.UnionCase,           value: CamelCase  }
+</span></span><span class="line"><span class="cl">  - { key: readability-identifier-naming.VariableCase,        value: lower_case }
+</span></span><span class="line"><span class="cl">WarningsAsErrors: &#39;*&#39;
+</span></span><span class="line"><span class="cl">HeaderFilterRegex: &#39;/(src|test)/include&#39;
+</span></span><span class="line"><span class="cl">AnalyzeTemporaryDtors: true</span></span></code></pre></div></div>
+<p>下面则是 <strong>.clang-format</strong> 的内容</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">BasedOnStyle: Google
+</span></span><span class="line"><span class="cl">ColumnLimit: 80</span></span></code></pre></div></div>
+<p>我对代码格式化还没有什么太高的需求，等我以后再好好研究如何更好的格式化吧。</p>
+<h2 id="doxygen-使用"><code>doxygen</code> 使用</h2>
+<p><code>doxygen</code> 是一个根据源文件的注释生成项目 API 文档的软件。我认为一定程度上这逼迫者我写注释😶‍🌫️。这个文档格式可以是 HTML，LaTeX，man pages 等，</p>
+<p><code>doxygen</code> 是根据 <strong>Doxyfile</strong> 生成相关文档的。在项目的根目录下打开终端输入 <code>doxygen -g</code> 即可产生一份带有注释信息的 <strong>Doxyfile</strong>，可以根据注释了解一下 <strong>Doxyfile</strong> 的写法。</p>
+<p>下面是我 <strong>Doxyfile</strong> 的内容：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-Doxyfile">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">PROJECT_NAME</span>           <span class="p">=</span> <span class="s">&#34;ReleaseButler&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">PROJECT_NUMBER</span>         <span class="p">=</span> <span class="s">&#34;1.0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">PROJECT_BRIEF</span>          <span class="p">=</span> <span class="s">&#34;😙 package manager on GitHub 😙&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="nx">Project</span> <span class="nx">section</span>
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="nx">BRIEF_MEMBER_DESC</span> <span class="p">=</span> <span class="nx">NO</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">HTML_STYLESHEET</span> <span class="p">=</span> <span class="nx">doc</span><span class="o">/</span><span class="nx">doxygen</span><span class="o">-</span><span class="nx">awesome</span><span class="o">-</span><span class="nx">css</span><span class="o">/</span><span class="nx">doxygen</span><span class="o">-</span><span class="nx">awesome</span><span class="p">.</span><span class="nx">css</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="nx">输入</span>
+</span></span><span class="line"><span class="cl"><span class="nx">INPUT</span>                  <span class="p">=</span> <span class="nx">src</span> <span class="nx">README</span><span class="p">.</span><span class="nx">md</span> <span class="nx">README_ZH_CN</span><span class="p">.</span><span class="nx">md</span>
+</span></span><span class="line"><span class="cl"><span class="nx">FILE_PATTERNS</span>          <span class="p">=</span> <span class="o">*</span><span class="p">.</span><span class="nx">cpp</span> <span class="o">*</span><span class="p">.</span><span class="nx">h</span>
+</span></span><span class="line"><span class="cl"><span class="nx">RECURSIVE</span>              <span class="p">=</span> <span class="nx">YES</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="nx">输出格式</span>
+</span></span><span class="line"><span class="cl"><span class="nx">GENERATE_HTML</span>          <span class="p">=</span> <span class="nx">YES</span>
+</span></span><span class="line"><span class="cl"><span class="nx">HTML_OUTPUT</span>            <span class="p">=</span> <span class="nx">doc</span><span class="o">/</span><span class="nx">html</span>
+</span></span><span class="line"><span class="cl"><span class="nx">GENERATE_LATEX</span>         <span class="p">=</span> <span class="nx">NO</span>
+</span></span><span class="line"><span class="cl"><span class="nx">GENERATE_XML</span>           <span class="p">=</span> <span class="nx">NO</span>
+</span></span><span class="line"><span class="cl"><span class="nx">GENERATE_RTF</span>           <span class="p">=</span> <span class="nx">NO</span>
+</span></span><span class="line"><span class="cl"><span class="nx">GENERATE_MAN</span>           <span class="p">=</span> <span class="nx">YES</span>
+</span></span><span class="line"><span class="cl"><span class="nx">MAN_OUTPUT</span>            <span class="p">=</span> <span class="nx">doc</span><span class="o">/</span><span class="nx">man</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="nx">文档风格</span>
+</span></span><span class="line"><span class="cl"><span class="nx">OUTPUT_LANGUAGE</span>        <span class="p">=</span> <span class="nx">English</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="nx">文档内容</span>
+</span></span><span class="line"><span class="cl"><span class="nx">EXTRACT_ALL</span>            <span class="p">=</span> <span class="nx">YES</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="nx">注释风格</span>
+</span></span><span class="line"><span class="cl"><span class="nx">JAVADOC_AUTOBRIEF</span>      <span class="p">=</span> <span class="nx">YES</span>
+</span></span><span class="line"><span class="cl"><span class="nx">QT_AUTOBRIEF</span>           <span class="p">=</span> <span class="nx">NO</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">#</span> <span class="nx">其他</span>
+</span></span><span class="line"><span class="cl"><span class="nx">GENERATE_TREEVIEW</span>      <span class="p">=</span> <span class="nx">YES</span>
+</span></span><span class="line"><span class="cl"><span class="nx">GENERATE_LATEX</span>         <span class="p">=</span> <span class="nx">NO</span>
+</span></span><span class="line"><span class="cl"><span class="nx">GENERATE_HTMLHELP</span>      <span class="p">=</span> <span class="nx">NO</span>
+</span></span><span class="line"><span class="cl"><span class="nx">DISTRIBUTE_GROUP_DOC</span>   <span class="p">=</span> <span class="nx">NO</span>
+</span></span><span class="line"><span class="cl"><span class="nx">USE_MDFILE_AS_MAINPAGE</span> <span class="p">=</span> <span class="nx">README</span><span class="p">.</span><span class="nx">md</span></span></span></code></pre></div></div>
+<p><code>doxygen</code> 生成的 HTML 网页好难看啊😢，所以我特地找了一个主题 <a href="https://github.com/jothepro/doxygen-awesome-css" target="_blank" rel="noopener noreffer ">doxygen-awesome-css</a>，这样还能相对好看一些。</p>
+<p><code>doxygen</code> 对注释格式也有些要求，这是我写的一个注释：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @brief Simple encapsulation of std::getenv
+</span></span></span><span class="line"><span class="cl"><span class="cm"> *
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @param name Name of the environment variable
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @return The value of the environment variable
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl"><span class="na">[[nodiscard]]</span> <span class="k">auto</span> <span class="n">get_env2str</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">;</span></span></span></code></pre></div></div>
+<p><code>@brief</code> 是简要说明，<code>@param</code> 是参数说明，<code>@return</code> 是对返回值的说明。其实还有 <code>@note</code> 等字段，也可以用来标示一种信息。</p>
+<p>而且实际上 <code>clangd</code> 目前不支持对 Doxygen 这样格式的注释的解析，导致 Visual Studio Code 读自己写的注释是没有什么好渲染的。
+不过貌似微软官方的 C/C++ 插件可以解析 Doxygen 的注释，并渲染出来，但我习惯使用 <code>clangd</code> 了。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-05-12</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/cmake_intro/" data-title="C&#43;&#43; 项目编写初步入门" data-hashtags="Cpp notes,intro,CMake"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/cmake_intro/" data-title="C&#43;&#43; 项目编写初步入门"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/cmake_intro/" data-hashtag="Cpp notes"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/cmake_intro/" data-title="C&#43;&#43; 项目编写初步入门"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/cmake_intro/" data-title="C&#43;&#43; 项目编写初步入门"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/cmake_intro/" data-title="C&#43;&#43; 项目编写初步入门"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/cmake_intro/" data-title="C&#43;&#43; 项目编写初步入门" data-description="我第一次尝试使用 CMake 等工具管理自己的 C&#43;&#43; 项目的记录"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fcmake_intro%2f&amp;text=C%2b%2b%20%e9%a1%b9%e7%9b%ae%e7%bc%96%e5%86%99%e5%88%9d%e6%ad%a5%e5%85%a5%e9%97%a8" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/cpp-notes/">Cpp Notes</a>,&nbsp;<a href="/tags/intro/">Intro</a>,&nbsp;<a href="/tags/cmake/">CMake</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/notes/" class="prev" rel="prev" title="随笔记"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>随笔记</a>
+            <a href="/posts/nvidia_with_linux/" class="next" rel="next" title="NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧">NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

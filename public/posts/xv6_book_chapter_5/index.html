@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Xv6 book: Interrupts and device drivers - 索元的博客</title><meta name="Description" content="Xv6 book 的第五章节"><meta property="og:url" content="http://localhost:1313/posts/xv6_book_chapter_5/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="Xv6 book: Interrupts and device drivers">
+  <meta property="og:description" content="Xv6 book 的第五章节">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-04-04T03:42:51+00:00">
+    <meta property="article:modified_time" content="2023-04-04T03:42:51+00:00">
+    <meta property="article:tag" content="Xv6_RISC-V">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Xv6 book: Interrupts and device drivers">
+  <meta name="twitter:description" content="Xv6 book 的第五章节">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/xv6_book_chapter_5/" /><link rel="prev" href="http://localhost:1313/posts/xv6_book_chapter_4/" /><link rel="next" href="http://localhost:1313/posts/mit_61810_lab4/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Xv6 book: Interrupts and device drivers",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/xv6_book_chapter_5\/"
+        },"genre": "posts","keywords": "Xv6_RISC-V","wordcount":  4102 ,
+        "url": "http:\/\/localhost:1313\/posts\/xv6_book_chapter_5\/","datePublished": "2023-04-04T03:42:51+00:00","dateModified": "2023-04-04T03:42:51+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "Xv6 book 的第五章节"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Xv6 book: Interrupts and device drivers</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/%E5%88%B7%E8%AF%BE%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>刷课笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-04-04">2023-04-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;4102 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;9 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#code-console-input">Code: Console input</a></li>
+    <li><a href="#code-console-output">Code: Console output</a></li>
+    <li><a href="#concurrency-in-drivers">Concurrency in drivers</a></li>
+    <li><a href="#timer-interrupts">Timer interrupts</a></li>
+    <li><a href="#real-world">Real world</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Xv6 book 的第五章节</p>
+<h1 id="interrupts-and-device-drivers">Interrupts and device drivers</h1>
+<p>驱动是操作系统中管理特定设备的代码，它配置设备硬件，告诉设备执行操作，处理产生的中断，并与可能正在等待来自设备的 I/O 的进程交互。驱动程序代码可能很棘手，因为驱动程序与其管理的设备同时执行。此外，驱动程序必须了解设备的硬件接口，该接口可能很复杂且文档信息很少。</p>
+<p>需要操作系统关注的设备通常可以配置为生成中断，这是一种 trap。 内核 trap 处理代码识别设备何时引发中断并调用驱动程序的中断处理程序； 在 xv6 中，此调度发生在 <code>devintr()</code> (<strong>kernel/trap.c</strong>)中。</p>
+<p>许多设备驱动程序在两个 context 中执行代码：上半部分在进程的内核线程中运行，下半部分在中断时执行。上半部分通过系统调用（例如希望设备执行 I/O 的读写）。 该代码可能会要求硬件开始一项操作（例如，要求磁盘读取一个块）；然后代码等待操作完成。最终设备完成操作并引发中断。 驱动程序的中断处理程序充当下半部分，确定哪些操作已完成，在适当的情况下唤醒等待进程，并告诉硬件开始处理任何等待的下一个操作。</p>
+<h2 id="code-console-input">Code: Console input</h2>
+<p>console 驱动程序(<strong>kernel/console.c</strong>)是驱动程序结构的简单说明。 console driver 通过连接到 RISC-V 的 <em>UART</em> 串行端口硬件接受人类输入的字符。console driver 一次累积一行输入，处理特殊输入字符，例如退格键和 Control-u。用户进程（例如 shell）使用 <code>read()</code> 系统调用从 console 获取输入行。当你在 QEMU 中向 xv6 输入时，你的击键将通过 QEMU的 模拟 <em>UART</em> 硬件传送到 xv6。</p>
+<p>驱动程序与之通信的 <em>UART</em> 硬件是由 QEMU 模拟的 <a href="http://bitsavers.trailing-edge.com/components/national/_appNotes/AN-0491.pdf" target="_blank" rel="noopener noreffer ">16550 芯片</a>。在真实的计算机上，16550 将管理连接到终端或其他计算机的 RS232 串行链路。运行 QEMU 时，它会连接到您的键盘和显示器。</p>
+<p><em>UART</em> 硬件对于软件来说就像一组内存映射的控制寄存器。也就是说，RISC-V 硬件有一些物理地址连接到 <em>UART</em> 设备，以便加载和存储与设备硬件而不是RAM进行交互。<em>UART</em> 的内存映射地址从 <code>0x10000000</code> 或 <code>UART0</code>(<strong>kernel/memlayout.h</strong>) 开始。有几个 <em>UART</em> 控制寄存器，每个寄存器都有一个字节的宽度。它们与 <code>UART0</code> 的偏移量在 <strong>kernel/uart.c</strong> 中定义。例如，<em>LSR</em> 寄存器包含指示输入字符是否正在等待软件读取的bits。这些字符（如果有）可从 <em>RHR</em> 寄存器中读取。每次读取一个字符时，<em>UART</em> 硬件都会将其从等待字符的内部 FIFO 中删除，并在FIFO为空时清除 LSR 中的 &ldquo;ready&rdquo; bit。<em>UART</em>发 送硬件很大程度上独立于接收硬件； 如果软件向 <em>THR</em> 写入一个字节，则 <em>UART</em> 会传输该字节。</p>
+<p>Xv6 的 <code>main()</code> 调用 <code>consoleinit</code>(<strong>kernel/console.c</strong>)来初始化 <em>UART</em> 硬件。此代码将 <em>UART</em> 配置为在 <em>UART</em> 接收每个输入字节时生成接收中断，并在每次 <em>UART</em> 完成发送一个输出字节时生成发送完成中断 (<strong>kernel/uart.c</strong>)。</p>
+<p>Xv6 shell 通过 <strong>user/init.c</strong> 打开的文件描述符从 console 读取。对 <code>read</code> 系统调用的调用通过内核到达 <code>consoleread()</code>(<strong>kernel/console.c</strong>)。<code>consoleread()</code> 等待输入到达（通过中断）并缓冲在 <code>cons.buf</code> 中，将输入复制到用户空间，然后（在整行到达后）返回到用户进程。 如果用户还没有输入完整的行，任何读取进程都将在 sleep 调用中等待 (<strong>kernel/console.c</strong>)。</p>
+<p>当用户键入字符时，<em>UART</em> 硬件会要求 RISC-V 引发中断，然后就到了 xv6 的 trap 处理程序。trap 处理程序调用 <code>devintr()</code>(<strong>kernel/trap.c</strong>)，它查看 RISC-V <code>scause</code> 寄存器以发现中断来自外部设备。然后它要求称为 <a href="https://github.com/riscv/riscv-isa-manual/releases/download/Priv-v1.12/riscv-privileged-20211203.pdf" target="_blank" rel="noopener noreffer ">PLIC</a> 的硬件单元告诉它哪个设备中断了。如果是 <em>UART</em>，则 <code>devintr()</code> 调用 <code>uartintr()</code>。</p>
+<p><code>uartintr()</code>(<strong>kernel/uart.c</strong>)从 <em>UART</em> 硬件读取任何等待的输入字符并将它们交给 <code>consoleintr()</code>(<strong>kernel/console.c</strong>)；它不等待字符，因为将来的输入将引发新的中断。<code>consoleintr()</code> 的工作是在 <code>cons.buf</code> 中累积输入字符，直到整行到达。<code>consoleintr()</code> 特别对待退格键和其他一些字符。当换行符到达时，<code>consoleintr()</code> 会唤醒一个正在等待的 <code>consoleread()</code>（如果有的话）。</p>
+<p>一旦被唤醒，<code>consoleread()</code> 将遍历 <code>cons.buf</code> 中的一整行，将其复制到用户空间，然后返回（通过系统调用机制）到用户空间。</p>
+<h2 id="code-console-output">Code: Console output</h2>
+<p>对连接到 console 的文件描述符的 <code>write()</code> 系统调用最终会调用 <code>uartputc()</code>(<strong>kernel/uart.c</strong>)。设备驱动程序维护一个输出缓冲区（<code>uart_tx_buf</code>），以便写入进程不必等待 <em>UART</em> 完成发送； 相反，<code>uartputc()</code> 将每个字符附加到缓冲区，调用 <code>uartstart()</code> 启动设备传输（如果尚未传输，然后返回。<code>uartputc()</code> 需要等待的唯一情况是缓冲区已满。</p>
+<p>每次 <em>UART</em> 完成发送一个字节时，都会生成一个中断。<code>uartintr()</code> 调用 <code>uartstart()</code>，它检查设备是否确实已完成发送，并将下一个缓冲的输出字符交给设备。 因此，如果进程将多个字节写入 console，通常第一个字节将通过 <code>uartputc()</code> 对 <code>uartstart()</code> 的调用发送，其余缓冲字节将在传输完成中断到达时通过 <code>uartintr()</code> 的 <code>uartstart()</code> 调用发送。</p>
+<h2 id="concurrency-in-drivers">Concurrency in drivers</h2>
+<p>您可能已经注意到 <code>consoleread()</code> 和 <code>consoleintr()</code> 中对 <code>acquire()</code> 的调用。这些调用获取锁，以保护 console 驱动程序的数据结构免受并发访问。这里存在三个并发带来的问题：</p>
+<ol>
+<li>不同 CPU 上的两个进程可能同时调用 <code>consoleread()</code></li>
+<li>当 CPU 已经在 <code>consoleread()</code> 内执行时，硬件可能会要求 CPU 传递 console（实际上是 <em>UART</em>）中断</li>
+<li>当 <code>consoleread()</code> 执行时，硬件可能会在不同的 CPU 上传递 console 中断。 这些危险可能会导致竞争或僵局。</li>
+</ol>
+<p>驱动程序中需要注意并发的另一种方式是，一个进程可能正在等待来自设备的输入，但是当另一个进程（或根本没有进程）正在运行时，输入的中断信号到达可能会到达。因此，中断处理程序不允许在导致它们中断的进程或代码做一些考量。例如，中断处理程序无法安全地使用当前进程的页表调用 <code>copyout()</code>。中断处理程序通常执行相对较少的工作（例如，仅将输入数据复制到缓冲区），并唤醒上半部分代码来完成其余的工作。</p>
+<h2 id="timer-interrupts">Timer interrupts</h2>
+<p>Xv6 使用时钟中断来维护其时钟并使其能够在计算密集型进程之间切换；<code>usertrap()</code> 和 <code>kerneltrap()</code> 中的 <code>yield()</code> 调用会导致这种切换。时钟中断来自连接到每个 RISC-V CPU 的时钟硬件。Xv6 对该时钟硬件进行编程，以定期中断每个CPU。</p>
+<p>RISC-V 要求时钟中断在 machine 模式下进行，而不是在 supervisor 模式下进行。RISC-V machine 模式执行时无需分页，并具有一组单独的控制寄存器，因此在 machine 模式下运行普通 xv6 内核代码是不切实际的。 因此，xv6 完全独立于上面列出的 trap 机制来处理时钟中断。</p>
+<p>在 <code>main()</code> 之前的 <strong>start.c</strong> 中以 machine 模式执行的代码设置为接收时钟中断 (<strong>kernel/start.c</strong>)。 部分工作是对 <em>CLIINT</em> 硬件（core-local interruptor）进行编程，使其在一定延迟后生成中断。另一部分是设置一个临时区域，类似于 trapframe，以帮助时钟中断处理程序保存寄存器和<code>CLINT</code>寄存器的地址。最后，<code>start()</code> 将 <code>mtvec</code> 设置为 <code>timervec</code> 并启用时钟中断。</p>
+<p>时钟中断可以在用户或内核代码执行时的任何时刻发生；内核无法在关键操作期间禁用定时钟中断。 因此，时钟中断处理程序必须以保证不会干扰中断的内核代码的方式完成其工作。处理程序的基本策略是要求 RISC-V 引发 &ldquo;software interrupt&rdquo; 并立即返回。 RISC-V 通过普通的 trap 机制将软件中断传递给内核，并允许内核禁用它们。 处理时钟中断生成的软件中断的代码可以在 <code>devintr()</code>(<strong>kernel/trap.c</strong>) 中看到。</p>
+<p>machine 模式时钟中断处理程序 <code>timervec</code>(<strong>kernel/kernelvec.S</strong>)。它在启动准备的暂存区域中保存一些寄存器，告诉 <em>CLINT</em> 何时生成下一个定时钟中断，要求 RISC-V 引发软件中断，恢复寄存器并返回。时钟中断处理程序中没有 C 代码。</p>
+<h2 id="real-world">Real world</h2>
+<p>Xv6 允许在内核中执行以及执行用户程序时发生设备和时钟中断。 时钟中断强制从时钟中断处理程序进行线程切换（调用 <code>yield()</code>），即使在内核中执行时也是如此。如果内核线程有时花费大量时间进行计算而不返回用户空间，那么在内核线程之间公平地对CPU进行时间切片的能力非常有用。然而，内核代码需要注意它可能会被挂起（由于时钟中断）并稍后在不同的CPU上恢复，这是 xv6 中一些复杂性的根源。如果设备和时钟中断仅在执行用户代码时发生，则内核可以变得更简单。</p>
+<p>支持典型计算机上的所有设备是一项艰巨的工作，因为有很多设备，这些设备有很多功能，并且设备和驱动程序之间的协议可能很复杂并且文档质量良莠不齐。在许多操作系统中，驱动程序所占的代码比核心内核还要多。</p>
+<p><em>UART</em> 驱动程序通过读取 <em>UART</em> 控制寄存器一次检索一个字节的数据； 这种模式称为 <em>programmed I/O</em>，因为软件驱动着数据的移动。<em>programmed I/O</em> 很简单，但速度太慢，无法在高数据速率下使用。需要高速移动大量数据的设备通常使用直接内存访问 (DMA)。DMA 设备硬件直接将传入数据写入 RAM，并从 RAM 读取传出数据。现代硬盘和网络设备使用 DMA。DMA 设备的驱动程序将在RAM中准备数据，然后使用对控制寄存器的单次写入来告诉设备处理准备好的数据。</p>
+<p>当设备在不可预测的时间（但不是太频繁）需要关注时，中断就有意义。但中断的 CPU 开销很高。 因此，高速设备（例如网络和磁盘控制器）使用减少中断需求的技巧。一个技巧是为整批传入或传出请求引发一个中断。另一个技巧是驱动程序完全禁用中断，并定期检查设备以查看是否需要关注。这种技术称为轮询。如果设备执行操作速度非常快，则轮询是有意义的，但如果设备大部分时间处于空闲状态，则轮询会浪费 CPU 时间。某些驱动程序根据当前设备负载在轮询和中断之间动态切换。</p>
+<p><em>UART</em> 驱动程序首先将传入数据复制到内核中的缓冲区，然后复制到用户空间。这在低数据速率下是有意义的，但这样的双副本会显着降低快速生成或消耗数据的设备的性能。一些操作系统能够直接在用户空间缓冲区和设备硬件之间移动数据，通常使用 DMA。</p>
+<p>正如第 1 章中提到的，console 对应用程序来说就像一个常规文件，应用程序使用 <code>read()</code> 和 <code>write()</code> 系统调用来进行读写。应用程序可能想要控制无法通过标准文件系统调用表达的设备方面（例如，在 console 驱动程序中启用/禁用行缓冲）。Unix 操作系统支持这种情况下的 <code>ioctl</code> 系统调用。</p>
+<p>计算机的某些用途要求系统必须在有限的时间内做出响应。例如，在安全关键系统中，错过最后期限可能会导致灾难。Xv6 不适合 hard real-time，那样的操作系统往往是实现成与应用程序链接的库，其方式允许分析以确定最坏情况的响应时间。xv6 也不适合 soft real-time 应用程序，因为偶尔错过截止日期是可以接受的，而 xv6 的调度程序过于简单，并且存在长时间禁用中断的内核代码执行流。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-04-04</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/xv6_book_chapter_5/" data-title="Xv6 book: Interrupts and device drivers" data-hashtags="Xv6_RISC-V"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/xv6_book_chapter_5/" data-title="Xv6 book: Interrupts and device drivers"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/xv6_book_chapter_5/" data-hashtag="Xv6_RISC-V"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/xv6_book_chapter_5/" data-title="Xv6 book: Interrupts and device drivers"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/xv6_book_chapter_5/" data-title="Xv6 book: Interrupts and device drivers"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/xv6_book_chapter_5/" data-title="Xv6 book: Interrupts and device drivers"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/xv6_book_chapter_5/" data-title="Xv6 book: Interrupts and device drivers" data-description="Xv6 book 的第五章节"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fxv6_book_chapter_5%2f&amp;text=Xv6%20book%3a%20Interrupts%20and%20device%20drivers" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/xv6_risc-v/">Xv6_RISC-V</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/xv6_book_chapter_4/" class="prev" rel="prev" title="Xv6 book: Traps and system calls"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Xv6 book: Traps and system calls</a>
+            <a href="/posts/mit_61810_lab4/" class="next" rel="next" title="MIT 6.1810: Traps">MIT 6.1810: Traps<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

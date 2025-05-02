@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>xv6-riscv 源码阅读 —— 用户态: sh - 索元的博客</title><meta name="Description" content="尝试把 xv6-riscv 读一遍，这是用户态的 sh 部分，一个十分简单的 shell"><meta property="og:url" content="http://localhost:1313/posts/xv6_riscv_read_user-sh/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="xv6-riscv 源码阅读 —— 用户态: sh">
+  <meta property="og:description" content="尝试把 xv6-riscv 读一遍，这是用户态的 sh 部分，一个十分简单的 shell">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-11-25T06:31:16+00:00">
+    <meta property="article:modified_time" content="2024-11-25T06:31:16+00:00">
+    <meta property="article:tag" content="Xv6_RISC-V">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="xv6-riscv 源码阅读 —— 用户态: sh">
+  <meta name="twitter:description" content="尝试把 xv6-riscv 读一遍，这是用户态的 sh 部分，一个十分简单的 shell">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/xv6_riscv_read_user-sh/" /><link rel="prev" href="http://localhost:1313/posts/why_not_linux/" /><link rel="next" href="http://localhost:1313/posts/windows_note/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "xv6-riscv 源码阅读 —— 用户态: sh",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/xv6_riscv_read_user-sh\/"
+        },"genre": "posts","keywords": "Xv6_RISC-V","wordcount":  3474 ,
+        "url": "http:\/\/localhost:1313\/posts\/xv6_riscv_read_user-sh\/","datePublished": "2024-11-25T06:31:16+00:00","dateModified": "2024-11-25T06:31:16+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "尝试把 xv6-riscv 读一遍，这是用户态的 sh 部分，一个十分简单的 shell"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">xv6-riscv 源码阅读 —— 用户态: sh</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>源码阅读</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-11-25">2024-11-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3474 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;7 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#概述">概述</a></li>
+    <li><a href="#正文">正文</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="概述">概述</h2>
+<p>sh 是一个简单的 shell 程序，只支持很基本的 shell 功能。</p>
+<blockquote>
+<p>什么是 shell ？</p>
+<p>In computing, a shell is a computer program that exposes an operating system&rsquo;s services to a human user or other programs. In general, operating system shells use either a command-line interface (CLI) or graphical user interface (GUI), depending on a computer&rsquo;s role and particular operation. It is named a shell because it is the outermost layer around the operating system.</p>
+<p>在计算机中，shell 是一种向人类用户或其他程序公开操作系统服务的计算机程序。一般来说，操作系统的 shell 使用命令行界面 (CLI) 或图形用户界面 (GUI)，具体取决于计算机的角色和特定操作。它被命名为 shell，因为它是操作系统的最外层。</p>
+<p>Most operating system shells are not direct interfaces to the underlying kernel, even if a shell communicates with the user via peripheral devices attached to the computer directly. Shells are actually special applications that use the kernel API in just the same way as it is used by other application programs. A shell manages the user–system interaction by prompting users for input, interpreting their input, and then handling output from the underlying operating system (much like a read–eval–print loop, REPL).[3] Since the operating system shell is actually an application, it may easily be replaced with another similar application, for most operating systems</p>
+<p>大多数操作系统的 shell 都不是底层内核的直接接口，即便 shell 通过直接连接到计算机的外围设备与用户通信也是如此。 Shell 实际上是特殊的应用程序，它们使用内核 API 的方式与其他应用程序使用的方式相同。 shell 通过提示用户输入、解释其输入，然后处理来自底层操作系统的输出（很像读取-评估-打印循环，REPL）来管理用户与系统的交互。由于操作系统 shell 实际上是一个应用程序，因此对于大多数操作系统来说，它可以很容易地被另一个类似的应用程序替换。</p>
+<p>&ndash; <a href="https://en.wikipedia.org/wiki/Shell_%28computing%29" target="_blank" rel="noopener noreffer ">https://en.wikipedia.org/wiki/Shell_(computing)</a></p>
+</blockquote>
+<p>Shell 可以读取用户的输入，并解释执行。这里面至少涉及到了两个会被 shell 直接调用的系统调用（相对而言的间接就是通过库函数间接调用的系统调用）：</p>
+<ul>
+<li><code>int fork()</code>: 创建一个进程，返回子进程的 PID</li>
+<li><code>int exec(char *file, char *argv[])</code>: 加载文件和参数并执行传入的 <code>file</code></li>
+</ul>
+<h2 id="正文">正文</h2>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">static</span> <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Ensure that three file descriptors are open.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">while</span><span class="p">((</span><span class="n">fd</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="s">&#34;console&#34;</span><span class="p">,</span> <span class="n">O_RDWR</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">fd</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Read and run input commands.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">while</span><span class="p">(</span><span class="nf">getcmd</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;c&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;d&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">buf</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// Chdir must be called by the parent, not the child.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">buf</span><span class="p">[</span><span class="nf">strlen</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">// chop \n
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">if</span><span class="p">(</span><span class="nf">chdir</span><span class="p">(</span><span class="n">buf</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">fprintf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;cannot cd %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">buf</span><span class="o">+</span><span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="nf">parsecmd</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><code>main()</code> 函数会先关闭除那些标准 I/O 文件描述符的文件描述符。之后就开始读取输入。并且检测如果是调用的 <code>cd</code> 的话就直接处理好，注释也写明了，因为 <code>cd</code> 的行为会影响到当前的状态，所以需要由父进程来做，而不是像其他程序直接开个子进程调用就完事。cd 会调用 <code>chdir()</code> 系统调用来切换当前路径。</p>
+<p>如果不是 cd，那就调用 <code>fork()</code> 创建子进程，在子进程中调用 <code>parsecmd()</code> 解析该命令，并将结果传递给 <code>runcmd()</code>，而父进程则是等待子进程退出。</p>
+<p>这里的 <code>fork1()</code> 是对 <code>fork()</code> 的简单封装，多加了一个错误处理的检测。</p>
+<p><code>parsecmd()</code> 函数是这样:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">parsecmd</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">es</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">es</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="nf">strlen</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="nf">parseline</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="p">,</span> <span class="n">es</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">peek</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="s">&#34;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">s</span> <span class="o">!=</span> <span class="n">es</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;leftovers: %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;syntax&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">nulterminate</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>要执行的命令的类型被封装成了 <code>struct cmd</code> 结构体:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span></span></span></code></pre></div></div>
+<p>因为输入的命令序列有不同类别，所以后续还有对 <code>struct cmd</code> 封装的结构体</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">execcmd</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[</span><span class="n">MAXARGS</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">eargv</span><span class="p">[</span><span class="n">MAXARGS</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">redircmd</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">efile</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">mode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">pipecmd</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">listcmd</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">backcmd</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里涉及到另一个函数 <code>struct cmd* parseline(char **ps, char *es)</code>:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">parseline</span><span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="n">ps</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">es</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="nf">parsepipe</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="nf">peek</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="s">&#34;&amp;&#34;</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">gettoken</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cmd</span> <span class="o">=</span> <span class="nf">backcmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="nf">peek</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="s">&#34;;&#34;</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">gettoken</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cmd</span> <span class="o">=</span> <span class="nf">listcmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="nf">parseline</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里就是对输入的命令序列简单做是否是需要挂在后台或者是否是一组 list。</p>
+<blockquote>
+<p>一个命令后面接 <code>&amp;</code> 表明这是后台执行的，shell 不需要等待其返回，现在我们使用的 shell（如 bash） 返回后台程序的进程号，但 xv6 的这个简单 shell 没有这个功能。</p>
+<p>而 <code>;</code> 则类似 <code>&amp;&amp;</code>，都是将多个命令组成一个序列，不过 <code>&amp;&amp;</code> 会根据前面程序的运行结果以决定是否要执行后面的。</p>
+</blockquote>
+<p>这里调用的 <code>backcmd()</code> 和 <code>listcmd()</code> 都做一些类似的工作，都是在 cmd 这个链表加新元素。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">backcmd</span><span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">subcmd</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">backcmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memset</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">BACK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">=</span> <span class="n">subcmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">listcmd</span><span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">left</span><span class="p">,</span> <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">right</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">listcmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memset</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">LIST</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里还有对 <code>parsepipe()</code> 的调用</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">parsepipe</span><span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="n">ps</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">es</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="nf">parseexec</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="nf">peek</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="s">&#34;|&#34;</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">gettoken</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cmd</span> <span class="o">=</span> <span class="nf">pipecmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="nf">parsepipe</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>从名字就能看出是和管道相关</p>
+<blockquote>
+<p>管道连接两组命令序列，并把左边的标准输出连接给右边的标准输出。经典的例子应该属于是 <code>cat xxx.txt | grep xxx</code>，不过这里的用法当然是不合适的，管道本身有 buffer，不如直接 <code>grep xxx xxx.txt</code> 这样直接。</p>
+</blockquote>
+<p>可以看到它是先调用 <code>parseexec()</code>，之后再做是否是管道的判断。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">parseexec</span><span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="n">ps</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">es</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="o">*</span><span class="n">eq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">tok</span><span class="p">,</span> <span class="n">argc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">execcmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="nf">peek</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="s">&#34;(&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nf">parseblock</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">ret</span> <span class="o">=</span> <span class="nf">execcmd</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">execcmd</span><span class="o">*</span><span class="p">)</span><span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">argc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ret</span> <span class="o">=</span> <span class="nf">parseredirs</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="nf">peek</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="s">&#34;|)&amp;;&#34;</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">((</span><span class="n">tok</span><span class="o">=</span><span class="nf">gettoken</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">q</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">eq</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">tok</span> <span class="o">!=</span> <span class="sc">&#39;a&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;syntax&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="n">argc</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">eargv</span><span class="p">[</span><span class="n">argc</span><span class="p">]</span> <span class="o">=</span> <span class="n">eq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">argc</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">&gt;=</span> <span class="n">MAXARGS</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;too many args&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="nf">parseredirs</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="n">argc</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">eargv</span><span class="p">[</span><span class="n">argc</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里先加了一个 <code>EXEC</code> 类型的元素，并且判断是否存在重定向</p>
+<blockquote>
+<p>重定向是将文件描述符的输出重新绑定到另一个位置。</p>
+<p>常见的类似 <code>echo 111 &gt; test.txt</code></p>
+<p>这里的 <code>echo 111</code> 本来是往标准输出打印 111，但是 <code>&gt;</code> 将内容重定向到 test.txt 中，就相当于是往 test.txt 文件中写入 <code>111</code></p>
+<p>或者 <code>find / -name aaa 2&gt;/dev/null</code> 这样的命令，<code>2&gt;/dev/null</code>，是将标准错误输出（也就是文件描述符 2）重定向到 <code>/dev/null</code>，</p>
+<p><code>/dev/null</code> 是一个特殊的设备，类似一个黑洞，任何向 <code>/dev/null</code> 的写入都是无效的。类似的设备还有<code>/dev/random</code> 之类的。
+find 根目录的时候需要 <code>2&gt;/dev/null</code> 的原因是普通用户权限不如 root，有些目录不能被普通用户访问，所以为了不显示那些权限拒绝的信息，需要这个重定向。权限拒绝的 log 类似这样:</p>
+</blockquote>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">find: ‘/etc/nftables’: Permission denied</span></span></code></pre></div></div>
+<blockquote>
+<p>我们日常很容易有一个需求，即向高权限可写的文件中写入一小段内容。写入一小段内容，<code>echo</code> 就可以满足我们的需求，但是直接在 <code>echo</code> 前加入 <code>sudo</code> 是不可行的，需要 <code>echo aaa | sudo tee /test.txt</code> 这样，<code>tee</code> 会从标准输入读取内容，并将其写入文件中。</p>
+</blockquote>
+<blockquote>
+<p><code>while</code> 循环中则是对每个命令行参数遍历并保存起来。这里判断 <code>tok</code> 是否为 <code>a</code>，则是因为 <code>gettoken()</code> 设定好的:</p>
+</blockquote>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">char</span> <span class="n">whitespace</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34; </span><span class="se">\t\r\n\v</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">char</span> <span class="n">symbols</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&#34;&lt;|&gt;&amp;;()&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="nf">gettoken</span><span class="p">(</span><span class="kt">char</span> <span class="o">**</span><span class="n">ps</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">es</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">q</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">eq</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">s</span> <span class="o">=</span> <span class="o">*</span><span class="n">ps</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="n">es</span> <span class="o">&amp;&amp;</span> <span class="nf">strchr</span><span class="p">(</span><span class="n">whitespace</span><span class="p">,</span> <span class="o">*</span><span class="n">s</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="n">s</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ret</span> <span class="o">=</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">switch</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;|&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;(&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;)&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;;&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;&amp;&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;&lt;&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="sc">&#39;&gt;&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">*</span><span class="n">s</span> <span class="o">==</span> <span class="sc">&#39;&gt;&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="n">ret</span> <span class="o">=</span> <span class="sc">&#39;+&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ret</span> <span class="o">=</span> <span class="sc">&#39;a&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span><span class="p">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="n">es</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nf">strchr</span><span class="p">(</span><span class="n">whitespace</span><span class="p">,</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nf">strchr</span><span class="p">(</span><span class="n">symbols</span><span class="p">,</span> <span class="o">*</span><span class="n">s</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">      <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">eq</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">eq</span> <span class="o">=</span> <span class="n">s</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="n">es</span> <span class="o">&amp;&amp;</span> <span class="nf">strchr</span><span class="p">(</span><span class="n">whitespace</span><span class="p">,</span> <span class="o">*</span><span class="n">s</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">ps</span> <span class="o">=</span> <span class="n">s</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>在默认情况下，ret 会被设置成 <code>'a'</code></p>
+<p>下面的则是对重定向的处理:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">parseredirs</span><span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">ps</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">es</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">tok</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="o">*</span><span class="n">eq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="nf">peek</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="s">&#34;&lt;&gt;&#34;</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tok</span> <span class="o">=</span> <span class="nf">gettoken</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">gettoken</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">q</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">eq</span><span class="p">)</span> <span class="o">!=</span> <span class="sc">&#39;a&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;missing file for redirection&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">switch</span><span class="p">(</span><span class="n">tok</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="sc">&#39;&lt;&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">cmd</span> <span class="o">=</span> <span class="nf">redircmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">eq</span><span class="p">,</span> <span class="n">O_RDONLY</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="sc">&#39;&gt;&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="n">cmd</span> <span class="o">=</span> <span class="nf">redircmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">eq</span><span class="p">,</span> <span class="n">O_WRONLY</span><span class="o">|</span><span class="n">O_CREATE</span><span class="o">|</span><span class="n">O_TRUNC</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="sc">&#39;+&#39;</span><span class="o">:</span>  <span class="c1">// &gt;&gt;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">cmd</span> <span class="o">=</span> <span class="nf">redircmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">eq</span><span class="p">,</span> <span class="n">O_WRONLY</span><span class="o">|</span><span class="n">O_CREATE</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>如果存在重定向的语法，并且语法没有错误，那么就会调用 <code>redircmd</code>，从而构造一个用于重定向的 <code>struct cmd*</code>，如果没有重定向，就什么也不做，直接把参数的 <code>cmd</code> 返回。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">redircmd</span><span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">subcmd</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">efile</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mode</span><span class="p">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">redircmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memset</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">cmd</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">REDIR</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">cmd</span> <span class="o">=</span> <span class="n">subcmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">file</span> <span class="o">=</span> <span class="n">file</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">efile</span> <span class="o">=</span> <span class="n">efile</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>如果语法错误就会调用 <code>panic(&quot;missing file for redirection&quot;)</code>，就像这样:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ make qemu
+</span></span><span class="line"><span class="cl">qemu-system-riscv64 -machine virt -bios none -kernel kernel/kernel -m 128M -smp <span class="m">3</span> -nographic -global virtio-mmio.force-legacy<span class="o">=</span><span class="nb">false</span> -drive <span class="nv">file</span><span class="o">=</span>fs.img,if<span class="o">=</span>none,format<span class="o">=</span>raw,id<span class="o">=</span>x0 -device virtio-blk-device,drive<span class="o">=</span>x0,bus<span class="o">=</span>virtio-mmio-bus.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">xv6 kernel is booting
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">hart <span class="m">2</span> starting
+</span></span><span class="line"><span class="cl">hart <span class="m">1</span> starting
+</span></span><span class="line"><span class="cl">init: starting sh
+</span></span><span class="line"><span class="cl">$ aa&gt;     
+</span></span><span class="line"><span class="cl">missing file <span class="k">for</span> redirection
+</span></span><span class="line"><span class="cl">$</span></span></code></pre></div></div>
+<p>在判断完重定向后，就进入了参数的读取工作:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="nf">peek</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="s">&#34;|)&amp;;&#34;</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">((</span><span class="n">tok</span><span class="o">=</span><span class="nf">gettoken</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">q</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">eq</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">tok</span> <span class="o">!=</span> <span class="sc">&#39;a&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;syntax&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="n">argc</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">cmd</span><span class="o">-&gt;</span><span class="n">eargv</span><span class="p">[</span><span class="n">argc</span><span class="p">]</span> <span class="o">=</span> <span class="n">eq</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">argc</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">&gt;=</span> <span class="n">MAXARGS</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;too many args&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ret</span> <span class="o">=</span> <span class="nf">parseredirs</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">ps</span><span class="p">,</span> <span class="n">es</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里的 <code>eargv</code> 用于指向当前 argv 的子字符串的下一个分隔符，我这段话表达的不是很好，可以看下面的图片:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/xv6-riscv-read/user/xv6-user-sh-eargv.png"
+        data-srcset="/img/xv6-riscv-read/user/xv6-user-sh-eargv.png, /img/xv6-riscv-read/user/xv6-user-sh-eargv.png 1.5x, /img/xv6-riscv-read/user/xv6-user-sh-eargv.png 2x"
+        data-sizes="auto"
+        alt="/img/xv6-riscv-read/user/xv6-user-sh-eargv.png"
+        title="xv6-user-sh-eargv" /></p>
+<p>正常的 <code>argv</code> 并不是这个样子，我们日常写 C 语言的时候，如果你尝试使用过 <code>int main(int argc, char *argv[])</code> 这个函数原型的话，应该知道 argv 不会将前面的 <code>echo</code> 这些带上。</p>
+<p>为了让 <code>argv</code> 正常使用，<code>eargv</code> 会在之后派上用场。</p>
+<p>在读取了之后，会对 <code>argv[argc]</code> 和 <code>eargv[argc]</code> 赋 <code>0</code>，也是为了重新对 <code>argv</code> 整理而考虑。</p>
+<p>如果 <code>parsepipe</code> 对 <code>parseexec</code> 的调用之后发现没有管道，就直接返回。<code>parseline</code> 类似。</p>
+<p>而在 <code>parsecmd</code> 中，在 <code>cmd</code> 生成后，还需要重新对 <code>eargv</code> 赋 <code>0</code> 从而让 <code>argv</code> 可以被正常读取。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">switch</span><span class="p">(</span><span class="n">cmd</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl"><span class="k">case</span> <span class="nl">EXEC</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ecmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">execcmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">eargv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">break</span><span class="p">;</span></span></span></code></pre></div></div>
+<p><code>eargv</code> 指向每一个分隔符，被赋 <code>0</code> 之后就可以让 <code>argv</code> 读到 <code>0</code> 就停止，达到了让 <code>argv</code> 可以被正确读取的目的。</p>
+<p>在对 <code>cmd</code> 的处理都完事后，就到了 <code>runcmd</code> 的部分:</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// Execute cmd.  Never returns.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span>
+</span></span><span class="line"><span class="cl"><span class="nf">runcmd</span><span class="p">(</span><span class="k">struct</span> <span class="n">cmd</span> <span class="o">*</span><span class="n">cmd</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">backcmd</span> <span class="o">*</span><span class="n">bcmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">execcmd</span> <span class="o">*</span><span class="n">ecmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">listcmd</span> <span class="o">*</span><span class="n">lcmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">pipecmd</span> <span class="o">*</span><span class="n">pcmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="n">redircmd</span> <span class="o">*</span><span class="n">rcmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">cmd</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">switch</span><span class="p">(</span><span class="n">cmd</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">default</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;runcmd&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="nl">EXEC</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ecmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">execcmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">exec</span><span class="p">(</span><span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">fprintf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;exec %s failed</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ecmd</span><span class="o">-&gt;</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="nl">REDIR</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">redircmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">close</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">fd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">open</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">file</span><span class="p">,</span> <span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">mode</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">fprintf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#34;open %s failed</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">file</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">runcmd</span><span class="p">(</span><span class="n">rcmd</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="nl">LIST</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">listcmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="n">lcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">runcmd</span><span class="p">(</span><span class="n">lcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="nl">PIPE</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pipecmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;pipe&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="nl">BACK</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">bcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">backcmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">runcmd</span><span class="p">(</span><span class="n">bcmd</span><span class="o">-&gt;</span><span class="n">cmd</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>对于普通的命令（即 <code>EXEC</code> 类型），直接调用 <code>exec</code> 执行就好了，如果没有正常执行，就调用 <code>fprintf</code> 输出执行失败，毕竟 <code>exec</code> 系统调用会替换当前执行的程序，如果每成功替换，就会继续执行 <code>fprintf</code>。</p>
+<p>是管道的处理值得一提:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">pcmd</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">pipecmd</span><span class="o">*</span><span class="p">)</span><span class="n">cmd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nf">pipe</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;pipe&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">wait</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">break</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>首先会调用 <code>pipe</code> 系统调用，这会产生一个管道。</p>
+<p>这里的 <code>fork1</code> 是对 <code>fork</code> 系统调用的简单封装:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="nf">fork1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">pid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">pid</span> <span class="o">=</span> <span class="nf">fork</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">panic</span><span class="p">(</span><span class="s">&#34;fork&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">pid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>对于管道类型的命令来说，sh 会 fork 两个进程，对每个进程做类似的事情:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nf">fork1</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">dup</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">close</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">runcmd</span><span class="p">(</span><span class="n">pcmd</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>第一个进程中，<code>close</code> 关闭当前进程的标准输出，并使用 <code>dup</code> 系统调用复制传入的文件描述符，因为 <code>1</code> 文件描述符被关闭了，所以分配的新的文件描述符就是 <code>1</code>。</p>
+<p>第二个进程也会做类似的操作，只不过是关闭的标准输入。</p>
+<p>两个进程在把管道的文件描述符复制了之后，就把管道的文件描述符都关闭，并运行对应的命令，由于 <code>exec</code> 后的程序会继承文件描述符，所以正常像文件描述符 1（也就是标准输出）的输出，会被传递给管道的另一端，另一端会从标准输入的文件描述符读到。</p>
+<p>自此，sh 的代码就大概说完了。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-11-25</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/xv6_riscv_read_user-sh/" data-title="xv6-riscv 源码阅读 —— 用户态: sh" data-hashtags="Xv6_RISC-V"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/xv6_riscv_read_user-sh/" data-title="xv6-riscv 源码阅读 —— 用户态: sh"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/xv6_riscv_read_user-sh/" data-hashtag="Xv6_RISC-V"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/xv6_riscv_read_user-sh/" data-title="xv6-riscv 源码阅读 —— 用户态: sh"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/xv6_riscv_read_user-sh/" data-title="xv6-riscv 源码阅读 —— 用户态: sh"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/xv6_riscv_read_user-sh/" data-title="xv6-riscv 源码阅读 —— 用户态: sh"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/xv6_riscv_read_user-sh/" data-title="xv6-riscv 源码阅读 —— 用户态: sh" data-description="尝试把 xv6-riscv 读一遍，这是用户态的 sh 部分，一个十分简单的 shell"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fxv6_riscv_read_user-sh%2f&amp;text=xv6-riscv%20%e6%ba%90%e7%a0%81%e9%98%85%e8%af%bb%20%e2%80%94%e2%80%94%20%e7%94%a8%e6%88%b7%e6%80%81%3a%20sh" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/xv6_risc-v/">Xv6_RISC-V</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/why_not_linux/" class="prev" rel="prev" title="译文: 为什么没有很多人使用 Linux"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>译文: 为什么没有很多人使用 Linux</a>
+            <a href="/posts/windows_note/" class="next" rel="next" title="我本次安装 Windows 的配置">我本次安装 Windows 的配置<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

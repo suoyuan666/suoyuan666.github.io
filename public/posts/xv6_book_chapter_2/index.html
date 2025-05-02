@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Xv6 book: Operating system organization - 索元的博客</title><meta name="Description" content="Xv6 book 的第二章节"><meta property="og:url" content="http://localhost:1313/posts/xv6_book_chapter_2/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="Xv6 book: Operating system organization">
+  <meta property="og:description" content="Xv6 book 的第二章节">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-03-06T03:42:51+00:00">
+    <meta property="article:modified_time" content="2023-03-06T03:42:51+00:00">
+    <meta property="article:tag" content="Xv6_RISC-V">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Xv6 book: Operating system organization">
+  <meta name="twitter:description" content="Xv6 book 的第二章节">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/xv6_book_chapter_2/" /><link rel="prev" href="http://localhost:1313/posts/mit_61810_lab1/" /><link rel="next" href="http://localhost:1313/posts/mit_61810_lab2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Xv6 book: Operating system organization",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/xv6_book_chapter_2\/"
+        },"genre": "posts","keywords": "Xv6_RISC-V","wordcount":  3631 ,
+        "url": "http:\/\/localhost:1313\/posts\/xv6_book_chapter_2\/","datePublished": "2023-03-06T03:42:51+00:00","dateModified": "2023-03-06T03:42:51+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "Xv6 book 的第二章节"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Xv6 book: Operating system organization</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/%E5%88%B7%E8%AF%BE%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>刷课笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-03-06">2023-03-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3631 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#硬件的抽象">硬件的抽象</a></li>
+    <li><a href="#usersupervisor-和-system-call">user、supervisor 和 system call</a></li>
+    <li><a href="#内核架构">内核架构</a></li>
+    <li><a href="#xv6-架构">xv6 架构</a></li>
+    <li><a href="#进程概述">进程概述</a></li>
+    <li><a href="#启动-xv6第一个进程和系统调用">启动 xv6，第一个进程和系统调用</a></li>
+    <li><a href="#现实状况">现实状况</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Xv6 book 的第二章节</p>
+<h1 id="operating-system-organization">Operating system organization</h1>
+<p>操作系统的关键在于能够同时支持多个活动、在进程之间共享计算机资源以及隔离进程，也就是多路复用、隔离和交互。</p>
+<p>Xx6 运行在多核的 RISC-V 微处理器上，有很多针对 RISC-V 的基地功能。Xv6 是用 &ldquo;LP64&quot;C (<code>long</code> 和指针是 64 位，<code>int</code> 是 32 位)编写的。</p>
+<p>Xv6 是为 qemu 的 <code>-machine virt</code> 选项模拟支持的硬件编写的。</p>
+<h2 id="硬件的抽象">硬件的抽象</h2>
+<p>有一种操作系统的实现方式是：将第一节介绍的系统调用实现成一个库，应用程序与之链接。这种情况下，硬件设备信任应用程序，这不符合现在的安全需要。</p>
+<p>为了实现隔离，就需要禁止应用程序直接访问敏感的硬件资源，而是将资源抽象为服务。比如程序使用 <code>open</code>、<code>write</code> 等系统调用而不是直接访问磁盘。这为程序提供了方便，并允许操作系统作为接口的实现者管理磁盘。</p>
+<h2 id="usersupervisor-和-system-call">user、supervisor 和 system call</h2>
+<p>隔离还需要应用程序和操作系统之间划一道线。如果程序出错，不能导致其他程序甚至操作系统出错，操作系统应该清理失败的程序并继续运行其他的程序。程序之间也应该有一道线以保证数据不会被修改。</p>
+<p>CPU 为隔离提供硬件支持。例如 RISC-V 有三种 CPU 执行指令的模式：<em>machine</em>、<em>supervisor</em> 和 <em>user</em>。Machine 代表完全的权限。CPU 在机器模式下启动，这个模式主要用来配置计算机。Xv6 会在 machine 模式执行几行代码后切换到 supervisor 模式。</p>
+<p>supervisor 模式允许 CPU 执行的特权指令：启动或禁用中断、读写保存页表地址的寄存器，等等。CPU 不会在 user 模式下执行特权指令，它会切换到supervisor 模式以便于让 supervisor 模式的代码可以终止程序。程序只能在用户空间执行 user 模式能执行的指令。在 supervisor 模式的软件可以在内核空间执行的指令比前者多一些特权指令。运行在内核空间的软件成为内核 (kernel)。</p>
+<p>应用程序不能直接调用系统调用。CPU 提供了一个指令用于将 CPU 从 user 模式转成 supervisor 模式，并且在内核指定的入口点进入内核（RISC-V提供的指令是 <code>ecall</code>）。CPU 切换到 supervisor 模式后，内核就可以验证系统调用的参数（例如检查传递给系统调用的地址是否是应用程序内存的一部分），决定是否允许应用程序执行请求的操作并拒绝或执行（比如是否允许写入制定的文件）。内核控制转换到 supervisor 模式的入口点很重要。如果应用程序可以决定内核入口点，就可以跳过一些验证步骤。</p>
+<h2 id="内核架构">内核架构</h2>
+<p>操作系统的哪部分需要在 supervisor 模式下运行是一个关键问题。一种方法是让整个操作系统在内核中，所有的系统调用的实现都在 supervisor 模式下运行，这叫做宏内核。这种架构的优点在于，操作系统拿到了全部的硬件，操作系统的不同部分之间更容易协作；缺点在于操作系统不同部分之间的接口通常很复杂，更加容易出错（在 supervisor 模式下的错误经常导致内核出错从而导致计算机停止工作）。</p>
+<p>为了减少内核出错的风险，操作系统设计人员可以尽量减少操作系统在 supervisor 模式下运行的代码，操作系统大部分处于 user 模式下。这种叫做微内核。</p>
+<p>在微内核中，内核接口由几个底层函数组成，用于启动程序、发送信息和访问设备硬件等。这种架构使得内核也变得简单。</p>
+<p>现实世界中，宏内核和微内核都很流行。许多 Unix 的内核都是宏内核（例如 Linux，尽管它有一些操作系统功能作为 user 模式下运行）。如 Minix、L4 和 QNX 操作系统都才需微内核架构并在嵌入式设备得到了广泛的应用。L4 的衍生 seL4 非常小，并且验证了它的内存安全性和其他安全属性。</p>
+<p>Xv6 和大多数类 Unix 系统使用宏内核，因此 xv6 内核接口对应操作系统接口，内核实现了完整的操作系统。</p>
+<h2 id="xv6-架构">xv6 架构</h2>
+<p>Xv6 内核源码在 kernel 目录下，内部函数接口定义在 <strong>kernel/defs.h</strong> 下</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">文件</th>
+          <th style="text-align: left">描述</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">bio.c</td>
+          <td style="text-align: left">文件系统的磁盘缓存</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">console.c</td>
+          <td style="text-align: left">连接到用户的键盘和屏幕</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">entry.S</td>
+          <td style="text-align: left">第一个启动指令</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">exec.c</td>
+          <td style="text-align: left">exec() 系统调用</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">file.c</td>
+          <td style="text-align: left">文件描述符</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">fs.c</td>
+          <td style="text-align: left">文件系统</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">kalloc.c</td>
+          <td style="text-align: left">物理页分配</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">kernelvec.S</td>
+          <td style="text-align: left">处理内核 trap 和时钟中断</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">log.c</td>
+          <td style="text-align: left">文件系统日志记录和崩溃恢复</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">main.c</td>
+          <td style="text-align: left">引导时控制其他模块的初始化</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">pipe.c</td>
+          <td style="text-align: left">管道</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">plic.c</td>
+          <td style="text-align: left">RISC-V 中断控制器</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">printf.c</td>
+          <td style="text-align: left">向 console 格式化输出</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">proc.c</td>
+          <td style="text-align: left">进程和调度</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">sleeplock.c</td>
+          <td style="text-align: left">已有的 CPU 锁</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">spinlock.c</td>
+          <td style="text-align: left">未有的 CPU 锁</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">start.c</td>
+          <td style="text-align: left">machine 模式的引导代码</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">string.c</td>
+          <td style="text-align: left">C 字符串和字节数组库</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">swtch.S</td>
+          <td style="text-align: left">线程切换</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">syscall.c</td>
+          <td style="text-align: left">向处理函数发送系统调用</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">sysfile.c</td>
+          <td style="text-align: left">文件相关的系统调用</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">sysproc.c</td>
+          <td style="text-align: left">线程相关的系统调用</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">trampoline.S</td>
+          <td style="text-align: left">用户和内核之间的切换</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">trap.c</td>
+          <td style="text-align: left">处理并返回来自 trap 和中断的 C 代码</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">uart.c</td>
+          <td style="text-align: left">串行端口控制台设备驱动程序</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">virtio_disk.c</td>
+          <td style="text-align: left">磁盘设备驱动程序</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">vm.c</td>
+          <td style="text-align: left">管理页表和地址空间</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="进程概述">进程概述</h2>
+<p>进程抽象可以防止一个进程破坏或监视另一个进程的内存、CPU、文件描述符等。它还可以防止进程破坏内核本身。内核实现进程的机制包括 user/supervisor模式、地址空间和线程的时间切片。</p>
+<p>为了实现这种隔离，进程抽象给程序提供了一种假象——它独占机器。Xv6 使用页表（由硬件实现）给了每个进程自己的地址空间。RISC-V 将页表映射到物理地址。</p>
+<p>Xv6 为每个进程维护了一个单独的页表用于定义进程的地址空间。进程地址空间包括在虚拟地址0开始的用户内存。首先是指令，然后是全局变量，然后是栈，最后是堆。有很多因素限制了进程地址空间的大小：RISC-V 指针是 64 位；在页表中查找虚拟地址时，硬件只使用低 39 位，而 xv6 只使用 39 位中的 38 位。因此最大的地址 <code>MAXVA</code> 被定义在 <strong>kerl/riscv.h</strong> 中，值是 $2^{38} - 1 =$ <code>0x33fffffffff</code>。在地址空间的顶部，xv6 为 trampoline 留了一页，以及映射进程 trapframe 的页。Xv6 使用这两个页转换到内核并返回。Trampoline 页包含进出内核的代码，映射 trapframe 是保存和回护用户进程状态所必需的。</p>
+<p>Xv6 内核为进程维护多个状态片段，它将这些片段收集在 proc 结构体中。使用 <code>p-&gt;xxx</code> 可以引用 proc 结构的元素，比如 <code>p-&gt;pagetable</code> 就是指向进程页表的指针。</p>
+<p>每个进程都有一个线程去执行进程的指令。为了实现进程之间的切换，内核挂起当前正在运行的线程并恢复另一个进程的线程。线程的大部分状态（局部变量、函数调用返回地址）都存储在线程的栈上。每个进程都有两个栈：一个用户栈和一个内核栈（<code>p-&gt;kstack</code>）。当进程执行用户命令时，只有用户栈被使用，内核栈是空的。当进程进入内核（系统调用或中断）时，内核代码在进程的内核栈上执行，用户栈仍保存的数据但不会被主动调用。线程在主动使用用户栈和内核栈之间交替。内核栈是独立并受到保护，因此即便进程破坏了它的用户栈内核也可以运行。</p>
+<p>进程可以通过执行 RISC-V 的 <code>ecall</code> 指令执行系统调用。这个指令提高硬件权限级别并将程序计数器改成内核定义的入口点。入口点的代码切换到内核栈执行实现系统调用的内核指令。系统调用完成时，内核切换到用户栈，并通过 <code>sert</code> 指令返回到用户空间，这将降低硬件特权级别，并在系统调用指令之后继续执行用户指令。</p>
+<p>进程可以 block 以等待 I/O 完事。<code>p-&gt;state</code> 指明是否分配进程、准备运行、运行中、等待 I/O 还是退出。<code>p-&gt;pagetable</code> 以 RISC-V 预期的格式保存进程的页表。Xv6 使分页硬件执行进程时使用进程的 <code>p-&gt;pagetable</code>。进程的页表还用作分配用于存储进程内存的物理页的地址的记录。</p>
+<h2 id="启动-xv6第一个进程和系统调用">启动 xv6，第一个进程和系统调用</h2>
+<p>当 RISC-V 计算机启动时，它会初始化自己并运行一个运行在 ROM 中的 boot loader。Boot loader 将 xv6 内核加载到内存里，然后在 machine模式下，CPU 从 <code>_entry</code>(<strong>kernel/entry.S</strong>) 开始执行 xv6。RISC-V 首先禁用分页硬件，虚拟地址直接映射到物理地址。</p>
+<p>Boot loader 会将 xv6 内核加载到物理地址为 <code>0x80000000</code>，不放在 <code>0x0</code> 的原因是 <code>0x80000000</code> 之前的地址存放 I/O 设备。</p>
+<p><code>_entry</code> 的指令设置了栈以便于让 xv6 能够给运行 C 代码。Xv6 在 start.c 中为初始栈 <code>stack0</code> 声明了空间。<code>_entry</code> 的代码加载地址 <code>stack0 + 4096</code> 的栈指针寄存器<code>sp</code>，这是栈顶，因为 RISC-V 的栈向下增长。内核有了栈，<code>_entry</code> 就开始调用 <code>start</code> 的 C 代码（start 函数）。</p>
+<p><code>start</code> 函数执行一些仅在 machine 模式下允许的配置，然后切换到 supervisor 模式。为了进入 supervisor 模式，RISC-V 提供了指令<code>mret</code>。这条指令通常用于从 supervisor 模式干到 machine 模式时返回到之前的模式。start 不会直接从这样的调用返回，而是设置一些东西：在寄存器<code>mstatus</code>将以前的权限设置为 supervisor，通过将 main 的地址写入寄存器 <code>mpec</code> 将返回地址设置为 main，将 0 写入页表寄存器<code>stap</code>禁用 supervisor 模式的虚拟地址转换，把所有的中断和异常委托给 supervisor 模式。</p>
+<p>在进入 supervisor 模式之前，<code>start</code> 对时钟芯片编程以产生计时器中断。随着内存管理的出现，<code>start</code> 通过调用 <code>mret</code> 返回到 supervisor 模式。这将导致程序计数器改成 main。</p>
+<p>在<code>main</code>初始化几个设备和子系统之后，它调用<code>userinit</code>（kernel/proc.c）创建第一个进程。第一个进程执行用RISC-V汇编写的程序，该程序执行xv6的第一个系统调用。initcode.S（<strong>user/initcode.S</strong>）将<code>exec</code>系统调用的数字<code>SYS_EXEC</code>加载到寄存器a7中，然后调用<code>ecall</code>重新进入内核。</p>
+<p>内核使用寄存器 a7 中的数字来调用所需的系统调用。系统调用表 (<strong>kernel/syscall.c</strong>) 将 <code>SYS_EXEC</code> 映射到内核调用的 <code>sys_exec</code>。<code>exec</code> 用一个新程序（本例是 <code>/init</code>）替换当前进程的内存和寄存器。</p>
+<p>一旦内核执行完了 <code>exec</code>，它就会返回到 <code>/init</code> 进程的用户空间。<code>init</code>(<strong>user/init.c</strong>) 根据需求创建一个新的 console 文件，然后以文件描述符 0、1和 2 的形式打开它，然后启动一个 shell。</p>
+<h2 id="现实状况">现实状况</h2>
+<p>大多数操作系统都有进程的概念，并且大多数类似于 xv6 的。现代操作系统支持多线程，允许单个进程使用多个 CPU，这是 xv6 不具备的。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-03-06</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/xv6_book_chapter_2/" data-title="Xv6 book: Operating system organization" data-hashtags="Xv6_RISC-V"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/xv6_book_chapter_2/" data-title="Xv6 book: Operating system organization"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/xv6_book_chapter_2/" data-hashtag="Xv6_RISC-V"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/xv6_book_chapter_2/" data-title="Xv6 book: Operating system organization"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/xv6_book_chapter_2/" data-title="Xv6 book: Operating system organization"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/xv6_book_chapter_2/" data-title="Xv6 book: Operating system organization"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/xv6_book_chapter_2/" data-title="Xv6 book: Operating system organization" data-description="Xv6 book 的第二章节"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fxv6_book_chapter_2%2f&amp;text=Xv6%20book%3a%20Operating%20system%20organization" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/xv6_risc-v/">Xv6_RISC-V</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/mit_61810_lab1/" class="prev" rel="prev" title="MIT 6.1810: Xv6 and Unix utilities"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>MIT 6.1810: Xv6 and Unix utilities</a>
+            <a href="/posts/mit_61810_lab2/" class="next" rel="next" title="MIT 6.1810: system calls">MIT 6.1810: system calls<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

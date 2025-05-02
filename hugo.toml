@@ -1,0 +1,111 @@
+baseURL = "https://s5n.xyz/"
+title = "索元的博客"
+
+theme = "LoveIt"
+languageCode = "zh-CN"
+hasCJKLanguage = true
+enableRobotsTXT = true
+enableEmoji = true
+
+[menu]
+  [[menu.main]]
+    weight = 1
+    identifier = "posts"
+    name = "文章"
+    url = "/posts/"
+  [[menu.main]]
+    weight = 2
+    identifier = "tags"
+    name = "标签"
+    url = "/tags/"
+  [[menu.main]]
+    weight = 3
+    identifier = "categories"
+    name = "分类"
+    url = "/categories/"
+  [[menu.main]]
+    weight = 4
+    identifier = "page"
+    name = "友情链接"
+    url = "/friend"
+  [[menu.main]]
+    weight = 5
+    identifier = "page"
+    name = "索元正在读的文章"
+    url = "/posts/reading"
+  [[menu.main]]
+    weight = 6
+    identifier = "about"
+    name = "关于"
+    url = "/about"
+
+
+[params]
+  defaultTheme = "auto"
+  dateFormat = "2006-01-02"
+  title = "SuoYuan's Blog"
+  descript = "计算机科班出身的野路子选手"
+  [params.author]
+    name = "suo yuan"
+    email = "s5n666@outlook.com"
+  [params.header]
+    desktopMode = "fixed"
+    mobileMode = "auto"
+    [params.header.title]
+      name = "SuoYuan's Blog"
+      typeit = false
+  [params.footer]
+    enable = true
+    hugo = true
+    copyright = true
+    author = true
+    since = 2022
+    license = '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
+
+  [params.home]
+    rss = 10
+    [params.home.profile]
+      enable = true
+      avatarURL = "/logo.png"
+      subtitle = "人生何事不鹅笼"
+      typeit = true
+      social = true
+      disclaimer = ""
+  [params.social]
+    GitHub = "suoyuan666"
+    Email = "s5n666@outlook.com"
+    RSS = true
+  [params.page]
+    rssFullText = true
+    fontawesome = true
+    [params.page.toc]
+      enable = true
+      keepStatic = false
+      auto = true
+    [params.page.code]
+      copy = true
+      maxShownLines = 50
+    [params.page.math]
+      enable = true
+
+  [params.search]
+    enable = true
+    type = "lunr"
+    contentLength = 4000
+    placeholder = ""
+    maxResultLength = 10
+    snippetLength = 50
+    highlightTag = "em"
+
+
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    lineNumbersInTable = true
+    # false 是必要的设置 (https://github.com/dillonzq/LoveIt/issues/158)
+    noClasses = false
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]

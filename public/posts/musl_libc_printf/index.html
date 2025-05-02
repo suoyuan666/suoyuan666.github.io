@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>musl libc 阅读记录: printf - 索元的博客</title><meta name="Description" content="不自量力阅读 musl libc 的记录"><meta property="og:url" content="http://localhost:1313/posts/musl_libc_printf/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="musl libc 阅读记录: printf">
+  <meta property="og:description" content="不自量力阅读 musl libc 的记录">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-04-22T03:42:51+00:00">
+    <meta property="article:modified_time" content="2023-04-22T03:42:51+00:00">
+    <meta property="article:tag" content="Musl Libc">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="musl libc 阅读记录: printf">
+  <meta name="twitter:description" content="不自量力阅读 musl libc 的记录">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/musl_libc_printf/" /><link rel="prev" href="http://localhost:1313/posts/xv6_book_chapter_8/" /><link rel="next" href="http://localhost:1313/posts/mit_61810_lab7/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "musl libc 阅读记录: printf",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/musl_libc_printf\/"
+        },"genre": "posts","keywords": "musl libc","wordcount":  2807 ,
+        "url": "http:\/\/localhost:1313\/posts\/musl_libc_printf\/","datePublished": "2023-04-22T03:42:51+00:00","dateModified": "2023-04-22T03:42:51+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "不自量力阅读 musl libc 的记录"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">musl libc 阅读记录: printf</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>源码阅读</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2023-04-22">2023-04-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2807 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;6 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#printf-function">printf function</a></li>
+    <li><a href="#vfprintf-function">vfprintf function</a>
+      <ul>
+        <li><a href="#printf_core-function">printf_core function</a></li>
+        <li><a href="#out-function">out function</a></li>
+        <li><a href="#__fwritex-function">__fwritex function</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>不自量力阅读 musl libc的记录</p>
+<h1 id="printf">printf</h1>
+<h2 id="printf-function">printf function</h2>
+<p>函数原型</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">printf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">fmt</span><span class="p">,</span> <span class="p">...);</span></span></span></code></pre></div></div>
+<p>这里是使用了可变参数，<code>printf()</code>函数的大部分也是在对可变参数做处理，把处理好的结果传给另一个函数。关于处理可变参数的那些函数的作用可以在Linux manual pages中查到。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ man <span class="m">3</span> va_list
+</span></span><span class="line"><span class="cl">$ man <span class="m">3</span> stdarg</span></span></code></pre></div></div>
+<blockquote>
+<p>The va_start() macro initializes ap for subsequent use by va_arg() and va_end(), and must be called first.</p>
+</blockquote>
+<p>处理了可变参数后，随即就调用了<code>vfprintf()</code>函数，通过传参的方式把处理的结果传过去了。</p>
+<h2 id="vfprintf-function">vfprintf function</h2>
+<p>函数原型</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">vfprintf</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">f</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="kr">restrict</span> <span class="n">fmt</span><span class="p">,</span> <span class="n">va_list</span> <span class="n">ap</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>函数内部首先定义了一批局部变量，随即使用<code>va_copy()</code>去复制一个ap出来，随即使用<code>printf_core()</code>向文件描述符0写数据从而测试参数是否存在什么问题。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">va_copy</span><span class="p">(</span><span class="n">ap2</span><span class="p">,</span> <span class="n">ap</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">printf_core</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ap2</span><span class="p">,</span> <span class="n">nl_arg</span><span class="p">,</span> <span class="n">nl_type</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">va_end</span><span class="p">(</span><span class="n">ap2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<hr>
+<p>关于我说的这个第一次<code>printf_core()</code>函数的作用，有人发邮件问过musl libc的开发者，开发者给出的回复是：</p>
+<blockquote>
+<p>First call to printf_core() checks to see if there are any major problems with the format string.</p>
+</blockquote>
+<p>当说到第二次的调用也可以做到check的效果时，开发者回复：</p>
+<blockquote>
+<p>POSIX says that to the extent possible, all functions are supposed to either fail with no side effects or succeed with side effects. There are some functions that can fail with side effects, but we make some effort to minimize that. By testing the format string first, if it is broken, we can fail without side effects. If only the second call tested that, you would get a partial output before failure.</p>
+</blockquote>
+<hr>
+<p>至于为什么要使用<code>va_copy()</code>再整个va_list出来，我认为大抵是为了保证函数内部的封闭性，我这里说的封闭性就是尽量不使用外部的变量，va_list传进来貌似是指针形式传递进来的，为了不影响到外部的变量，故而复制一份出来。</p>
+<p>之后便是给f上个锁，再保存一下之前的错误位，然后把错误位设置为0</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">FLOCK</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">olderr</span> <span class="o">=</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">F_ERR</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">f</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">F_ERR</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>而后看f的buf size是否为0，为0的话就临时把之前定义好的intelnal_buf作为f的buf使用。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="o">-&gt;</span><span class="n">buf_size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">saved_buf</span> <span class="o">=</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">f</span><span class="o">-&gt;</span><span class="n">buf</span> <span class="o">=</span> <span class="n">internal_buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">f</span><span class="o">-&gt;</span><span class="n">buf_size</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">internal_buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">f</span><span class="o">-&gt;</span><span class="n">wpos</span> <span class="o">=</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">wbase</span> <span class="o">=</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">wend</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span></span></span></code></pre></div></div>
+<p>之后再做一个判断，就要开始真正往stdout写数据了</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="o">-&gt;</span><span class="n">wend</span> <span class="o">&amp;&amp;</span> <span class="nf">__towrite</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span> <span class="n">ret</span> <span class="o">=</span> <span class="nf">printf_core</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ap2</span><span class="p">,</span> <span class="n">nl_arg</span><span class="p">,</span> <span class="n">nl_type</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>之后就是对f原本buf的恢复</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">saved_buf</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">f</span><span class="o">-&gt;</span><span class="nf">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="o">-&gt;</span><span class="n">wpos</span><span class="p">)</span> <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">f</span><span class="o">-&gt;</span><span class="n">buf</span> <span class="o">=</span> <span class="n">saved_buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">f</span><span class="o">-&gt;</span><span class="n">buf_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">f</span><span class="o">-&gt;</span><span class="n">wpos</span> <span class="o">=</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">wbase</span> <span class="o">=</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">wend</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>然后再判一遍f的error，并恢复错误位</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">ferror</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">f</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">|=</span> <span class="n">olderr</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>最后解开f的锁，结束掉ap2，然后return。</p>
+<h3 id="printf_core-function">printf_core function</h3>
+<p>函数原型</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">printf_core</span><span class="p">(</span><span class="n">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="n">va_list</span> <span class="o">*</span><span class="n">ap</span><span class="p">,</span> <span class="k">union</span> <span class="n">arg</span> <span class="o">*</span><span class="n">nl_arg</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">nl_type</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>首先依旧是定义了一批局部变量，然后开始循环处理参数</p>
+<p>首先判断l和cnt时候会造成整数溢出</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">l</span> <span class="o">&gt;</span> <span class="n">INT_MAX</span> <span class="o">-</span> <span class="n">cnt</span><span class="p">)</span> <span class="k">goto</span> <span class="n">overflow</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>然后更新cnt，并且判断s是否为0</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">cnt</span> <span class="o">+=</span> <span class="n">l</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!*</span><span class="n">s</span><span class="p">)</span> <span class="k">break</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>之后是处理**%%**这样的情况</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">s</span><span class="p">;</span> <span class="o">*</span><span class="n">s</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="n">s</span><span class="o">!=</span><span class="sc">&#39;%&#39;</span><span class="p">;</span> <span class="n">s</span><span class="o">++</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">z</span><span class="o">=</span><span class="n">s</span><span class="p">;</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;%&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;%&#39;</span><span class="p">;</span> <span class="n">z</span><span class="o">++</span><span class="p">,</span> <span class="n">s</span><span class="o">+=</span><span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">z</span><span class="o">-</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">INT_MAX</span><span class="o">-</span><span class="n">cnt</span><span class="p">)</span> <span class="k">goto</span> <span class="n">overflow</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">l</span> <span class="o">=</span> <span class="n">z</span><span class="o">-</span><span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="nf">out</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">l</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>随后是对参数位置的处理</p>
+<p>对此，Linux manual pages上是这么写的：</p>
+<blockquote>
+<p>By default, the arguments are used in the order given, where each &lsquo;*&rsquo; (see Field width and Precision  below)  and each conversion specifier asks for the next argument (and it is an error if insufficiently many arguments are given).  One can also specify explicitly which argument is taken, at each place where an argument is required, by writing &ldquo;%m$&rdquo; instead of &lsquo;%&rsquo; and &ldquo;*m$&rdquo; instead of &lsquo;*&rsquo;, where the decimal integer m denotes the position in the argument list of the desired argument, indexed  starting from 1.</p>
+</blockquote>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">isdigit</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;$&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">l10n</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">argpos</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">s</span><span class="o">+=</span><span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">argpos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里的l10n变量是表示是否启用本地化</p>
+<p>之后是对flags的读取</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">fl</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="p">(</span><span class="kt">unsigned</span><span class="p">)</span><span class="o">*</span><span class="n">s</span><span class="o">-</span><span class="sc">&#39; &#39;</span><span class="o">&lt;</span><span class="mi">32</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">FLAGMASK</span><span class="o">&amp;</span><span class="p">(</span><span class="mi">1U</span><span class="o">&lt;&lt;*</span><span class="n">s</span><span class="o">-</span><span class="sc">&#39; &#39;</span><span class="p">));</span> <span class="n">s</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="n">fl</span> <span class="o">|=</span> <span class="mi">1U</span><span class="o">&lt;&lt;*</span><span class="n">s</span><span class="o">-</span><span class="sc">&#39; &#39;</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>这里的FLAGMASK是define的宏：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define FLAGMASK (ALT_FORM | ZERO_PAD | LEFT_ADJ | PAD_POS | MARK_POS | GROUPED)</span></span></span></code></pre></div></div>
+<p>其中像ALT_FORM这样的也都是define的宏，整个展开就是：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define FLAGMASK ((1U &lt;&lt; &#39;#&#39; - &#39; &#39;) | (1U &lt;&lt; &#39;0&#39; - &#39; &#39;) | (1U &lt;&lt; &#39;-&#39; - &#39; &#39;) | (1U &lt;&lt; &#39; &#39; - &#39; &#39;) |
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span> <span class="p">(</span><span class="mi">1U</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;+&#39;</span> <span class="o">-</span> <span class="sc">&#39; &#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">1U</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\&#39;&#39;</span> <span class="o">-</span> <span class="sc">&#39; &#39;</span><span class="p">))</span></span></span></code></pre></div></div>
+<p>然后读取field width</p>
+<blockquote>
+<p>An  optional decimal digit string (with nonzero first digit) specifying a minimum field width.  If the converted value has fewer characters than the field width, it will be padded with spaces on the left (or right, if the left-adjustment flag has been given).  Instead of a decimal digit string one may write &ldquo;*&rdquo; or &ldquo;*m$&rdquo; (for some decimal integer  m)  to  specify that the field width is given in the next argument, or in the m-th argument, respectively, which must be of type int.</p>
+</blockquote>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="o">==</span><span class="sc">&#39;*&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="nf">isdigit</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;$&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">l10n</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="p">)</span> <span class="n">nl_type</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">INT</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">else</span> <span class="n">w</span> <span class="o">=</span> <span class="n">nl_arg</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="p">].</span><span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="o">+=</span><span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">l10n</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">w</span> <span class="o">=</span> <span class="n">f</span> <span class="o">?</span> <span class="nf">va_arg</span><span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">goto</span> <span class="n">inval</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">w</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="n">fl</span><span class="o">|=</span><span class="n">LEFT_ADJ</span><span class="p">,</span> <span class="n">w</span><span class="o">=-</span><span class="n">w</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="n">w</span><span class="o">=</span><span class="nf">getint</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="p">))</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="k">goto</span> <span class="n">overflow</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>可以看到，除了精度，它还处理了改变参数顺序的一种方法，并通过三目运算符判断f时候为0来决定是做测试还是正常work，这样的处理在后面也有用到。</p>
+<p>之后是处理精度</p>
+<blockquote>
+<p>An  optional  precision,  in the form of a period (&rsquo;.&rsquo;)  followed by an optional decimal digit string.  Instead of a decimal digit string one may write &ldquo;*&rdquo; or &ldquo;*m$&rdquo; (for some decimal integer m) to specify that the precision is given in the next argument, or in the m-th argument, respectively, which must be of type int.  If the  precision is given as just &lsquo;.&rsquo;, the precision is taken to be zero.</p>
+</blockquote>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="o">==</span><span class="sc">&#39;.&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;*&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="nf">isdigit</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;$&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="p">)</span> <span class="n">nl_type</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">INT</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">else</span> <span class="n">p</span> <span class="o">=</span> <span class="n">nl_arg</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="p">].</span><span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="o">+=</span><span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">l10n</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">p</span> <span class="o">=</span> <span class="n">f</span> <span class="o">?</span> <span class="nf">va_arg</span><span class="p">(</span><span class="o">*</span><span class="n">ap</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">s</span><span class="o">+=</span><span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">goto</span> <span class="n">inval</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">xp</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="o">==</span><span class="sc">&#39;.&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">s</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">p</span> <span class="o">=</span> <span class="nf">getint</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">xp</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">p</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">xp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>之后对处理format</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">st</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">do</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="nf">OOB</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="p">))</span> <span class="k">goto</span> <span class="n">inval</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">ps</span><span class="o">=</span><span class="n">st</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="n">st</span><span class="o">=</span><span class="n">states</span><span class="p">[</span><span class="n">st</span><span class="p">]</span><span class="nf">S</span><span class="p">(</span><span class="o">*</span><span class="n">s</span><span class="o">++</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">st</span><span class="o">-</span><span class="mi">1</span><span class="o">&lt;</span><span class="n">STOP</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">st</span><span class="p">)</span> <span class="k">goto</span> <span class="n">inval</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>states是一个二维数组，如果format没有经过修饰（只是d, f这样的）就不会有第二次循环，修饰了就会再次进入循环。</p>
+<p>之后检查参数类型是否有效，并保存参数的值</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">st</span><span class="o">==</span><span class="n">NOARG</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">argpos</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span> <span class="k">goto</span> <span class="n">inval</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">argpos</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="p">)</span> <span class="n">nl_type</span><span class="p">[</span><span class="n">argpos</span><span class="p">]</span><span class="o">=</span><span class="n">st</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">else</span> <span class="n">arg</span><span class="o">=</span><span class="n">nl_arg</span><span class="p">[</span><span class="n">argpos</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="nf">pop_arg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">arg</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">ap</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">else</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>可以这里先判了一手，如果参数类型没啥问题再判断参数位置是否被设定过。</p>
+<p>这里的<code>pop_arg()</code>函数就是读取参数到arg里。</p>
+<p>之后判断这次调用只是做测试还是真的要打印，并且判一回f是否有问题</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nf">ferror</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>再做一些处理，再此之前先定义一波变量</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">z</span> <span class="o">=</span> <span class="n">buf</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">prefix</span> <span class="o">=</span> <span class="s">&#34;-+   0X0x&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">pl</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span></span></span></code></pre></div></div>
+<p>处理的是将ls, lc干成S, C
+因为&rsquo;-&lsquo;和'0&rsquo;是互斥的，所以也要处理一下。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">ps</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">t</span><span class="o">&amp;</span><span class="mi">15</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">)</span> <span class="n">t</span><span class="o">&amp;=~</span><span class="mi">32</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">fl</span> <span class="o">&amp;</span> <span class="n">LEFT_ADJ</span><span class="p">)</span> <span class="n">fl</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">ZERO_PAD</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>之后就是针对不同类型的处理了，由于类型太多，源码就不贴过来了，我也不准备都看一遍类型都是怎么处理的。</p>
+<p>比如这里关于整数的处理</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">case</span> <span class="sc">&#39;d&#39;</span><span class="o">:</span> <span class="k">case</span> <span class="sc">&#39;i&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">pl</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">arg</span><span class="p">.</span><span class="n">i</span><span class="o">&gt;</span><span class="n">INTMAX_MAX</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">arg</span><span class="p">.</span><span class="n">i</span><span class="o">=-</span><span class="n">arg</span><span class="p">.</span><span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">fl</span> <span class="o">&amp;</span> <span class="n">MARK_POS</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">prefix</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">fl</span> <span class="o">&amp;</span> <span class="n">PAD_POS</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">prefix</span><span class="o">+=</span><span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span> <span class="k">else</span> <span class="n">pl</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">case</span> <span class="sc">&#39;u&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">a</span> <span class="o">=</span> <span class="nf">fmt_u</span><span class="p">(</span><span class="n">arg</span><span class="p">.</span><span class="n">i</span><span class="p">,</span> <span class="n">z</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">xp</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">)</span> <span class="k">goto</span> <span class="n">overflow</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">xp</span><span class="p">)</span> <span class="n">fl</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">ZERO_PAD</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">arg</span><span class="p">.</span><span class="n">i</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">a</span><span class="o">=</span><span class="n">z</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="n">p</span> <span class="o">=</span> <span class="nf">MAX</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">z</span><span class="o">-</span><span class="n">a</span> <span class="o">+</span> <span class="o">!</span><span class="n">arg</span><span class="p">.</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="k">break</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>这里首先处理一波溢出的情况，然后就是对flag的处理。</p>
+<p>switch那块完事了之后，回接着再做一些判断</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">&lt;</span> <span class="n">z</span><span class="o">-</span><span class="n">a</span><span class="p">)</span> <span class="n">p</span> <span class="o">=</span> <span class="n">z</span><span class="o">-</span><span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">&gt;</span> <span class="n">INT_MAX</span><span class="o">-</span><span class="n">pl</span><span class="p">)</span> <span class="k">goto</span> <span class="n">overflow</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">w</span> <span class="o">&lt;</span> <span class="n">pl</span><span class="o">+</span><span class="n">p</span><span class="p">)</span> <span class="n">w</span> <span class="o">=</span> <span class="n">pl</span><span class="o">+</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">w</span> <span class="o">&gt;</span> <span class="n">INT_MAX</span><span class="o">-</span><span class="n">cnt</span><span class="p">)</span> <span class="k">goto</span> <span class="n">overflow</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>最后终于是要输出了</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">pad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="sc">&#39; &#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pl</span><span class="o">+</span><span class="n">p</span><span class="p">,</span> <span class="n">fl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">out</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">pl</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="sc">&#39;0&#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pl</span><span class="o">+</span><span class="n">p</span><span class="p">,</span> <span class="n">fl</span><span class="o">^</span><span class="n">ZERO_PAD</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="sc">&#39;0&#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">z</span><span class="o">-</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">out</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">z</span><span class="o">-</span><span class="n">a</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">pad</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="sc">&#39; &#39;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pl</span><span class="o">+</span><span class="n">p</span><span class="p">,</span> <span class="n">fl</span><span class="o">^</span><span class="n">LEFT_ADJ</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>这次是针对各种flag和width的填充，当然在倒数第二步输出了真正的data。</p>
+<h3 id="out-function">out function</h3>
+<p><code>out()</code>就一行代码</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">ferror</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="nf">__fwritex</span><span class="p">((</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">s</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>可以看到这里调用了<code>__fwritex()</code>函数，这是一个hidden的函数，实现在<strong>fwrite.c</strong>中。</p>
+<h3 id="__fwritex-function">__fwritex function</h3>
+<p>首先再次做了一波判断</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span><span class="o">-&gt;</span><span class="n">wend</span> <span class="o">&amp;&amp;</span> <span class="nf">__towrite</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>其次先判断f是否有足够的空间容纳要写的数据，如果没有调用write syscall</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">l</span> <span class="o">&gt;</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">wend</span> <span class="o">-</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">wpos</span><span class="p">)</span> <span class="k">return</span> <span class="n">f</span><span class="o">-&gt;</span><span class="nf">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">l</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>如果有足够的空间，就先判断一手f的行缓冲模式(line buf flag)是否设置，如果是行缓冲模式，会先把数据写到buf里，如果遇到了<code>\n</code>就写到f里，换行符后面的部分会通过调用<code>memcpy</code>写入buf里。如果不是行缓冲，就先把数据都写入buf里。</p>
+<p>关于刚刚说的这个，可以在iSO C标准中找到，下面这个摘抄自我找的C17标准文档：</p>
+<blockquote>
+<p>When a stream is line buffered, characters are intended to be transmitted to or from the host environment as a block when a new-line character is encountered.</p>
+</blockquote>
+<p>行缓冲里有个关于n和i的判断，这里为什么有小于关系，下面是Linux manual pages</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ man <span class="m">2</span> write</span></span></code></pre></div></div>
+<blockquote>
+<p>Note that a successful write() may transfer fewer than count bytes. Such partial writes can occur for various reasons; for example, because there was insufficient space on  the  disk  device  to  write  all of the requested bytes, or because a blocked write() to a socket, pipe, or similar was interrupted by a signal handler after it had transferred some, but before it had transferred all of the requested bytes.</p>
+</blockquote>
+<p>如果数据被写入了buf里面，就只能等到f被关闭的时候（如果源码中没有指定大抵就是程序退出的时候）就会把buf里的数据写出去</p>
+<blockquote>
+<p>A file may be disassociated from a controlling stream by closing the file. Output streams are flushed (any unwritten buffer contents are transmitted to the host environment) before the stream is disassociated from the file.</p>
+</blockquote>
+<blockquote>
+<p>If the main function returns to its original caller, or if the exit function is called, all open files are closed (hence all output streams are flushed) before program termination.</p>
+</blockquote>
+<p>上面这段同样摘抄自我找的C17标准文档</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2023-04-22</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/musl_libc_printf/" data-title="musl libc 阅读记录: printf" data-hashtags="musl libc"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/musl_libc_printf/" data-title="musl libc 阅读记录: printf"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/musl_libc_printf/" data-hashtag="musl libc"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/musl_libc_printf/" data-title="musl libc 阅读记录: printf"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/musl_libc_printf/" data-title="musl libc 阅读记录: printf"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/musl_libc_printf/" data-title="musl libc 阅读记录: printf"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/musl_libc_printf/" data-title="musl libc 阅读记录: printf" data-description="不自量力阅读 musl libc 的记录"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fmusl_libc_printf%2f&amp;text=musl%20libc%20%e9%98%85%e8%af%bb%e8%ae%b0%e5%bd%95%3a%20printf" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/musl-libc/">Musl Libc</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/xv6_book_chapter_8/" class="prev" rel="prev" title="Xv6 book: File system"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Xv6 book: File system</a>
+            <a href="/posts/mit_61810_lab7/" class="next" rel="next" title="MIT 6.1810: Networking">MIT 6.1810: Networking<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

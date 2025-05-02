@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境 - 索元的博客</title><meta name="Description" content="尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统"><meta property="og:url" content="http://localhost:1313/posts/gentoo_musl_llvm/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境">
+  <meta property="og:description" content="尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-08-05T09:34:33+00:00">
+    <meta property="article:modified_time" content="2024-08-29T22:58:02+00:00">
+    <meta property="article:tag" content="Gentoo Linux">
+    <meta property="article:tag" content="Linux">
+    <meta property="article:tag" content="Musl Libc">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境">
+  <meta name="twitter:description" content="尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/gentoo_musl_llvm/" /><link rel="prev" href="http://localhost:1313/posts/neovim_setup/" /><link rel="next" href="http://localhost:1313/posts/linux_code_style/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "在 Gentoo Linux 上尝试 musl libc + llvm 环境",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/gentoo_musl_llvm\/"
+        },"genre": "posts","keywords": "gentoo-linux, linux, musl libc","wordcount":  1574 ,
+        "url": "http:\/\/localhost:1313\/posts\/gentoo_musl_llvm\/","datePublished": "2024-08-05T09:34:33+00:00","dateModified": "2024-08-29T22:58:02+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">在 Gentoo Linux 上尝试 musl libc + llvm 环境</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/linux_%E6%9D%82%E8%B0%88/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Linux_杂谈</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-08-05">2024-08-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1574 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#安装前">安装前</a></li>
+    <li><a href="#安装时遇到的问题">安装时遇到的问题</a></li>
+    <li><a href="#后记">后记</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统</p>
+<h1 id="在-gentooo-linux-上尝试-musl-libc--llvm-环境">在 Gentooo Linux 上尝试 musl libc + llvm 环境</h1>
+<h2 id="背景">背景</h2>
+<p>以前就有听说过 musl libc 了，一个体积小，并且完全按照标准实现的 libc，但一直没想过使用这个 libc。前几天看到 Gentoo Linux 对于 musl libc 有很多 profile 可以使用（不过都是实验性的，而非 stable）。</p>
+<p>一定程度上这完成了<a href="../gentooinstall_ng/" rel="">之前安装 Gentoo Linux 的文章</a>中的目标:</p>
+<blockquote>
+<p>我在安装前的预计其实是用 Gentoo Linux，同时 init 使用 openrc，默认编译工具链用 clang/llvm，用 hardened profile 并且开一些额外的编译选项（比如 thinlto 之类的）。不过目前只实现了使用 openrc 和 hardened profile。</p>
+</blockquote>
+<p>之前那次我没有实现这些目标，只是使用了 openrc，这次我使用这个 profile 确实实现了这一点，因为 systemd 依赖于 glibc，所以我选择使用 openrc，默认编译工具链就是 clang/llvm，甚至 C++ 标准库使用的也是提供的 <a href="https://libcxx.llvm.org/" target="_blank" rel="noopener noreffer ">libc++</a>，因为默认用 clang/llvm 编译，所以我直接默认就开启了 thinlto。</p>
+<h2 id="安装前">安装前</h2>
+<p><a href="https://www.etalabs.net/compare_libcs.html" target="_blank" rel="noopener noreffer ">musl libc 的作者提供了一个 musl uClibc glibc dietlibc 之间的比较</a>，musl libc 体积上确实小，不过部分库函数的性能不如 glibc。并且由于 glibc 中存在 GNU 的一些扩展，导致 musl libc 和 glibc 不能完全兼容，一些依赖于 glibc 的闭源发行二进制软件包的程序可能无法运行在 musl libc 上，不过可以尝试使用flatpak 运行。</p>
+<p>Chromium 浏览器无法使用 musl libc 编译，electorn 的也无法使用。一定程度上，这迫使一直用 Visual Studio Code 的我开始使用 neovim。</p>
+<p>musl libc 支持的 locale 还不是很多：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">  [1]   C
+</span></span><span class="line"><span class="cl">  [2]   C.UTF-8
+</span></span><span class="line"><span class="cl">  [3]   sr_RS.UTF-8
+</span></span><span class="line"><span class="cl">  [4]   cs_CZ.UTF-8
+</span></span><span class="line"><span class="cl">  [5]   nb_NO.UTF-8
+</span></span><span class="line"><span class="cl">  [6]   de_DE.UTF-8
+</span></span><span class="line"><span class="cl">  [7]   sv_SE.UTF-8
+</span></span><span class="line"><span class="cl">  [8]   nl_NL.UTF-8
+</span></span><span class="line"><span class="cl">  [9]   fr_FR.UTF-8
+</span></span><span class="line"><span class="cl">  [10]  fi_FI.UTF-8
+</span></span><span class="line"><span class="cl">  [11]  en_GB.UTF-8
+</span></span><span class="line"><span class="cl">  [12]  it_IT.UTF-8
+</span></span><span class="line"><span class="cl">  [13]  pt_PT.UTF-8
+</span></span><span class="line"><span class="cl">  [14]  en_US.UTF-8 *
+</span></span><span class="line"><span class="cl">  [15]  de_CH.UTF-8
+</span></span><span class="line"><span class="cl">  [16]  es_ES.UTF-8
+</span></span><span class="line"><span class="cl">  [17]  pt_BR.UTF-8
+</span></span><span class="line"><span class="cl">  [18]  ru_RU.UTF-8</span></span></code></pre></div></div>
+<p>这里没有 zh_CN.UTF-8。</p>
+<p>musl libc 设置时区的方式也会有所不同，需要在 <strong>/etc/env.d/00musl</strong> 文件中写好 <code>TZ</code> 环境变量。</p>
+<p>以上关于 locale 和时区的设置，<a href="https://wiki.gentoo.org/wiki/Musl_usage_guide" target="_blank" rel="noopener noreffer ">Gentoo wiki</a> 都有说明。在 <a href="https://wiki.gentoo.org/wiki/Musl_porting_notes" target="_blank" rel="noopener noreffer ">Gentoo 的另一篇 wiki</a> 记录了一些常见的 musl libc 编译可能遇到的问题（即编译那些一定程度上依赖于 glibc 的软件）。</p>
+<h2 id="安装时遇到的问题">安装时遇到的问题</h2>
+<p>一开始装完后，进入 grub，进入 openrc 后就没后续了，之后重新装一编就没有遇到这个问题。不好评价这个问题的原因。</p>
+<p>不知道是不是我这个内核版本的原因，我用 openrc 从来没有正常关机过，直接死在那里，后来我换到 stable 内核就没有这个问题了。</p>
+<p>firefox-115 esr 版本无法正常编译，会报一些错误类似: <code>ld.lld: error: undefined hidden symbol</code>。详情可以参考 GitHub 上 <a href="https://github.com/llvm/llvm-project/issues/79027" target="_blank" rel="noopener noreffer ">LLVM 的 issue</a> 以及 <a href="https://bugs.freebsd.org/bugzilla/show_bug.cgi?id=276746" target="_blank" rel="noopener noreffer ">FreeBSD Bugzilla</a> 上的讨论。而且 <code>rust</code> 编译的部分也会出现问题。</p>
+<p>我参考了 FreeBSD 上的解法，首先是 <code>rust</code> 那里，根据 FreeBSD Bugzilla 上的讨论，原因是:</p>
+<blockquote>
+<p>rust-bindgen uses some tricks to generate bindings for C++ components, but gets confused by some new constructs in libc++ 18 headers, causing it to generate faulty binding code.</p>
+</blockquote>
+<p>该问题已经被<a href="https://hg.mozilla.org/mozilla-central/rev/9e96d1447f6c" target="_blank" rel="noopener noreffer ">今年 1 月份的补丁</a> 解决，对此我选择不用 esr 版本，用 stable 的版本。</p>
+<p>其次对于 undefined hidden symbol 的问题，则是为 firefox 的编译单独创建一个环境。在 <strong>/etc/portage/env/</strong> 目录下创建一个 <strong>compiler-clang-firefox</strong> 文件，文件内容是:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">COMMON_FLAGS=&#34;-O2 -march=x86-64-v3 -pipe -fvisibility=hidden -fvisibility-inlines-hidden&#34;
+</span></span><span class="line"><span class="cl">CLAGS=&#34;${COMMON_FLAGS}&#34;
+</span></span><span class="line"><span class="cl">CXXFLAGS=&#34;${COMMON_FLAGS}&#34;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CC=&#34;clang&#34;
+</span></span><span class="line"><span class="cl">CXX=&#34;clang++&#34;
+</span></span><span class="line"><span class="cl">CPP=&#34;clang-cpp&#34;
+</span></span><span class="line"><span class="cl">AR=&#34;llvm-ar&#34;
+</span></span><span class="line"><span class="cl">NM=&#34;llvm-nm&#34;
+</span></span><span class="line"><span class="cl">RANLIB=&#34;
+</span></span><span class="line"><span class="cl">llvm-ranlib&#34;</span></span></code></pre></div></div>
+<p>也就是 CXXFLAGS 加上 <code>-fvisibility=hidden -fvisibility-inlines-hidden</code></p>
+<p>新建 <strong>/etc/portage/package.env/</strong> 目录，在其中新建一个文件写入:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">www-client/firefox compiler-clang-firefox</span></span></code></pre></div></div>
+<p>这样就可以使用指定的编译环境编译了。</p>
+<p>对于 <a href="https://packages.gentoo.org/packages/dev-libs/darts" target="_blank" rel="noopener noreffer ">dev-libs/darts</a> 来说，由于 <strong>src/lexicon.h</strong> 中的 <code>std::random_shuffle</code> 在 <code>std</code> 中已经不存在，<a href="https://en.cppreference.com/w/cpp/algorithm/random_shuffle" target="_blank" rel="noopener noreffer ">cppreference</a> 中也可以看到，该函数 从 C++ 17 开始就废除了。所以我给它写了个 patch。</p>
+<p>在 <strong>/etc/portage/</strong> 目录下新建一个 <strong>patches</strong> 的文件夹，然后在 <strong>patches</strong> 里新建 <strong>dev-libs/darts</strong> 这两级文件夹，之后把补丁放进去，安装的时候会自动 patch。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-patch">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-patch" data-lang="patch"><span class="line"><span class="cl"><span class="gh">diff --git a/src/lexicon.h b/src/lexicon.h
+</span></span></span><span class="line"><span class="cl"><span class="gh">index a2935f4..2a30d1b 100644
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="gd">--- a/src/lexicon.h
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+++ b/src/lexicon.h
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span><span class="gu">@@ -1,3 +1,4 @@
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="gi">+// clang-format off
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> #ifndef DARTS_LEXICON_H_
+</span></span><span class="line"><span class="cl"> #define DARTS_LEXICON_H_
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">@@ -7,6 +8,7 @@
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span> #include &lt;ctime&gt;
+</span></span><span class="line"><span class="cl"> #include &lt;iostream&gt;
+</span></span><span class="line"><span class="cl"> #include &lt;limits&gt;
+</span></span><span class="line"><span class="cl"><span class="gi">+#include &lt;random&gt;
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> #include &lt;vector&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> #include &#34;./mersenne-twister.h&#34;
+</span></span><span class="line"><span class="cl"><span class="gu">@@ -58,9 +60,9 @@ class Lexicon {
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span>   }
+</span></span><span class="line"><span class="cl">   // randomize() shuffles keys. Values are not affected.
+</span></span><span class="line"><span class="cl">   void randomize() {
+</span></span><span class="line"><span class="cl"><span class="gd">-    Darts::MersenneTwister mt(
+</span></span></span><span class="line"><span class="cl"><span class="gd">-        static_cast&lt;Darts::MersenneTwister::int_type&gt;(std::time(NULL)));
+</span></span></span><span class="line"><span class="cl"><span class="gd">-    std::random_shuffle(keys_.begin(), keys_.end(), mt);
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+    std::random_device rd;
+</span></span></span><span class="line"><span class="cl"><span class="gi">+    std::mt19937 g(rd());
+</span></span></span><span class="line"><span class="cl"><span class="gi">+    std::shuffle(keys_.begin(), keys_.end(), g);
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>   }
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   void split();
+</span></span></code></pre></div></div>
+<p>我开头有 <code>// clang-format off</code> 的原因是我的 neovim 会保存时候自动调用 clang-format 格式化。</p>
+<p>如果遇到了 Hyprland 0.42 编译失败的情况，报错是 <code>copy_if</code> 等函数没有找到，可以使用我找到的这个 patch</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-patch">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-patch" data-lang="patch"><span class="line"><span class="cl">From eb42adc4c090918ad6be9fcb24066da8cdfd9bd0 Mon Sep 17 00:00:00 2001
+</span></span><span class="line"><span class="cl">From: Serenity Braesch &lt;Serenity.Braesch@proton.me&gt;
+</span></span><span class="line"><span class="cl">Date: Sat, 24 Aug 2024 01:53:08 -0600
+</span></span><span class="line"><span class="cl">Subject: [PATCH] Fix missing include needed by clang
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">---
+</span></span></span><span class="line"><span class="cl"><span class="gs"></span> src/managers/XCursorManager.cpp | 1 +
+</span></span><span class="line"><span class="cl"> 1 file changed, 1 insertion(+)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gh">diff --git a/src/managers/XCursorManager.cpp b/src/managers/XCursorManager.cpp
+</span></span></span><span class="line"><span class="cl"><span class="gh">index 7fc21a28..1e7ca535 100644
+</span></span></span><span class="line"><span class="cl"><span class="gh"></span><span class="gd">--- a/src/managers/XCursorManager.cpp
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span><span class="gi">+++ b/src/managers/XCursorManager.cpp
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span><span class="gu">@@ -1,3 +1,4 @@
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="gi">+#include &lt;algorithm&gt;
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span> #include &lt;cstring&gt;
+</span></span><span class="line"><span class="cl"> #include &lt;dirent.h&gt;
+</span></span><span class="line"><span class="cl"> #include &lt;filesystem&gt;
+</span></span><span class="line"><span class="cl"><span class="gd">-- 
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span>2.44.2
+</span></span></code></pre></div></div>
+<p>这已经被 <a href="https://github.com/hyprwm/Hyprland/pull/7490" target="_blank" rel="noopener noreffer ">合并到 Hyprland 主线</a> 里了，等下一个版本应该就没这个事情了。</p>
+<h2 id="后记">后记</h2>
+<p>我没有尝试什么桌面环境，本身我这台计算机的性能就没强到哪去，所以我安装了 sway，还算正常。后来还是用了 Hyprland，xdg-desktop-portal-hyprland 这个软件是 guru 仓库内的，好家伙。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-08-29</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/gentoo_musl_llvm/" data-title="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境" data-hashtags="gentoo-linux,linux,musl libc"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/gentoo_musl_llvm/" data-title="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/gentoo_musl_llvm/" data-hashtag="gentoo-linux"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/gentoo_musl_llvm/" data-title="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/gentoo_musl_llvm/" data-title="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/gentoo_musl_llvm/" data-title="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/gentoo_musl_llvm/" data-title="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境" data-description="尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgentoo_musl_llvm%2f&amp;text=%e5%9c%a8%20Gentoo%20Linux%20%e4%b8%8a%e5%b0%9d%e8%af%95%20musl%20libc%20%2b%20llvm%20%e7%8e%af%e5%a2%83" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/gentoo-linux/">Gentoo Linux</a>,&nbsp;<a href="/tags/linux/">Linux</a>,&nbsp;<a href="/tags/musl-libc/">Musl Libc</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/neovim_setup/" class="prev" rel="prev" title="我的 neovim 配置"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>我的 neovim 配置</a>
+            <a href="/posts/linux_code_style/" class="next" rel="next" title="Linux kernel 代码规范">Linux kernel 代码规范<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

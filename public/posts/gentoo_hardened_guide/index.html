@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Gentoo Linux 安全加固指南 - 索元的博客</title><meta name="Description" content="我本次安装 Gentoo Linux 所做的一些安全加固手段"><meta property="og:url" content="http://localhost:1313/posts/gentoo_hardened_guide/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="Gentoo Linux 安全加固指南">
+  <meta property="og:description" content="我本次安装 Gentoo Linux 所做的一些安全加固手段">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-01-07T10:00:36+00:00">
+    <meta property="article:modified_time" content="2025-01-28T01:11:53+00:00">
+    <meta property="article:tag" content="Gentoo Linux">
+    <meta property="article:tag" content="Linux">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Gentoo Linux 安全加固指南">
+  <meta name="twitter:description" content="我本次安装 Gentoo Linux 所做的一些安全加固手段">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/gentoo_hardened_guide/" /><link rel="prev" href="http://localhost:1313/posts/2024_review/" /><link rel="next" href="http://localhost:1313/posts/xv6_riscv_read_user-libc/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Gentoo Linux 安全加固指南",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/gentoo_hardened_guide\/"
+        },"genre": "posts","keywords": "gentoo-linux, linux","wordcount":  4542 ,
+        "url": "http:\/\/localhost:1313\/posts\/gentoo_hardened_guide\/","datePublished": "2025-01-07T10:00:36+00:00","dateModified": "2025-01-28T01:11:53+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "我本次安装 Gentoo Linux 所做的一些安全加固手段"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Gentoo Linux 安全加固指南</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-01-07">2025-01-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;4542 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;10 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#硬盘加密">硬盘加密</a></li>
+    <li><a href="#安全启动">安全启动</a></li>
+    <li><a href="#bwrap">bwrap</a>
+      <ul>
+        <li><a href="#firefox">FireFox</a></li>
+        <li><a href="#vscodium">VSCodium</a></li>
+        <li><a href="#chromium">Chromium</a></li>
+      </ul>
+    </li>
+    <li><a href="#sysctl">sysctl</a></li>
+    <li><a href="#内核命令行参数">内核命令行参数</a></li>
+    <li><a href="#networkmanager">NetworkManager</a></li>
+    <li><a href="#浏览器配置">浏览器配置</a></li>
+    <li><a href="#禁用-core-dump">禁用 core dump</a></li>
+    <li><a href="#面向安全的编译选项">面向安全的编译选项</a></li>
+    <li><a href="#selinuxapparmor">SELinux/AppArmor</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="gentoo-linux-安全加固指南">Gentoo Linux 安全加固指南</h1>
+<blockquote>
+<ul>
+<li>2025 年 1 月 8/9/10 号修改
+<ul>
+<li>添加了 VSCodium 的 bwrap 启动参数</li>
+<li>修改了 sysctl 和内核启动参数部分</li>
+<li>添加了 Chromium 的 bwrap 启动参数</li>
+<li>添加了 NetworkManager 部分</li>
+</ul>
+</li>
+<li>2025 年 1 月 13 号修改
+<ul>
+<li>修改了bwrap 中 FireFox 部分，让它可以响应 <code>xdg-open</code></li>
+<li>添加了禁止核心转储 (core dump) 的段落</li>
+<li>添加了面向安全的编译选项部分</li>
+</ul>
+</li>
+<li>2025 年 1 月 19 号修改
+<ul>
+<li>添加了 NetworkManager 下开启 IPV6 隐私扩展的描述</li>
+<li>修改了 编译选项 的部分</li>
+</ul>
+</li>
+<li>2025 年 1 月 27/28 号修改
+<ul>
+<li>在 sysctl 和内核参数部分添加了更多的解释</li>
+<li>修改了文章中部分语句不通，不好理解的地方</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>我一直在寻求一个尽可能不影响日常使用的同时尽量做到安全的操作系统。</p>
+<p>单论安全性，我认为 <a href="https://www.qubes-os.org/" target="_blank" rel="noopener noreffer ">Qubes OS</a> 很不错，但是网络配置看起来不是很容易，并且社区貌似不是很大。</p>
+<p>Fedora Silverblue 也是个不错的选择，原子更新，桌面应用大多是从 Flatpak 安装，不过我对 Fedora 官方软件仓库没有我想要的软件这一情况一直有些介意，虽然有 COPR 源，但我不是特别想用。</p>
+<p>NixOS 也是个选择，同样是不可变发行版，nixpkg 提供了很多软件包，包括 linux-hardened、hardened-malloc 等，NixOS 官方有一套 security profile，不过我还没尝试，印象中是使用了 linux-hardened 内核，启用了一些安全相关的 sysctl 设置，将内存分配器改成 scudo（好像还启用了 AppArmor？）</p>
+<p>我目前认为 Gentoo Linux 是一个不错的选择，但由于 Gentoo Linux 编译真的很费时间，所以我放假回来才开始尝试一些我以前想过但没尝试的功能。</p>
+<h2 id="硬盘加密">硬盘加密</h2>
+<p>我现在认为硬盘加密是一个必须的选择。我选择了 Luks2 的 argon2id 算法，这导致我需要使用 systemd-boot，GRUB 对 Luks2 的支持有限。</p>
+<p>在硬盘分区时，根据 <a href="https://wiki.gentoo.org/wiki/Rootfs_encryption" target="_blank" rel="noopener noreffer ">Rootfs_encryption</a>，直接执行：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ cryptsetup --type luks2 --cipher aes-xts-plain64 --hash sha512 --iter-time <span class="m">5000</span> --key-size <span class="m">256</span> --pbkdf argon2id --use-urandom --verify-passphrase luksFormat /dev/block</span></span></code></pre></div></div>
+<p>如何你想使用 GRUB 作为 bootloader（比如你有引导 windows 启动项的需求等），那就不能使用 luks2，应该选择用 luks 的算法。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ cryptsetup luksOpen /dev/block root
+</span></span><span class="line"><span class="cl">$ mkfs.xfs -L rootfs /dev/mapper/root
+</span></span><span class="line"><span class="cl">$ mount --label rootfs /mnt/gentoo</span></span></code></pre></div></div>
+<p>这样就可以将其格式化成 XFS 文件系统了，我没有使用 SWAP 分区，我选择了使用 ZRAM 做交换分区，不过加密的 SWAP 倒也是个选择，只是我没这么做。</p>
+<p>之后你需要附加相关命令行参数用于解锁：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ lsblk -o name,uuid
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">NAME        UUID
+</span></span><span class="line"><span class="cl">sdb                                           
+</span></span><span class="line"><span class="cl">├─nvme0n1p1 BDF2-0139
+</span></span><span class="line"><span class="cl">├─nvme0n1p2 b0e86bef-30f8-4e3b-ae35-3fa2c6ae705b
+</span></span><span class="line"><span class="cl">└─nvme0n1p3 4bb45bd6-9ed9-44b3-b547-b411079f043b
+</span></span><span class="line"><span class="cl">  └─root    cb070f9e-da0e-4bc5-825c-b01bb2707704</span></span></code></pre></div></div>
+<p>假设输出是上面这样，那么应该在 <strong>/etc/dracut.conf.d/luks.conf</strong> 下写入：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">kernel_cmdline+=&#34; root=UUID=cb070f9e-da0e-4bc5-825c-b01bb2707704 rd.luks.uuid=4bb45bd6-9ed9-44b3-b547-b411079f043b &#34;</span></span></code></pre></div></div>
+<h2 id="安全启动">安全启动</h2>
+<p>安全启动是个耳熟能详的名词，我在刚接触到给自己的笔记本电脑安装 GNU/Linux 发行版的教程的时候，一般都会说明首先要在 BIOS 中关闭快速启动和安全启动，部分社区支持的发行版无法在开启安全启动的情况下安装（不过可以安装时/后开启安全启动的支持），商业公司支持的（如 Fedora，OpenSUSE，Deepin 等）发行版应该是都可以直接启动安装。</p>
+<p>安全启动是 UEFI 下才有的安全验证机制，旨在确保引导的操作系统是可信的。</p>
+<p>只需要在安装的过程中对照着手册，看到安全启动的部分就跟着手册来就行。</p>
+<p>这里有一点，Shim 被硬编码为使用 grubx64.efi，但是由于我使用的 systemd-boot 作为 bootloader，没有 grubx64.efi，所以我选择了将 systemd-bootx64.efi 复制一个 grubx64.efi 出来。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ cp /efi/EFI/systemd/systemd-bootx64.efi /efi/EFI/systemd/grubx64.efi</span></span></code></pre></div></div>
+<h2 id="bwrap">bwrap</h2>
+<p>沙盒程序就这两位我还算熟悉，<a href="https://github.com/netblue30/firejail" target="_blank" rel="noopener noreffer ">Firejail</a> 和 <a href="https://github.com/containers/bubblewrap" target="_blank" rel="noopener noreffer ">Bubblewrap</a>。前者有令人诟病的 setuid 安全隐患，后者没有 Firejail 那样有社区提供好的沙盒模板（即部分应用可以运行一个命令直接获得沙盒化，如 git，firefox 等）</p>
+<p>我选择了 Bubblewrap（也就是标题中的 bwrap），目前只用到了浏览器和我的代码编辑器上，我目前的目标是，让使用的图形化软件基本都套一层 bwrap（除了终端模拟器）</p>
+<p>对于到底应该 <code>--ro-bind</code> 什么文件，可以用 <code>strace -e openat</code> 看一下该程序到底尝试打开什么文件，然后决定到底要不要映射过去</p>
+<h3 id="firefox">FireFox</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">bwrap <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>   --new-session <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>   --symlink /usr/lib64 /lib64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>   --ro-bind /usr/lib /usr/lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>   --ro-bind /usr/lib64 /usr/lib64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>   --ro-bind /usr/bin /usr/bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>   --bind <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">&#34;</span> <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    xdg-dbus-proxy <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    unix:path<span class="o">=</span>/var/run/user/<span class="nv">$UID</span>/bus <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    /run/user/<span class="nv">$UID</span>/.dbus-proxy/session-bus-proxy-6271 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --filter <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --own<span class="o">=</span><span class="s2">&#34;org.mpris.MediaPlayer2.firefox.*&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --own<span class="o">=</span><span class="s2">&#34;org.mozilla.firefox.*&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --own<span class="o">=</span><span class="s2">&#34;org.mozilla.firefox_beta.*&#34;</span> <span class="p">&amp;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">bwrap <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --symlink usr/lib /lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --symlink usr/lib64 /lib64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --symlink usr/bin /bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --symlink usr/bin /sbin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/lib /usr/lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/lib64 /usr/lib64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/bin /usr/bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /opt/bin /opt/bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/applications /usr/share/applications <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/gtk-3.0 /usr/share/gtk-3.0 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/icu /usr/share/icu <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/drirc.d /usr/share/drirc.d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/fonts /usr/share/fonts <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/glib-2.0 /usr/share/glib-2.0 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/glvnd /usr/share/glvnd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/icons /usr/share/icons <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/mime /usr/share/mime <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/X11/xkb /usr/share/X11/xkb <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/icons /usr/share/icons <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/mime /usr/share/mime <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/vulkan /usr/share/vulkan <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/egl /usr/share/egl <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/nvidia /usr/share/nvidia <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /usr/share/ca-certificates /usr/share/ca-certificates <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /etc/ld.so.conf /etc/ld.so.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /etc/ld.so.cache /etc/ld.so.cache <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /etc/fonts /etc/fonts <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /etc/resolv.conf /etc/resolv.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /etc/ssl /etc/ssl <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /etc/ca-certificates.conf /etc/ca-certificates.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dir <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --bind <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/pulse&#34;</span> <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/pulse&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /run/user/<span class="nv">$UID</span>/bus /run/user/<span class="nv">$UID</span>/bus <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/wayland-1&#34;</span> <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/wayland-1&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dev /dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dev-bind /dev/dri /dev/dri <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dev-bind /dev/shm /dev/shm <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dev-bind /dev/nvidia0 /dev/nvidia0 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dev-bind /dev/nvidiactl /dev/nvidiactl <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dev-bind /dev/nvidia-uvm /dev/nvidia-uvm <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --dev-bind /dev/nvidia-modeset /dev/nvidia-modeset <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind /sys /sys <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --proc /proc <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --tmpfs /tmp <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind <span class="nv">$HOME</span>/.config/dconf <span class="nv">$HOME</span>/.config/dconf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --ro-bind <span class="nv">$HOME</span>/.config/user-dirs.dirs <span class="nv">$HOME</span>/.config/user-dirs.dirs <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --bind <span class="nv">$HOME</span>/.mozilla <span class="nv">$HOME</span>/.mozilla <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --bind <span class="nv">$HOME</span>/Downloads <span class="nv">$HOME</span>/Downloads <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --setenv GTK_THEME Papirus:light <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --setenv MOZ_ENABLE_WAYLAND <span class="m">1</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --setenv PATH /usr/bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --hostname RESTRICTED <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --unshare-all <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --share-net <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --die-with-parent <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  --new-session <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>  /usr/bin/firefox <span class="nv">$@</span></span></span></code></pre></div></div>
+<p>Chromium 的编译时间实在太长了（虽然 FireFox 的也没差到哪去，开启了 LTO 和 PGO 之后编译时间感人），我又用回来了这位</p>
+<p>由于我有了其他软件从系统默认浏览器打开链接的需求，所以就用 xdg-dbus-proxy 设置了相关服务，并且我 waybar 的 mpris 组件也能显示 FireFox 播放的媒体了。</p>
+<p>我使用了 nvidia-vaapi-driver，所以设备上暴露了一些 nvidia 的，这个 /dev/nvidia-uvm 一开始是没有的，我运行了 <code>vainfo</code> 之后就会出现，所以现在有一个抽象的事情就是我会先在 foot 上执行一遍 vainfo，之后打开 FireFox。这套是可以用上 nvidia-vaapi-driver 的硬件视频解码的，如果 FireFox 能支持 nvenc 就更好了。</p>
+<h3 id="vscodium">VSCodium</h3>
+<p>vscodium 基本照搬的 下面的 Chromium 的配置</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">bwrap <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--symlink usr/lib /lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--symlink usr/lib64 /lib64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--symlink usr/bin /bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--symlink usr/bin /sbin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/bin /usr/bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/lib /usr/lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/lib64 /usr/lib64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/applications /usr/share/applications <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/gtk-3.0 /usr/share/gtk-3.0 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/icu /usr/share/icu <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/drirc.d /usr/share/drirc.d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/fonts /usr/share/fonts <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/glib-2.0 /usr/share/glib-2.0 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/glvnd /usr/share/glvnd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/icons /usr/share/icons <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/mime /usr/share/mime <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/X11/xkb /usr/share/X11/xkb <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/icons /usr/share/icons <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/locale /usr/share/locale <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/zoneinfo /usr/share/zoneinfo <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/vulkan /usr/share/vulkan <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/verilator /usr/share/verilator <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/include /usr/include <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/ssl /etc/ssl <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/ca-certificates.conf /etc/ca-certificates.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/fonts /etc/fonts <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/resolv.conf /etc/resolv.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/chromium /etc/chromium <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/localtime /etc/localtime <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/ld.so.conf /etc/ld.so.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/ld.so.cache /etc/ld.so.cache <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /opt/vscodium/ /opt/vscodium/ <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--dir <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/wayland-1&#34;</span> <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/wayland-1&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--dev /dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--dev-bind /dev/dri /dev/dri <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /sys/dev/char /sys/dev/char <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /sys/devices/pci0000:00 /sys/devices/pci0000:00 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--proc /proc <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--tmpfs /tmp <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--bind <span class="nv">$HOME</span>/.config/VSCodium <span class="nv">$HOME</span>/.config/VSCodium <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--bind <span class="nv">$HOME</span>/.vscode-oss <span class="nv">$HOME</span>/.vscode-oss <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--bind <span class="nv">$HOME</span>/Downloads <span class="nv">$HOME</span>/Downloads <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--bind <span class="nv">$HOME</span>/Documents <span class="nv">$HOME</span>/Documents <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--bind <span class="nv">$HOME</span>/codpjt <span class="nv">$HOME</span>/codpjt <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--bind <span class="nv">$HOME</span>/git_repo <span class="nv">$HOME</span>/git_repo <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--setenv GTK_THEME Papirus:light <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--hostname RESTRICTED <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--unshare-all <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--share-net <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--new-session <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>/opt/vscodium/codium --ozone-platform<span class="o">=</span>wayland --use-gl<span class="o">=</span>angle --use-angle<span class="o">=</span>vulkan --enable-features<span class="o">=</span>AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE --ignore-gpu-blocklist --disable-gpu-driver-bug-workaround --enable-wayland-ime</span></span></code></pre></div></div>
+<h3 id="chromium">Chromium</h3>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">bwrap <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--symlink usr/lib /lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--symlink usr/lib64 /lib64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--symlink usr/bin /bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--symlink usr/bin /sbin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/lib /usr/lib <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/lib64 /usr/lib64 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/bin /usr/bin <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/ssl /etc/ssl <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/ca-certificates.conf /etc/ca-certificates.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/fonts /etc/fonts <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/resolv.conf /etc/resolv.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/chromium /etc/chromium <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/localtime /etc/localtime <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/ld.so.conf /etc/ld.so.conf <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /etc/ld.so.cache /etc/ld.so.cache <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/applications /usr/share/applications <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/gtk-3.0 /usr/share/gtk-3.0 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/icu /usr/share/icu <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/drirc.d /usr/share/drirc.d <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/fonts /usr/share/fonts <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/glib-2.0 /usr/share/glib-2.0 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/glvnd /usr/share/glvnd <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/icons /usr/share/icons <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/mime /usr/share/mime <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/X11/xkb /usr/share/X11/xkb <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/icons /usr/share/icons <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/mime /usr/share/mime <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/zoneinfo /usr/share/zoneinfo <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/pixmaps /usr/share/pixmaps <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/locale /usr/share/locale <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /usr/share/vulkan /usr/share/vulkan <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--dev /dev <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--dev-bind /dev/dri /dev/dri <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--proc /proc <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /sys/dev/char /sys/dev/char <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /sys/devices/pci0000:00 /sys/devices/pci0000:00 <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind /run/dbus /run/dbus <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--dir <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/wayland-1&#34;</span> <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/wayland-1&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/pipewire-0&#34;</span> <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/pipewire-0&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--ro-bind <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/pulse&#34;</span> <span class="s2">&#34;</span><span class="nv">$XDG_RUNTIME_DIR</span><span class="s2">/pulse&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--tmpfs /tmp <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--dir <span class="nv">$HOME</span>/.cache <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--bind <span class="nv">$HOME</span>/.config/chromium <span class="nv">$HOME</span>/.config/chromium <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--bind <span class="nv">$HOME</span>/Downloads <span class="nv">$HOME</span>/Downloads <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--unshare-all <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--share-net <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--die-with-parent <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>--new-session <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>/usr/bin/chromium</span></span></code></pre></div></div>
+<p>使用 FireFox 的时候还在用我的 NVIDIA 显卡驱动，由于 FireFox 官方并不支持 NVENC 视频解码（虽然可以通过安装 media-libs/nvidia-vaapi-driver 实现翻译）</p>
+<p>由于使用 FireFox 打开部分网站速度不佳，我选择了 Chromium（由于 media-libs/libpng 依赖问题，我把 FireFox 删除了）</p>
+<p>使用 Chromium 的时候是 Intel 的核显驱动，安装了 media-libs/libva-intel-media-driver 软件包，这套 bwrap 参数可以让 Chromium 用到显卡的视频解码，由于 Gentoo 的 Chromium 会读取 /etc/chromium/ 下的文件作为 Chromium 启动时的命令行参数，所以我把参数都放到那里了</p>
+<p>我这套选项可能有的有些多余，不过我懒得再裁剪了</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">--ozone-platform=wayland --use-gl=angle --use-angle=vulkan --enable-features=AcceleratedVideoEncoder,AcceleratedVideoDecodeLinuxGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE --ignore-gpu-blocklist --disable-gpu-driver-bug-workaround --enable-wayland-ime --wayland-text-input-version=3</span></span></code></pre></div></div>
+<h2 id="sysctl">sysctl</h2>
+<p>我参考了一些文章给出的 sysctl 配置，新建目录 /etc/sysctl.d/，并新建文件 99-hardened.conf，文件内容如下：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-conf">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">kernel</span><span class="o">.</span><span class="n">core_pattern</span><span class="o">=|/</span><span class="n">bin</span><span class="o">/</span><span class="bp">false</span>
+</span></span><span class="line"><span class="cl"><span class="n">kernel</span><span class="o">.</span><span class="n">kptr_restrict</span><span class="o">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">kernel</span><span class="o">.</span><span class="n">dmesg_restrict</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">kernel</span><span class="o">.</span><span class="n">unprivileged_bpf_disabled</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">bpf_jit_harden</span><span class="o">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">dev</span><span class="o">.</span><span class="n">tty</span><span class="o">.</span><span class="n">ldisc_autoload</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">vm</span><span class="o">.</span><span class="n">unprivileged_userfaultfd</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">kernel</span><span class="o">.</span><span class="n">kexec_load_disabled</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">kernel</span><span class="o">.</span><span class="n">sysrq</span><span class="o">=</span><span class="mi">4</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">tcp_syncookies</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">tcp_rfc1337</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">tcp_timestamps</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">rp_filter</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">rp_filter</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">accept_redirects</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">accept_redirects</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">secure_redirects</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">secure_redirects</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv6</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">accept_redirects</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv6</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">accept_redirects</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">send_redirects</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">send_redirects</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">icmp_echo_ignore_all</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">accept_source_route</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv4</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">accept_source_route</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv6</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">accept_source_route</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv6</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">accept_source_route</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv6</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">use_tempaddr</span><span class="o">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv6</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">use_tempaddr</span><span class="o">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv6</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">accept_ra</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">net</span><span class="o">.</span><span class="n">ipv6</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">default</span><span class="o">.</span><span class="n">accept_ra</span><span class="o">=</span><span class="mi">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">kernel</span><span class="o">.</span><span class="n">yama</span><span class="o">.</span><span class="n">ptrace_scope</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">vm</span><span class="o">.</span><span class="n">mmap_rnd_bits</span><span class="o">=</span><span class="mi">32</span>
+</span></span><span class="line"><span class="cl"><span class="n">vm</span><span class="o">.</span><span class="n">mmap_rnd_compat_bits</span><span class="o">=</span><span class="mi">16</span>
+</span></span><span class="line"><span class="cl"><span class="n">fs</span><span class="o">.</span><span class="n">protected_symlinks</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">fs</span><span class="o">.</span><span class="n">protected_hardlinks</span><span class="o">=</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">fs</span><span class="o">.</span><span class="n">protected_fifos</span><span class="o">=</span><span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">fs</span><span class="o">.</span><span class="n">protected_regular</span><span class="o">=</span><span class="mi">2</span></span></span></code></pre></div></div>
+<p><code>kernel.yama.ptrace_scope=1</code> 貌似是默认的？为了更安全可以选择 <code>2</code> 或 <code>3</code>，我印象中 2 是不允许非 root 用户做这件事，而 3 这是不允许该行为</p>
+<p>我设置为 1 是允许父子进程关系才可以查看进程的内存和运行状态等信息，这是因为我仍然有调试软件的需求，如果没有的话设置死也是个选择 🤔</p>
+<p>可以安装 <a href="https://github.com/slimm609/checksec" target="_blank" rel="noopener noreffer ">checksec</a> 查看当前运行的 kernel 的安全性（当然，该工具检查的并不全面）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ checksec --kernel 
+</span></span><span class="line"><span class="cl">* Kernel protection information:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Description - List the status of kernel protection mechanisms. Rather than
+</span></span><span class="line"><span class="cl">  inspect kernel mechanisms that may aid in the prevention of exploitation of
+</span></span><span class="line"><span class="cl">  userspace processes, this option lists the status of kernel configuration
+</span></span><span class="line"><span class="cl">  options that harden the kernel itself against attack.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Kernel config:
+</span></span><span class="line"><span class="cl">/proc/config.gz
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Vanilla Kernel ASLR:                    Full
+</span></span><span class="line"><span class="cl">  NX protection:                          Enabled
+</span></span><span class="line"><span class="cl">  Protected symlinks:                     Enabled
+</span></span><span class="line"><span class="cl">  Protected hardlinks:                    Enabled
+</span></span><span class="line"><span class="cl">  Protected fifos:                        Enabled
+</span></span><span class="line"><span class="cl">  Protected regular:                      Enabled
+</span></span><span class="line"><span class="cl">  Ipv4 reverse path filtering:            Enabled
+</span></span><span class="line"><span class="cl">  Kernel heap randomization:              Enabled
+</span></span><span class="line"><span class="cl">  GCC stack protector support:            Enabled
+</span></span><span class="line"><span class="cl">  GCC stack protector strong:             Enabled
+</span></span><span class="line"><span class="cl">  SLAB freelist randomization:            Enabled
+</span></span><span class="line"><span class="cl">  Virtually-mapped kernel stack:          Enabled
+</span></span><span class="line"><span class="cl">  Restrict /dev/mem access:               Enabled
+</span></span><span class="line"><span class="cl">  Restrict I/O access to /dev/mem:        Enabled
+</span></span><span class="line"><span class="cl">  Exec Shield:                            Unsupported
+</span></span><span class="line"><span class="cl">  YAMA:                                   Active
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  Hardened Usercopy:                      Enabled
+</span></span><span class="line"><span class="cl">  Harden str/mem functions:               Enabled
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">* X86 only:            
+</span></span><span class="line"><span class="cl">  Address space layout randomization:     Enabled
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">* SELinux:                                Disabled
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  SELinux infomation available here: 
+</span></span><span class="line"><span class="cl">    http://selinuxproject.org/</span></span></code></pre></div></div>
+<p>这里除了 SELinux 没有开启之外，其他都是通过检查的</p>
+<p>印象中还有一个项目，它检查内核配置比这个更全面，除了基本的这些之外，还有 <a href="https://kspp.github.io/" target="_blank" rel="noopener noreffer ">KSPP</a> (Kenrel Self Protection Project) 和 PAX 等项目的建议，不过我没用它</p>
+<p><code>checksec</code> 还可以检查指定的可执行文件的安全配置情况</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ checksec --file<span class="o">=</span>/usr/bin/sway
+</span></span><span class="line"><span class="cl">RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	    Symbols	     FORTIFY	 Fortified  Fortifiable	FILE
+</span></span><span class="line"><span class="cl">Full RELRO      Canary found      NX enabled    PIE enabled     No RPATH   No RUNPATH   No Symbols	Partial	9		18		/usr/bin/sway</span></span></code></pre></div></div>
+<h2 id="内核命令行参数">内核命令行参数</h2>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-txt">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">page_alloc.shuffle=1 pti=on vsyscall=none module.sig_enforce=1 lockdown=confidentiality quiet loglevel=0
+</span></span><span class="line"><span class="cl">intel_iommu=on amd_iommu=force_isolation efi=disable_early_pci_dma iommu=force iommu.passthrough=0 iommu.strict=1
+</span></span><span class="line"><span class="cl">spectre_v2=on spec_store_bypass_disable=on tsx=off tsx_async_abort=full mds=full l1tf=full,force kvm.nx_huge_pages=force</span></span></code></pre></div></div>
+<p>第一行中的启动参数是开启一些常见的安全防护机制，比如页表隔离，模块签名验证等，其实有更多的参数可以写，比如 <code>slab_nomerge</code> 和 <code>randomize_kstack_offset=on</code> 这些，不过由于我使用的内核是 hardened USE 变量的 gentoo-kernel，这些已经在编译的时候开启了，我就不在这里写了</p>
+<p>第二行是开启一些 IOMMU 防护</p>
+<p>第三行是开启 Spectre 等 CPU 漏洞的缓解机制</p>
+<p>如果要检查当前运行的 CPU 是否受到已知漏洞的影响，可以运行</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ grep -r . /sys/devices/system/cpu/vulnerabilities/</span></span></code></pre></div></div>
+<h2 id="networkmanager">NetworkManager</h2>
+<p>NetworkManager 是目前大多数用户使用的桌面环境都在用的网络管理工具，它既可以管理有线网络，也可以管理无线网络。</p>
+<p>应该开启 NetworkManager 的 MAC 地址随机化</p>
+<p>在 /etc/NetworkManager/conf.d/ 下创建 99-macrandomize.conf</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-conf">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[device]
+</span></span><span class="line"><span class="cl">wifi.scan-rand-mac-address=yes
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[connection]
+</span></span><span class="line"><span class="cl">wifi.cloned-mac-address=random
+</span></span><span class="line"><span class="cl">ethernet.cloned-mac-address=random</span></span></code></pre></div></div>
+<p>我使用的是 Hyprland 窗口管理器，这些窗口管理器基本都有一个缺陷 —— 没有自家的 keyring 服务（GNOME 有 gnome-keyring，KDE Plasma 有 kwallet）</p>
+<p>我安装了 gnome-base/gnome-keyring，并且运行了 <code>systemctl --user enable --now gnome-keyring-daemon</code></p>
+<p>之后我安装了 gnome-extra/nm-applet 用来连接 WIFI，并使用网络编辑，在 WIFI 安全性中改成仅为该用户存储密码</p>
+<p>如果要安装 gnome-extra/nm-applet 的话，最好启用 <code>appindicator</code> USE 变量</p>
+<p>之后是开启 IPV6 隐私扩展</p>
+<p>新建 /etc/NetworkManager/conf.d/ip6-privacy.conf，其内容为</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-conf">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[connection]
+</span></span><span class="line"><span class="cl">ipv6.ip6-privacy=2</span></span></code></pre></div></div>
+<p>在 /etc/NetworkManager/system-connections/ 下编辑已有的连接</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-conf">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">[ipv6]
+</span></span><span class="line"><span class="cl">method=auto
+</span></span><span class="line"><span class="cl">ip6-privacy=2
+</span></span><span class="line"><span class="cl">...</span></span></code></pre></div></div>
+<p>添加这个 <code>ip6-privacy=2</code></p>
+<h2 id="浏览器配置">浏览器配置</h2>
+<p>FireFox 我推荐 <a href="https://github.com/arkenfox/user.js" target="_blank" rel="noopener noreffer ">arkenfox/user.js</a> 项目，搭配 <a href="https://github.com/gorhill/uBlock" target="_blank" rel="noopener noreffer ">uBlock Origin</a></p>
+<p>如果为了防止被网站跟踪，可以选择使用 Mullvad Browser，这位是和 Tor Project 联合开发，并去除了 Tor 的部分</p>
+<p>Chromium 的话，我选择根据 <a href="https://www.chromium.org/administrators/policy-templates/" target="_blank" rel="noopener noreffer ">Policy Templates</a> 配置一些策略</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-json">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;PrivacySandboxAdMeasurementEnabled&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;PrivacySandboxAdTopicsEnabled&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;PrivacySandboxPromptEnabled&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;PrivacySandboxSiteEnabledAdsEnabled&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;AudioSandboxEnabled&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;NetworkServiceSandboxEnabled&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;AutoplayAllowed&#34;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;BlockThirdPartyCookies&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;SavingBrowserHistoryDisabled&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;EncryptedClientHelloEnabled&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;HttpsUpgradesEnabled&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;WebRtcIPHandling&#34;</span><span class="p">:</span> <span class="s2">&#34;disable_non_proxied_udp&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;SafeBrowsingEnabled&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;SafeBrowsingProtectionLevel&#34;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;SafeBrowsingProxiedRealTimeChecksAllowed&#34;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;CACertificateManagementAllowed&#34;</span><span class="p">:</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>写完可以用 <code>jq</code> 验证一下 JSON 格式对不对 <code>cat test.json | jq</code></p>
+<p>我在 Chromium 上依旧在使用 uBlock Origin，也不知道 Chromium 什么时候开始停止支持 Mainfest V2 标准的浏览器扩展</p>
+<h2 id="禁用-core-dump">禁用 core dump</h2>
+<p>禁用 core dump 貌似是为了防止有写私密数据也被 dump 下来了。不过就我个人而言，我只是很讨厌这种在我不知道的时候 dump 的行为，不知不觉运行 <code>coredumpctl</code> 一看，python、firefox 这些软件都 dump 过，难绷。</p>
+<p>新建 /etc/systemd/coredump.conf.d/disable.conf 中写入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-conf">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">[Coredump]
+</span></span><span class="line"><span class="cl">Storage=none
+</span></span><span class="line"><span class="cl">ProcessSizeMax=0</span></span></code></pre></div></div>
+<p>上面 sysctl 的 <code>kernel.core_pattern=|/bin/false</code> 也是在禁用 core dump</p>
+<p>不得不说，禁用了之后，我自己开发的软件 core dump 了也没存。有一说一，core dump 还是有助于开发的，等之后我手动临时开启试试看吧。</p>
+<h2 id="面向安全的编译选项">面向安全的编译选项</h2>
+<p>在我最先写这个文章的时候，我就想写这部分，但是由于我对 GCC 和 LLVM 的了解还太少，导致我有些迟疑（当然，现在也了解不多，只是感觉应该加上而已）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-conf">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">COMMON_FLAGS=&#34;-O3 -pipe -march=x86-64-v3 -flto=thin -fstack-protector-strong -fstack-clash-protection -fcf-protection=full -D_FORTIFY_SOURCE=3&#34;
+</span></span><span class="line"><span class="cl">RUSTFLAGS=&#34;${RUSTFLAGS} -C target-cpu=native&#34;
+</span></span><span class="line"><span class="cl">CFLAGS=&#34;${COMMON_FLAGS}&#34;
+</span></span><span class="line"><span class="cl">CXXFLAGS=&#34;${COMMON_FLAGS}&#34;
+</span></span><span class="line"><span class="cl">FCFLAGS=&#34;${COMMON_FLAGS}&#34;
+</span></span><span class="line"><span class="cl">FFLAGS=&#34;${COMMON_FLAGS}&#34;
+</span></span><span class="line"><span class="cl">LDFLAGS=&#34;-Wl,-O3,-z,now,--as-needed,--lto-O3,--icf=safe,--gc-sections&#34;</span></span></code></pre></div></div>
+<p>我使用的是 LLVM/systemd profile，所以这里用了 thinlto</p>
+<p>上面就是我个人的编译选项了，我本身就开启了 <code>hardened</code> USE 变量，说实话，这里的部分 USE 变量是重复的</p>
+<p>只要开启了 <code>hardened</code> USE 变量，这里面有些选项是默认就加上的</p>
+<blockquote>
+<p>运行 <code>clang --version</code> 可以看到</p>
+<p>Configuration file: /etc/clang/x86_64-pc-linux-gnu-clang.cfg</p>
+<p>从那个文件中可以看到它依赖于 @gentoo-common.cfg @gentoo-common-ld.cfg 和 @gentoo-cet.cfg</p>
+<p>我这里的 -fstack-clash-protection -fstack-protector-strong -fcf-protection=all 在在上面的文件中</p>
+</blockquote>
+<p><code>fstack-protector-*</code> 都是对栈溢出的防御，而 <code>fcf-protection</code> 则是对控制流劫持（也不知道是不是这个名字，就是 ROP 之类的）攻击的防御</p>
+<p>LLVM 中也有一个应对 ROP 这种攻击的技术，就是 <a href="https://clang.llvm.org/docs/ControlFlowIntegrity.html" target="_blank" rel="noopener noreffer ">CFI</a>，CFI 必须在开启了 LTO 的情况下才能使用（我印象中 KCFI 不需要 LTO，它被用在操作系统内核等底层软件，检测的范围更小），我感觉为特定的软件开 CFI，倒也可以接受。Linux kernel 有专门的 CFI 的选项，Chromium 也实施了 CFI。</p>
+<p>CFI 还分前端和后端，我也没太仔细研究，也不太清楚区别</p>
+<p>我使用了 <code>O3</code> 编译，虽然说 O3 的提升空间不大，不过我个人希望试试看。</p>
+<p><code>march=x86-64-v3</code> 表示了我本机 CPU 的指令集是这位，其实用 <code>march=native</code> 就行，编译器会自动选择适合的指令集</p>
+<p><code>D_FORTIFY_SOURCE=3</code> 用于应用 libc 的一种强化措施，主要用于检测某些库函数的缓冲区溢出问题。具体可以参考 glibc 的文档：https://www.gnu.org/software/libc/manual/html_node/Source-Fortification.html</p>
+<h2 id="selinuxapparmor">SELinux/AppArmor</h2>
+<p>TODO 我自己还没太准备学习这二位</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2025-01-28</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/gentoo_hardened_guide/" data-title="Gentoo Linux 安全加固指南" data-hashtags="gentoo-linux,linux"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/gentoo_hardened_guide/" data-title="Gentoo Linux 安全加固指南"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/gentoo_hardened_guide/" data-hashtag="gentoo-linux"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/gentoo_hardened_guide/" data-title="Gentoo Linux 安全加固指南"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/gentoo_hardened_guide/" data-title="Gentoo Linux 安全加固指南"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/gentoo_hardened_guide/" data-title="Gentoo Linux 安全加固指南"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/gentoo_hardened_guide/" data-title="Gentoo Linux 安全加固指南" data-description="我本次安装 Gentoo Linux 所做的一些安全加固手段"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fgentoo_hardened_guide%2f&amp;text=Gentoo%20Linux%20%e5%ae%89%e5%85%a8%e5%8a%a0%e5%9b%ba%e6%8c%87%e5%8d%97" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/gentoo-linux/">Gentoo Linux</a>,&nbsp;<a href="/tags/linux/">Linux</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/2024_review/" class="prev" rel="prev" title="2024 年终总结"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>2024 年终总结</a>
+            <a href="/posts/xv6_riscv_read_user-libc/" class="next" rel="next" title="xv6-riscv 源码阅读 —— 用户态: libc">xv6-riscv 源码阅读 —— 用户态: libc<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

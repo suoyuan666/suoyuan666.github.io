@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>CS106L: Class - 索元的博客</title><meta name="Description" content="CS106L 中关于类的部分"><meta property="og:url" content="http://localhost:1313/posts/cs106l_class_op/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="CS106L: Class">
+  <meta property="og:description" content="CS106L 中关于类的部分">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-02-04T03:42:51+00:00">
+    <meta property="article:modified_time" content="2024-02-04T03:42:51+00:00">
+    <meta property="article:tag" content="CS106L Notes">
+    <meta property="article:tag" content="Cpp Notes">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CS106L: Class">
+  <meta name="twitter:description" content="CS106L 中关于类的部分">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/cs106l_class_op/" /><link rel="prev" href="http://localhost:1313/posts/cs106l_template_algorithms/" /><link rel="next" href="http://localhost:1313/posts/cs106l_type_raii/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "CS106L: Class",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/cs106l_class_op\/"
+        },"genre": "posts","keywords": "CS106L notes, Cpp notes","wordcount":  2340 ,
+        "url": "http:\/\/localhost:1313\/posts\/cs106l_class_op\/","datePublished": "2024-02-04T03:42:51+00:00","dateModified": "2024-02-04T03:42:51+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "CS106L 中关于类的部分"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">CS106L: Class</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/cpp/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Cpp</a>&nbsp;<a href="/categories/%E5%88%B7%E8%AF%BE%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>刷课笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-02-04">2024-02-04</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2340 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#构造函数初始化列表">构造函数初始化列表</a></li>
+    <li><a href="#关于-delete">关于 delete</a></li>
+    <li><a href="#template-classes">Template classes</a></li>
+    <li><a href="#const-keyword">const keyword</a></li>
+    <li><a href="#operators">Operators</a>
+      <ul>
+        <li><a href="#运算符重载">运算符重载</a></li>
+      </ul>
+    </li>
+    <li><a href="#special-member-functions">Special Member Functions</a>
+      <ul>
+        <li><a href="#copy-semantics">Copy Semantics</a></li>
+        <li><a href="#move-semantics">Move Semantics</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>CS106L 中关于类的部分</p>
+<h1 id="class">Class</h1>
+<blockquote>
+<p>A struct simply feels like an open pile of bits with very little in the way of encapsulation or functionality. A class feels like a living and responsible member of society with intelligent services, a strong encapsulation barrier, and a well defined interface</p>
+<ul>
+<li>Bjarne Stroustrup</li>
+</ul>
+</blockquote>
+<h2 id="构造函数初始化列表">构造函数初始化列表</h2>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">Student</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">state</span><span class="p">,</span> <span class="kt">int</span> <span class="n">age</span><span class="p">)</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">name</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">state</span><span class="p">(</span><span class="n">state</span><span class="p">),</span> <span class="n">age</span><span class="p">(</span><span class="n">age</span><span class="p">){</span> <span class="p">}</span></span></span></code></pre></div></div>
+<p>函数体内部还是可以写代码的</p>
+<h2 id="关于-delete">关于 delete</h2>
+<p>array 作为一个基础的类型，当开发者手动为此创建内存之后也可以之后手动释放掉：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//int * is the type of an array variable
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="o">*</span><span class="n">my_int_array</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//this is how you initialize an array
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">my_int_array</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//this is how you index into an array
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="n">one_element</span> <span class="o">=</span> <span class="n">my_int_array</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="k">delete</span> <span class="p">[]</span> <span class="n">my_int_array</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>delete 一般在类的析构函数中出现（需要手动掉释放这块内存）</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/interface_javavscpp.png"
+        data-srcset="/img/CS106L/interface_javavscpp.png, /img/CS106L/interface_javavscpp.png 1.5x, /img/CS106L/interface_javavscpp.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/interface_javavscpp.png"
+        title="inter" /></p>
+<p>这里那个虚函数等于 0 的意义在于，让继承它的类必须实现该函数，否则编译失败。这种虚函数叫作纯虚函数（<em>pure virtual function</em></p>
+<p>一个类存在一个纯虚函数就叫作抽象类，抽象类不能被实例化。</p>
+<p>如何子类不想要实现自己的构造函数，可以：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/consbase.png"
+        data-srcset="/img/CS106L/consbase.png, /img/CS106L/consbase.png 1.5x, /img/CS106L/consbase.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/consbase.png"
+        title="cons" /></p>
+<p>如果是析构函数可能有点麻烦，如果有一个基类（这个类的析构函数不是虚函数）的指针指向派生类，并且这时候要 <code>delete</code> 这个指针就不会调用派生类的析构函数。如果基类的析构函数实现为虚函数，那么才可以正常调用派生类的析构函数释放内存。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/decons.png"
+        data-srcset="/img/CS106L/decons.png, /img/CS106L/decons.png 1.5x, /img/CS106L/decons.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/decons.png"
+        title="de" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/domesnap.png"
+        data-srcset="/img/CS106L/domesnap.png, /img/CS106L/domesnap.png 1.5x, /img/CS106L/domesnap.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/domesnap.png"
+        title="demo" /></p>
+<p>如果基类的虚函数有实现了，并且派生类想要调用，可以这么写：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">t</span><span class="p">.</span><span class="n">Drink</span><span class="o">::</span><span class="n">make</span><span class="p">();</span></span></span></code></pre></div></div>
+<h2 id="template-classes">Template classes</h2>
+<blockquote>
+<p>Fundamental Theorem of Software Engineering: Any problem can be solved by adding enough layers of indirection</p>
+</blockquote>
+<p>模板类之前也见到过：<code>std::vector&lt;int&gt;</code>。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">//Example: Structs
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">First</span><span class="p">,</span> <span class="k">typename</span> <span class="n">Second</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="nc">MyPair</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">First</span> <span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Second</span> <span class="n">second</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">First</span><span class="p">,</span> <span class="k">typename</span> <span class="n">Second</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">MyPair</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">First</span> <span class="n">getFirst</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Second</span> <span class="nf">getSecond</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">void</span> <span class="nf">setFirst</span><span class="p">(</span><span class="n">First</span> <span class="n">f</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">void</span> <span class="nf">setSecond</span><span class="p">(</span><span class="n">Second</span> <span class="n">f</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">First</span> <span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Second</span> <span class="n">second</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">First</span><span class="p">,</span> <span class="k">class</span> <span class="nc">Second</span><span class="o">&gt;</span> <span class="k">class</span> <span class="nc">MyPair</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/*...*/</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">First</span> <span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Second</span> <span class="n">second</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span></span></span></code></pre></div></div>
+<p>而其部分函数的实现，也需要加 template：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">First</span><span class="p">,</span> <span class="k">typename</span> <span class="n">Second</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="n">First</span> <span class="n">MyPair</span><span class="o">::</span><span class="n">getFirst</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">first</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>模板类的成员函数和其他函数并不一样，编写的时候最好在一起，而不是像其他普通的编写一样，分为.h 和.cpp 两个文件。因为模板类的成员函数需要编译时的实例化，需要具体的参数生成对应函数的实现。</p>
+<p>模板类可以针对特定类型写一个版本：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">FooSpecial</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FooSpecial</span><span class="p">(</span><span class="kt">float</span> <span class="n">var</span><span class="p">)</span> <span class="o">:</span> <span class="n">var_</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="nf">print</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;hello float! &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">var_</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">var_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span></span></span></code></pre></div></div>
+<h2 id="const-keyword">const keyword</h2>
+<p>const 函数不可以修改类的元素后者传给它的参数。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">int</span> <span class="o">*</span> <span class="k">const</span> <span class="n">p</span><span class="p">;</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span><span class="o">++</span> <span class="c1">// ok
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">++</span> <span class="c1">// error
+</span></span></span></code></pre></div></div>
+<p>const-interface：所有成员函数都可以在定义类的时候被 const 标记</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">StrVector</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">using</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">*</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">const</span> <span class="n">size_t</span> <span class="n">kInitialSize</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/*...*/</span>
+</span></span><span class="line"><span class="cl">        <span class="n">size_t</span> <span class="nf">size</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>            <span class="c1">//here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="kt">bool</span> <span class="nf">empty</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>             <span class="c1">//here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">at</span><span class="p">(</span><span class="n">size_t</span> <span class="n">indx</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">void</span> <span class="nf">insert</span><span class="p">(</span><span class="n">size_t</span> <span class="n">pos</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">elem</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">void</span> <span class="nf">push_back</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">elem</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">iterator</span> <span class="nf">begin</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">iterator</span> <span class="nf">end</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="cm">/*...*/</span></span></span></code></pre></div></div>
+<p>这种标记是一种 <code>const</code> 成员函数，它保证了函数内部不会修改 <code>this</code> 实例。</p>
+<h2 id="operators">Operators</h2>
+<h3 id="运算符重载">运算符重载</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/operators_list.png"
+        data-srcset="/img/CS106L/operators_list.png, /img/CS106L/operators_list.png 1.5x, /img/CS106L/operators_list.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/operators_list.png"
+        title="operator_list" /></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">strvec</span><span class="p">{</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span> <span class="s">&#34;World&#34;</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">strvec</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="n">strvec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="s">&#34;!&#34;</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>上面这段代码相当于：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">strvec</span><span class="p">{</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span> <span class="s">&#34;World&#34;</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">.</span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">strvec</span><span class="p">.</span><span class="k">operator</span><span class="p">[](</span><span class="mi">0</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="n">strvec</span><span class="p">.</span><span class="k">operator</span><span class="p">[](</span><span class="mi">1</span><span class="p">).</span><span class="k">operator</span><span class="o">+=</span><span class="p">(</span><span class="s">&#34;!&#34;</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>或者是这样：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">strvec</span><span class="p">{</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span> <span class="s">&#34;World&#34;</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="p">,</span> <span class="n">strvec</span><span class="p">.</span><span class="k">operator</span><span class="p">[](</span><span class="mi">0</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="k">operator</span><span class="o">+=</span><span class="p">(</span><span class="n">strvec</span><span class="p">.</span><span class="k">operator</span><span class="p">[](</span><span class="mi">1</span><span class="p">),</span> <span class="s">&#34;!&#34;</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>每个运算符都有一个与之对应的函数</p>
+<p>对于操作符重载时的返回值问题，有的虽然看起来不会有返回值其实也是有的，例如 <code>i += z</code>，返回值就应该是 <code>i</code>，所以 <code>(i += z) += y</code> 这样的操作也是可以的。</p>
+<p>像 <code>+=</code> 这种都是类自己的成员函数，会被这个类型的变量所调用，所以对这种运算符重载，参数表只有一个参数，通过 <code>*this</code> 还是可以访问到那个变量。</p>
+<p>假设实现 <code>+</code> 运算符的重载：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/plusoverloadtest.png"
+        data-srcset="/img/CS106L/plusoverloadtest.png, /img/CS106L/plusoverloadtest.png 1.5x, /img/CS106L/plusoverloadtest.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/plusoverloadtest.png"
+        title="plusoverload" /></p>
+<p>将重载的函数实现成成员函数还是非成员函数的一般规则：</p>
+<ul>
+<li>由于 C++的语义原因，一些操作符必须被实现为成员函数（例如<code>[]</code>, <code>()</code>, <code>-&gt;</code>, <code>=</code>）</li>
+<li>还有一些必须实现为非成员函数（例如 <code>&lt;&lt;</code>，开发者不能覆盖掉 STL 库的实现，所以需要实现为非成员函数）</li>
+<li>如果是一元操作符（例如 <code>++</code>）就实现为成员函数。</li>
+<li>如果是二元操作符，而且对这两个变量的操作是一致的（即要么都修改，要么都不修改），就实现成非成员函数（例如 <code>+</code>, <code>&lt;</code>）。</li>
+<li>如果是二元操作符，但是对这两个变量的操作不一致，就实现为成员函数（例如 <code>+=</code>）。</li>
+</ul>
+<p>如果非成员函数涉及到访问类的私有变量，可以考虑 <code>friends</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/friendsfuncapp.png"
+        data-srcset="/img/CS106L/friendsfuncapp.png, /img/CS106L/friendsfuncapp.png 1.5x, /img/CS106L/friendsfuncapp.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/friendsfuncapp.png"
+        title="friends" /></p>
+<p><strong>Principle of Least Astonishment (POLA)</strong></p>
+<ul>
+<li>设计一个操作符主要是为了模仿传统意义上该操作符的用法
+<ul>
+<li>比如之前提到的 <code>+=</code> 需要有一个返回值</li>
+</ul>
+</li>
+<li>对称的运算符需要实现为非成员函数
+<ul>
+<li>这里说的对称的意思感觉就是运算符两边的表达式可以互换，举的例子是 <code>a + 1</code> 这样的，如果是成员函数的话 <code>1 + a</code> 就不能调用对应函数了。</li>
+</ul>
+</li>
+<li>如果重载了一个运算符，它相关那一套都需要重载。
+<ul>
+<li>这里的一套就是上面介绍有哪些运算符中那个分类，一套说的是那里面的一类。</li>
+</ul>
+</li>
+</ul>
+<h2 id="special-member-functions">Special Member Functions</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/spmsintro.png"
+        data-srcset="/img/CS106L/spmsintro.png, /img/CS106L/spmsintro.png 1.5x, /img/CS106L/spmsintro.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/spmsintro.png"
+        title="spm" /></p>
+<p>它们特殊在如果开发者不自己实现的话，编译器会自动生成，但是编译器自动生成的有时候未必能满足开发者的需要。</p>
+<p>这些函数就是：构造函数，析构函数，复制构造函数，复制运算符。其中，复制构造函数会创建一个新的变量（也是在创建新变量的时候被调用的）。</p>
+<h3 id="copy-semantics">Copy Semantics</h3>
+<p>编译器默认生成的复制构造函数会把很多信息都复制一遍，所以新变量和旧变量的指针会指向同一个内存，复制运算符会把要覆写的变量清空然后重新全部复制一遍。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">Student</span><span class="p">(</span><span class="k">const</span> <span class="n">Student</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">noexcept</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">name</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">name</span><span class="p">),</span> <span class="n">state</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">state</span><span class="p">),</span> <span class="n">age</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">age</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//body
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span></span></span></code></pre></div></div>
+<p>重载复制运算符的时候就不能像上面这样写初始化列表了，毕竟它不是构造函数（</p>
+<p>当这个类有一些自己独有的资源时（比如指针，文件流），应该写自己的复制构造函数。</p>
+<p>当要实现（删除）一个复制构造函数或者复制运算符或者析构函数的时候，你应该实现（删除）这三个所有。</p>
+<h3 id="move-semantics">Move Semantics</h3>
+<p>移动语义代表了 C++ 的一大哲学——尽量不要牺牲效率。</p>
+<p>例如 <code>std::vector</code> 中有一个与 <code>push_back()</code> 类似的函数：<code>emplace_back()</code>。它和 <code>push_back()</code> 不同的是，它可以将参数在内部直接构造插入，而不是像 <code>push_back()</code> 需要创建一个已有的变量。<a href="https://en.cppreference.com/w/cpp/container/vector/emplace_back" target="_blank" rel="noopener noreffer ">cppreference 网站关于它的条目中</a> 有一个例子：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;cassert&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">President</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">country</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">year</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">President</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">p_name</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">p_country</span><span class="p">,</span> <span class="kt">int</span> <span class="n">p_year</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">:</span> <span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">p_name</span><span class="p">)),</span> <span class="n">country</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">p_country</span><span class="p">)),</span> <span class="n">year</span><span class="p">(</span><span class="n">p_year</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;I am being constructed.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">President</span><span class="p">(</span><span class="n">President</span><span class="o">&amp;&amp;</span> <span class="n">other</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="o">:</span> <span class="n">name</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">name</span><span class="p">)),</span> <span class="n">country</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">country</span><span class="p">)),</span> <span class="n">year</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">year</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;I am being moved.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">President</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="k">const</span> <span class="n">President</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">President</span><span class="o">&gt;</span> <span class="n">elections</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;emplace_back:</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span><span class="o">&amp;</span> <span class="n">ref</span> <span class="o">=</span> <span class="n">elections</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="s">&#34;Nelson Mandela&#34;</span><span class="p">,</span> <span class="s">&#34;South Africa&#34;</span><span class="p">,</span> <span class="mi">1994</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert</span><span class="p">(</span><span class="n">ref</span><span class="p">.</span><span class="n">year</span> <span class="o">==</span> <span class="mi">1994</span> <span class="o">&amp;&amp;</span> <span class="s">&#34;uses a reference to the created object (C++17)&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">President</span><span class="o">&gt;</span> <span class="n">reElections</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">push_back:</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">reElections</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">President</span><span class="p">(</span><span class="s">&#34;Franklin Delano Roosevelt&#34;</span><span class="p">,</span> <span class="s">&#34;the USA&#34;</span><span class="p">,</span> <span class="mi">1936</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">Contents:</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">President</span> <span class="k">const</span><span class="o">&amp;</span> <span class="nl">president</span><span class="p">:</span> <span class="n">elections</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">president</span><span class="p">.</span><span class="n">name</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; was elected president of &#34;</span>
+</span></span><span class="line"><span class="cl">                  <span class="o">&lt;&lt;</span> <span class="n">president</span><span class="p">.</span><span class="n">country</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; in &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">president</span><span class="p">.</span><span class="n">year</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">President</span> <span class="k">const</span><span class="o">&amp;</span> <span class="nl">president</span><span class="p">:</span> <span class="n">reElections</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">president</span><span class="p">.</span><span class="n">name</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; was re-elected president of &#34;</span>
+</span></span><span class="line"><span class="cl">                  <span class="o">&lt;&lt;</span> <span class="n">president</span><span class="p">.</span><span class="n">country</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; in &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">president</span><span class="p">.</span><span class="n">year</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>可以看到：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">auto</span><span class="o">&amp;</span> <span class="n">ref</span> <span class="o">=</span> <span class="n">elections</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span><span class="s">&#34;Nelson Mandela&#34;</span><span class="p">,</span> <span class="s">&#34;South Africa&#34;</span><span class="p">,</span> <span class="mi">1994</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">reElections</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">President</span><span class="p">(</span><span class="s">&#34;Franklin Delano Roosevelt&#34;</span><span class="p">,</span> <span class="s">&#34;the USA&#34;</span><span class="p">,</span> <span class="mi">1936</span><span class="p">));</span></span></span></code></pre></div></div>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/lravlue.png"
+        data-srcset="/img/CS106L/lravlue.png, /img/CS106L/lravlue.png 1.5x, /img/CS106L/lravlue.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/lravlue.png"
+        title="lvalue_rvalue" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/lrref.png"
+        data-srcset="/img/CS106L/lrref.png, /img/CS106L/lrref.png 1.5x, /img/CS106L/lrref.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/lrref.png"
+        title="lrref" /></p>
+<p>移动构造函数和移动符号的函数原型如下：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">Student</span><span class="p">(</span><span class="n">Student</span><span class="o">&amp;&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">noexcept</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Student</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">Student</span><span class="o">&amp;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="k">noexcept</span><span class="p">;</span></span></span></code></pre></div></div>
+<p>但是虽然参数列表里面写的是 <code>&amp;&amp;</code> 右值引用，但是在函数体内部，这个引用本身是一个左值，常规的 <code>=</code> 不再是移动而是复制。为了让复制变成移动，需要用到 <code>std::move()</code>，它会接受一个左值并返回相应的右值。经验之谈：在类成员函数中，如果接受一个 <code>const &amp;</code> 参数并在函数内部将其赋值给其他变量，那么通常可以使用 <code>std::move</code>，除此之外不要使用它。</p>
+<p>如果一个类定义了复制构造函数和复制运算符，那么应该也实现一份移动构造函数和移动运算符。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/comvas.png"
+        data-srcset="/img/CS106L/comvas.png, /img/CS106L/comvas.png 1.5x, /img/CS106L/comvas.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/comvas.png"
+        title="comvas" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS106L/comvco.png"
+        data-srcset="/img/CS106L/comvco.png, /img/CS106L/comvco.png 1.5x, /img/CS106L/comvco.png 2x"
+        data-sizes="auto"
+        alt="/img/CS106L/comvco.png"
+        title="comv" /></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-02-04</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/cs106l_class_op/" data-title="CS106L: Class" data-hashtags="CS106L notes,Cpp notes"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/cs106l_class_op/" data-title="CS106L: Class"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/cs106l_class_op/" data-hashtag="CS106L notes"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/cs106l_class_op/" data-title="CS106L: Class"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/cs106l_class_op/" data-title="CS106L: Class"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/cs106l_class_op/" data-title="CS106L: Class"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/cs106l_class_op/" data-title="CS106L: Class" data-description="CS106L 中关于类的部分"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fcs106l_class_op%2f&amp;text=CS106L%3a%20Class" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/cs106l-notes/">CS106L Notes</a>,&nbsp;<a href="/tags/cpp-notes/">Cpp Notes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/cs106l_template_algorithms/" class="prev" rel="prev" title="CS106L: Templates"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CS106L: Templates</a>
+            <a href="/posts/cs106l_type_raii/" class="next" rel="next" title="CS106L: Type &amp; RAII">CS106L: Type & RAII<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

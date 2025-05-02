@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>我的 neovim 配置 - 索元的博客</title><meta name="Description" content="尝试配置 neovim，具体就是安装了一些插件，这里没有太详细介绍我的配置，等之后有时间我再补上"><meta property="og:url" content="http://localhost:1313/posts/neovim_setup/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="我的 neovim 配置">
+  <meta property="og:description" content="尝试配置 neovim，具体就是安装了一些插件，这里没有太详细介绍我的配置，等之后有时间我再补上">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-07-31T22:55:02+00:00">
+    <meta property="article:modified_time" content="2024-09-10T23:17:14+00:00">
+    <meta property="article:tag" content="Neovim">
+    <meta property="article:tag" content="Intro">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="我的 neovim 配置">
+  <meta name="twitter:description" content="尝试配置 neovim，具体就是安装了一些插件，这里没有太详细介绍我的配置，等之后有时间我再补上">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/neovim_setup/" /><link rel="prev" href="http://localhost:1313/posts/cs144_lab2/" /><link rel="next" href="http://localhost:1313/posts/gentoo_musl_llvm/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "我的 neovim 配置",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/neovim_setup\/"
+        },"genre": "posts","keywords": "neovim, intro","wordcount":  2094 ,
+        "url": "http:\/\/localhost:1313\/posts\/neovim_setup\/","datePublished": "2024-07-31T22:55:02+00:00","dateModified": "2024-09-10T23:17:14+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "尝试配置 neovim，具体就是安装了一些插件，这里没有太详细介绍我的配置，等之后有时间我再补上"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">我的 neovim 配置</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-07-31">2024-07-31</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;2094 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;5 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#使用的插件">使用的插件</a></li>
+    <li><a href="#tricks">tricks</a></li>
+    <li><a href="#具体配置">具体配置</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>尝试配置 neovim，具体就是安装了一些插件，这里没有太详细介绍我的配置，等之后有时间我再补上</p>
+<h1 id="我的-neovim-配置">我的 neovim 配置</h1>
+<p>先放个我配置后的样子:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/neovim_intro/neovim_view.png"
+        data-srcset="/img/neovim_intro/neovim_view.png, /img/neovim_intro/neovim_view.png 1.5x, /img/neovim_intro/neovim_view.png 2x"
+        data-sizes="auto"
+        alt="/img/neovim_intro/neovim_view.png"
+        title="neovim_view" /></p>
+<h2 id="背景">背景</h2>
+<p>我在第一次接触 GNU/Linux 的时候，就有听说过 vi/vim，那时候我还只知道如何在 insert, normal 等模式中切换，如何保存并退出文件。甚至我那时候还不知道有 GNU nano，后来知道了 nano 这个软件后，简单的编辑文件的工作我就会使用 nano，基本不会太用到 vim 了。</p>
+<p>后来我使用了一些 WM 来当成桌面（比如 i3, dwm），我在搜集资料时接触到了更多使用这些 WM 还使用 vim/neovim 的用户（只能说使用 WM 的大多更习惯使用终端）。不过我不是这时候听说 neovim 的，我已经忘了怎么听说 neovim 的了。</p>
+<p>但在我希望使用 Wayland 的桌面之后，我就一定程度上有了更多使用 vim 操作的想法。这个想法是在我使用 GNOME 桌面环境时候产生的，因为 GNOME 的 mutter 只实现了 text-input-v3，导致不支持 text-input-v3 的 VSCodium 无法正常使用 fcitx5，这让我输入中文的时候很难受。于是我就有了使用 neovim 的想法，因为终端是可以输入中文的（不过也许现在可以考虑下 zed 🤔），至于为什么选择 neovim，因为听说比 vim 好用（我记得比较多的是 vimrc 和 lua 的对比，但是我本身没有配置 vim 的经历，所以我没有这种比较）。</p>
+<p>使用 neovim 给我比较好的两个印象，一个 normal 模式和 insert 模式的光标是不一样的，看着还不错，另一个是 <code>:s</code> 搜索替换时，键入替换后的字符串后，当前界面那些要替换的字符会自动跟着修改，我印象中vim 默认不是这样的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/neovim_intro/neovim_be.png"
+        data-srcset="/img/neovim_intro/neovim_be.png, /img/neovim_intro/neovim_be.png 1.5x, /img/neovim_intro/neovim_be.png 2x"
+        data-sizes="auto"
+        alt="/img/neovim_intro/neovim_be.png"
+        title="neovim 搜索替换" /></p>
+<h2 id="使用的插件">使用的插件</h2>
+<p>大致上是使用了这些插件:</p>
+<ul>
+<li>管理插件，用于插件的安装安装配置更新等工作
+<ul>
+<li><a href="https://github.com/folke/lazy.nvim" target="_blank" rel="noopener noreffer ">folke/lazy.nvim</a></li>
+</ul>
+</li>
+<li>管理 lsp
+<ul>
+<li><a href="https://github.com/williamboman/mason.nvim" target="_blank" rel="noopener noreffer ">williamboman/mason.nvim</a></li>
+</ul>
+</li>
+<li>lsp 相关配置
+<ul>
+<li><a href="https://github.com/neovim/nvim-lspconfig" target="_blank" rel="noopener noreffer ">neovim/nvim-lspconfig</a></li>
+</ul>
+</li>
+<li>代码补全相关
+<ul>
+<li><a href="https://github.com/hrsh7th/nvim-cmp" target="_blank" rel="noopener noreffer ">hrsh7th/nvim-cmp</a></li>
+<li><a href="https://github.com/hrsh7th/cmp-nvim-lsp" target="_blank" rel="noopener noreffer ">hrsh7th/cmp-nvim-lsp</a></li>
+<li><a href="https://github.com/hrsh7th/cmp-nvim-lsp-signature-help" target="_blank" rel="noopener noreffer ">hrsh7th/cmp-nvim-lsp-signature-help</a></li>
+<li><a href="https://github.com/hrsh7th/cmp-path" target="_blank" rel="noopener noreffer ">hrsh7th/cmp-path</a></li>
+<li><a href="https://github.com/hrsh7th/cmp-cmdline" target="_blank" rel="noopener noreffer ">hrsh7th/cmp-cmdline</a></li>
+<li><a href="https://github.com/hrsh7th/cmp-buffer" target="_blank" rel="noopener noreffer ">hrsh7th/cmp-buffer</a></li>
+<li><a href="https://github.com/rafamadriz/friendly-snippets" target="_blank" rel="noopener noreffer ">rafamadriz/friendly-snippets</a></li>
+<li><a href="https://github.com/L3MON4D3/LuaSnip" target="_blank" rel="noopener noreffer ">L3MON4D3/LuaSnip</a></li>
+<li><a href="https://github.com/saadparwaiz1/cmp_luasnip" target="_blank" rel="noopener noreffer ">saadparwaiz1/cmp_luasnip</a></li>
+</ul>
+</li>
+<li>UI 相关
+<ul>
+<li><a href="https://github.com/folke/trouble.nvim" target="_blank" rel="noopener noreffer ">folke/trouble.nvim</a></li>
+<li><a href="https://github.com/nvim-treesitter/nvim-treesitter" target="_blank" rel="noopener noreffer ">nvim-treesitter/nvim-treesitter</a></li>
+<li><a href="https://github.com/rebelot/heirline.nvim" target="_blank" rel="noopener noreffer ">rebelot/heirline.nvim</a></li>
+<li><a href="https://github.com/romgrk/barbar.nvim" target="_blank" rel="noopener noreffer ">romgrk/barbar.nvim</a></li>
+<li><a href="https://github.com/nvim-neo-tree/neo-tree.nvim" target="_blank" rel="noopener noreffer ">nvim-neo-tree/neo-tree.nvim</a></li>
+<li><a href="https://github.com/rcarriga/nvim-notify" target="_blank" rel="noopener noreffer ">nvim-notify</a></li>
+</ul>
+</li>
+<li>utils
+<ul>
+<li><a href="https://github.com/nvim-telescope/telescope.nvim" target="_blank" rel="noopener noreffer ">nvim-telescope/telescope.nvim</a></li>
+<li><a href="https://github.com/akinsho/toggleterm.nvim" target="_blank" rel="noopener noreffer ">akinsho/toggleterm.nvim</a></li>
+<li><a href="https://github.com/lewis6991/gitsigns.nvim" target="_blank" rel="noopener noreffer ">lewis6991/gitsigns.nvim</a></li>
+</ul>
+</li>
+<li>调试器集成
+<ul>
+<li><a href="https://github.com/mfussenegger/nvim-dap" target="_blank" rel="noopener noreffer ">mfussenegger/nvim-dap</a></li>
+<li><a href="https://github.com/rcarriga/nvim-dap-ui" target="_blank" rel="noopener noreffer ">rcarriga/nvim-dap-ui</a></li>
+</ul>
+</li>
+</ul>
+<p>调试器就这些是因为我目前就打算先配置 C/C++ 的调试环境，用的是我本机的 gdb，也就没想装一个类似 <code>mason</code> 这样的插件来下载调试器。</p>
+<p>代码补全相关中，<code>nvim-cmp</code> 是用来补全的插件，那些以 <code>nvim-cmp</code> 为前缀的都是具体要补全的项，比如 <code>nvim-cmp-lsp</code> 是根据 lsp 的补全，<code>nvim-cmp-path</code> 是根据路径的补全，<code>nvim-cmp-buffer</code> 是根据当前打开的文件内容的补全等等，<code>LuaSnip</code> 是一个代码片段引擎（neovim 0.10 之后内置了一个代码片段引擎，可以使用那个，具体可以参考<a href="https://github.com/suoyuan666/dotfiles/blob/main/.config/nvim/lua/plugins/config/cmp.lua" target="_blank" rel="noopener noreffer ">我的配置文件</a>，<code>friendly-snippets</code> 则是一个实用代码片段集合。</p>
+<p>UI 相关中，<code>rebelot/heirline</code> 是用于显示底部的状态栏的，虽然这个插件也能定制顶部的 TabLine，但是我懒得去学了，直接用的 <code>romgrk/barbar</code>。</p>
+<p>调试器方面，dap 给我的感觉类似于 lsp 一样，不过我没仔细了解，<a href="https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation" target="_blank" rel="noopener noreffer ">nvim-dap 中有文档</a> 描述了支持的调试器。我根据文档配置了 gdb 的调试环境。</p>
+<h2 id="tricks">tricks</h2>
+<p>一开始我配置完底部状态栏有个问题，每个窗口都有一个单独的状态栏，但我不需要这样，后来我在 Youtube 上找到个博主自称需要添加这行代码就可以解决:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-lua">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">laststatus</span> <span class="o">=</span> <span class="mi">3</span></span></span></code></pre></div></div>
+<p>真的是这样，泪目</p>
+<p>lsp 的错误诊断无法在插入模式下使用，后来在 Stack Overflow 的一个帖子上找到了答案</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-lua">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="n">vim.lsp</span><span class="p">.</span><span class="n">handlers</span><span class="p">[</span><span class="s2">&#34;textDocument/publishDiagnostics&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vim.lsp</span><span class="p">.</span><span class="n">with</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vim.lsp</span><span class="p">.</span><span class="n">diagnostic.on_publish_diagnostics</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">update_in_insert</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span></span></span></code></pre></div></div>
+<p>当开了多个窗口的时候，<code>q</code> 只能退出当前的窗口，可以使用 <code>qa</code>，这样可以直接退出全部窗口。</p>
+<p>我后来尝试调试窗口怎么样的时候，发现开多个窗口，窗口之间的线不明显，看起来很不得劲。</p>
+<p>可以输入 <code>: highlight WinSeparator guibg=none</code> 解决，这是把那块的背景设为空，我不是这么解决的，我是把 <code>guifg</code> 设成一个亮色。</p>
+<p>如果是在配置文件中持久化这个设置，则是:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-lua">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="n">vim.api</span><span class="p">.</span><span class="n">nvim_set_hl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&#34;WinSeparator&#34;</span><span class="p">,</span> <span class="p">{</span> <span class="n">fg</span> <span class="o">=</span> <span class="s2">&#34;#F8EDEC&#34;</span> <span class="p">})</span></span></span></code></pre></div></div>
+<h2 id="具体配置">具体配置</h2>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ tree
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">├── init.lua
+</span></span><span class="line"><span class="cl">├── lazy-lock.json
+</span></span><span class="line"><span class="cl">└── lua
+</span></span><span class="line"><span class="cl">    ├── config
+</span></span><span class="line"><span class="cl">    │   ├── colorscheme.lua
+</span></span><span class="line"><span class="cl">    │   ├── keymap.lua
+</span></span><span class="line"><span class="cl">    │   ├── lazy.lua
+</span></span><span class="line"><span class="cl">    │   └── option.lua
+</span></span><span class="line"><span class="cl">    ├── lsp
+</span></span><span class="line"><span class="cl">    │   └── clangd.lua
+</span></span><span class="line"><span class="cl">    └── plugins
+</span></span><span class="line"><span class="cl">        ├── cmp.lua
+</span></span><span class="line"><span class="cl">        ├── config
+</span></span><span class="line"><span class="cl">        │   ├── cmp.lua
+</span></span><span class="line"><span class="cl">        │   ├── comment.lua
+</span></span><span class="line"><span class="cl">        │   ├── lsp.lua
+</span></span><span class="line"><span class="cl">        │   ├── none-ls.lua
+</span></span><span class="line"><span class="cl">        │   ├── telescope.lua
+</span></span><span class="line"><span class="cl">        │   ├── treesitter.lua
+</span></span><span class="line"><span class="cl">        │   ├── ui_bar_dark.lua
+</span></span><span class="line"><span class="cl">        │   ├── ui_bar_light.lua
+</span></span><span class="line"><span class="cl">        │   ├── ui_bar.lua
+</span></span><span class="line"><span class="cl">        │   └── ui_fs_tree.lua
+</span></span><span class="line"><span class="cl">        ├── debug.lua
+</span></span><span class="line"><span class="cl">        ├── lsp.lua
+</span></span><span class="line"><span class="cl">        ├── ui.lua
+</span></span><span class="line"><span class="cl">        └── util.lua
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">6</span> directories, <span class="m">22</span> files</span></span></code></pre></div></div>
+<p>这是我的目录架构，<strong>lua/lsp</strong> 这个目录实际上还没用上，我把 <strong>clangd.lua</strong> 的内容挪到 <strong>lua/plugins/config/lsp.lua</strong> 下了。</p>
+<p><strong>init.lua</strong> 的内容很简单:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-lua">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="n">require</span><span class="p">(</span><span class="s1">&#39;config.option&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">require</span><span class="p">(</span><span class="s1">&#39;config.keymap&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">require</span><span class="p">(</span><span class="s1">&#39;config.lazy&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">require</span><span class="p">(</span><span class="s1">&#39;config.colorscheme&#39;</span><span class="p">)</span></span></span></code></pre></div></div>
+<p><strong>init.lua</strong> 的作用就是加载各种配置文件，本身没有什么设置。这里的 <code>.</code> 代表一个目录层级，<strong>init.lua</strong> 貌似直接去 <strong>lua</strong> 文件夹内找了，所以直接写 <code>config</code>。</p>
+<p><strong>lua/config/option.lua</strong> 的内容是:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-lua">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="c1">-- Hint: use `:h &lt;option&gt;` to figure out the meaning if needed</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">clipboard</span> <span class="o">=</span> <span class="s1">&#39;unnamedplus&#39;</span> <span class="c1">-- use system clipboard</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- vim.opt.completeopt = { &#39;menu&#39;, &#39;menuone&#39;, &#39;noselect&#39; }</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">mouse</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span> <span class="c1">-- allow the mouse to be used in Nvim</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">tabstop</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">-- number of visual spaces per TAB</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">softtabstop</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">-- number of spacesin tab when editing</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">shiftwidth</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">-- insert 2 spaces on a tab</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">expandtab</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- tabs are spaces, mainly because of python</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.api</span><span class="p">.</span><span class="n">nvim_set_keymap</span><span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;Tab&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;gv&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="n">noremap</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">silent</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">})</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.api</span><span class="p">.</span><span class="n">nvim_set_keymap</span><span class="p">(</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;S-Tab&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;gv&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="n">noremap</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">silent</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">number</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- show absolute number</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">cursorline</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- highlight cursor line underneath the cursor horizontally</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">splitbelow</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- open new vertical split bottom</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">splitright</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- open new horizontal splits right</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">showmode</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- we are experienced, wo don&#39;t need the &#34;-- INSERT --&#34; mode hint</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">laststatus</span> <span class="o">=</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">incsearch</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- search as characters are entered</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">hlsearch</span> <span class="o">=</span> <span class="kc">false</span> <span class="c1">-- do not highlight matches</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">ignorecase</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- ignore case in searches by default</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">smartcase</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">-- but make it case sensitive if an uppercase is entered</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">vim.opt</span><span class="p">.</span><span class="n">termguicolors</span> <span class="o">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.o</span><span class="p">.</span><span class="n">cmdheight</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.api</span><span class="p">.</span><span class="n">nvim_create_autocmd</span><span class="p">(</span><span class="s2">&#34;BufWritePost&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">callback</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">vim.notify</span><span class="p">(</span><span class="s2">&#34;File saved!&#34;</span><span class="p">,</span> <span class="s2">&#34;info&#34;</span><span class="p">,</span> <span class="p">{</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">&#34;Notification&#34;</span> <span class="p">})</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">end</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div></div>
+<p>这里面大多抄别人的配置文件，所以有注释，我自己写的懒得写注释了（</p>
+<p>内容基本上是设置剪切板为系统剪切板，设置缩进为 2，开启行号等等。后几行是针对通知插件设置的，将最下栏的高度设置为 0，使其不显示，并把保存设为一个通知。</p>
+<p><strong>lua/config/keymap.lua</strong> 设置了一些快捷键，由于太长，我就不粘贴了。</p>
+<p><strong>lua/config/lazy.lua</strong> 设置了 LazyVim 插件，我直接抄的 <a href="https://www.lazyvim.org/configuration/lazy.nvim" target="_blank" rel="noopener noreffer ">LazyVim 官网提供的配置方案</a>。</p>
+<p><strong>lua/config/colorscheme.lua</strong> 设置了 neovim 的颜色主题。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-lua">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-lua" data-lang="lua"><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">colorscheme_dark</span> <span class="o">=</span> <span class="s1">&#39;catppuccin-mocha&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">colorscheme_light</span> <span class="o">=</span> <span class="s1">&#39;catppuccin-latte&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">local</span> <span class="n">is_ok</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pcall</span><span class="p">(</span><span class="n">vim.cmd</span><span class="p">,</span> <span class="s2">&#34;colorscheme &#34;</span> <span class="o">..</span> <span class="n">colorscheme_dark</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">if</span> <span class="ow">not</span> <span class="n">is_ok</span> <span class="kr">then</span>
+</span></span><span class="line"><span class="cl">  <span class="n">vim.notify</span><span class="p">(</span><span class="s1">&#39;colorscheme &#39;</span> <span class="o">..</span> <span class="n">colorscheme_light</span> <span class="o">..</span> <span class="s1">&#39; not found!&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">return</span>
+</span></span><span class="line"><span class="cl"><span class="kr">end</span>
+</span></span><span class="line"><span class="cl"><span class="n">vim.api</span><span class="p">.</span><span class="n">nvim_set_hl</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&#34;WinSeparator&#34;</span><span class="p">,</span> <span class="p">{</span> <span class="n">fg</span> <span class="o">=</span> <span class="s2">&#34;#F8EDEC&#34;</span> <span class="p">})</span></span></span></code></pre></div></div>
+<p>我特地暗色和亮色的都拿了，方便我改终端背景颜色的时候改 neovim 的，我甚至为此还搞了两套底下这个 bar 的配置，不过亮色的那个配置很糊弄就是了。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-09-10</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/neovim_setup/" data-title="我的 neovim 配置" data-hashtags="neovim,intro"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/neovim_setup/" data-title="我的 neovim 配置"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/neovim_setup/" data-hashtag="neovim"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/neovim_setup/" data-title="我的 neovim 配置"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/neovim_setup/" data-title="我的 neovim 配置"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/neovim_setup/" data-title="我的 neovim 配置"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/neovim_setup/" data-title="我的 neovim 配置" data-description="尝试配置 neovim，具体就是安装了一些插件，这里没有太详细介绍我的配置，等之后有时间我再补上"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fneovim_setup%2f&amp;text=%e6%88%91%e7%9a%84%20neovim%20%e9%85%8d%e7%bd%ae" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/neovim/">Neovim</a>,&nbsp;<a href="/tags/intro/">Intro</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/cs144_lab2/" class="prev" rel="prev" title="CS144-2024-lab_2: the TCP receiver"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CS144-2024-lab_2: the TCP receiver</a>
+            <a href="/posts/gentoo_musl_llvm/" class="next" rel="next" title="在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境">在 Gentoo Linux 上尝试 musl libc + llvm 环境<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

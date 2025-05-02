@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>网络应用协议 &amp; 网络分层模型 &amp; 设计原则 - 索元的博客</title><meta name="Description" content="CS114 课程的课程笔记"><meta property="og:url" content="http://localhost:1313/posts/cs144_notes_001/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="网络应用协议 & 网络分层模型 & 设计原则">
+  <meta property="og:description" content="CS114 课程的课程笔记">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-07-22T00:31:31+00:00">
+    <meta property="article:modified_time" content="2024-07-22T00:31:31+00:00">
+    <meta property="article:tag" content="CS144_notes">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="网络应用协议 & 网络分层模型 & 设计原则">
+  <meta name="twitter:description" content="CS114 课程的课程笔记">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/cs144_notes_001/" /><link rel="prev" href="http://localhost:1313/posts/cs144_lab0/" /><link rel="next" href="http://localhost:1313/posts/cs144_lab1/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "网络应用协议 \u0026 网络分层模型 \u0026 设计原则",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/cs144_notes_001\/"
+        },"genre": "posts","keywords": "CS144_notes","wordcount":  3538 ,
+        "url": "http:\/\/localhost:1313\/posts\/cs144_notes_001\/","datePublished": "2024-07-22T00:31:31+00:00","dateModified": "2024-07-22T00:31:31+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "CS114 课程的课程笔记"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">网络应用协议 & 网络分层模型 & 设计原则</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/%E5%88%B7%E8%AF%BE%E7%AC%94%E8%AE%B0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>刷课笔记</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-07-22">2024-07-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3538 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;8 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#网络应用所使用的协议简介">网络应用所使用的协议简介</a>
+      <ul>
+        <li><a href="#world-wide-web-http">World Wide Web (HTTP)</a></li>
+        <li><a href="#bittorrent">BitTorrent</a></li>
+        <li><a href="#skype">Skype</a></li>
+      </ul>
+    </li>
+    <li><a href="#网络分层模型">网络分层模型</a>
+      <ul>
+        <li><a href="#链路层">链路层</a></li>
+        <li><a href="#网络层">网络层</a></li>
+        <li><a href="#传输层">传输层</a></li>
+        <li><a href="#应用层">应用层</a></li>
+        <li><a href="#iso七层模型">ISO七层模型</a></li>
+        <li><a href="#ip-服务">IP 服务</a></li>
+        <li><a href="#数据包的一生">数据包的一生</a></li>
+      </ul>
+    </li>
+    <li><a href="#设计原则">设计原则</a>
+      <ul>
+        <li><a href="#原则数据包切换">原则：数据包切换</a></li>
+        <li><a href="#分层原则">分层原则</a></li>
+        <li><a href="#封装原则">封装原则</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>CS114 课程的课程笔记</p>
+<h1 id="网络应用协议--网络分层模型--设计原则">网络应用协议 &amp; 网络分层模型 &amp; 设计原则</h1>
+<h2 id="网络应用所使用的协议简介">网络应用所使用的协议简介</h2>
+<h3 id="world-wide-web-http">World Wide Web (HTTP)</h3>
+<p>万维网使用 HTTP (Hypertext Transfer Protocol) 通信。</p>
+<p>在 HTTP 中，客户端打开到服务器的连接并发送命令</p>
+<h3 id="bittorrent">BitTorrent</h3>
+<p>BitTorrent 是一种允许人们共享大文件的程序。</p>
+<p>不同于 Web，BitTorrent 中是客户端像其他客户端申请。BitTorrent 将文件分为称为 pieces 的数据块，一个客户端从另一个客户端下载了一个块后，它会告诉其他客户端自己拥有这个块，这种协作的客户端的集合被称为群集(swarms)。</p>
+<p>当用户想要下载某个文件时，他需要先下载 torrent 文件（这通常是通过互联网找到的），这个 torrent 文件描述了要下载的文件的相关信息，还有这个 torrent 的 tracker 信息（tracker 是一个保持 track 群集的成员的节点）。</p>
+<p>加入一个 torrent，自己这个客户端会连接到 tracker，并请求其他客户端的列表，本机就会尝试连接到其他客户端并开始下载文件</p>
+<h3 id="skype">Skype</h3>
+<p>简单情况下就是客户端A和客户端B都能互相访问，那么也没什么可做的。</p>
+<p>如果引入了 NAT (Network Address Translator，就像无线路由器就是NAT) 就会复杂一些。自己的设备会在 NAT 的后面，这就导致自己的设备可以通过 NAT 连接互联网，但互联网上的设备不能直接访问到自己的设备。</p>
+<p>假设 B 在 NAT 后方，那么 A 就无法直接连接 B。</p>
+<p>Skype 通过使用一种被称为 Rendezvous 服务器的东西解决了这个问题。</p>
+<p>一开始 A 和 B 都会和 Rendezvous 服务器建立连接，当 A 想要连接 B 的时候，这个请求会通过 Rendezvous 服务器发送到B这里，如果B同意就由 B 尝试连接到 A。这里被称为反向连接。</p>
+<p>如果 A 和 B 都在 NAT 后面，Skype 通过使用 Relay 服务器处理这个情况。</p>
+<h2 id="网络分层模型">网络分层模型</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS144/network_layer_4.png"
+        data-srcset="/img/CS144/network_layer_4.png, /img/CS144/network_layer_4.png 1.5x, /img/CS144/network_layer_4.png 2x"
+        data-sizes="auto"
+        alt="/img/CS144/network_layer_4.png"
+        title="网络4层模型" /></p>
+<p>整个互联网本身就由主机，链接和路由组成，数据以数据包的形式在每个链接中跳转传递。数据包包含数据和一段头部信息，这个信息包含数据包的来路和去向。</p>
+<h3 id="链路层">链路层</h3>
+<p>链路层的工作就是将数据在链接中不断的跳转。链路层的应用的例子就是以太网和 WiFi 等</p>
+<h3 id="网络层">网络层</h3>
+<p>网络层的工作是在互联网中将数据端对端的传送给对方。网络层的数据包(也叫数据报, datagram)的 header 会附带源地址和目标地址的信息。网络层会将数据包给链路层，让链路层通过第一个链接传递数据。链路层会将它跳到路由，路由的链路层接收到之后再传递给路由的网络层，这里的网络层会检查这个数据报的目标地址，并将其向目标地址跳一下。路由再传递到路由，直到到达目标地址。</p>
+<p>链路层的具体实现方式并不是一种（例如以太网或 WiFi ），但网络层通过接口传递数据报，这种分离的效果使得网络层无需关注链路层的细节。</p>
+<p>在网络层中，通过 Internet 传递数据就需要用到 IP 协议 (Internet Protocol)。</p>
+<ul>
+<li>IP 尽可能尝试将数据报传递到目的地，但其本身并不保证这一点。</li>
+<li>IP 数据报可能会丢失，传递不按顺序，也可能会损坏，它没有保证这些。</li>
+</ul>
+<h3 id="传输层">传输层</h3>
+<p>最常见的传输层的协议就是 TCP (Transmission Control Protocol)。TCP 确保了数据会以正确的顺序并传递过去，并且传输过程中数据报丢失了的话会重发。TCP 保证了运行在网络层之上的服务是的网络连接是可靠的。</p>
+<p>相应的，有不保证顺序，也不会在丢失的时候重发的 UDP (User Datagram Protocol) 协议。UDP 只是将应用层的数据送到网络层。</p>
+<p>常用的就是 TCP 和 UDP 了，但实际上还有其他的协议(比如 RTP )。</p>
+<h3 id="应用层">应用层</h3>
+<p>应用层就是常见的那些 http, smtp, ssh, ftp 之类的了。</p>
+<h3 id="iso七层模型">ISO七层模型</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS144/network_layer_4_7.png"
+        data-srcset="/img/CS144/network_layer_4_7.png, /img/CS144/network_layer_4_7.png 1.5x, /img/CS144/network_layer_4_7.png 2x"
+        data-sizes="auto"
+        alt="/img/CS144/network_layer_4_7.png"
+        title="网络4层模型" /></p>
+<h3 id="ip-服务">IP 服务</h3>
+<p>当传输层需要传输数据的时候，传输层将数据发送到下一层——网络层。网络层会将数据放到 IP 数据报中，IP 的工作就是将它发送到另一端。IP 数据包需要通过链路层进行传输，所以它要将数据包发送给链路层，链路层将其放到数据帧(frame)中(例如以太网数据包)，然后送到第一个路由器中。</p>
+<p>IP 并不可靠，它不保证数据报一定到达，更不会保证到达的顺序，甚至在必要的时候会丢弃数据报（比如路由器中的数据报队列满了）。</p>
+<p>这么设计是为了以下几点</p>
+<ul>
+<li>更加简单，容易维护，消费更低，速度更快。</li>
+<li>端到端原则：尽可能在端测主机实现功能，而不是在网络硬件中。</li>
+<li>允许顶层构建可能可靠或不可靠的服务。</li>
+<li>对下层的链路层要求更低，对链路层没有太多的假设条件。</li>
+</ul>
+<h4 id="ip-服务的细节">IP 服务的细节</h4>
+<ul>
+<li>IP 尝试阻止数据报永远循环。
+<ul>
+<li>由于路由器转发表错误，可能导致数据报一直在循环发送。</li>
+<li>引入了 TTL 字段解决这个问题，TTL 每通过一个路由器都递减一次，如果到 0 了，就认为处于循环的状态，由路由器丢弃它。</li>
+</ul>
+</li>
+<li>IP 会对太长的数据报分段
+<ul>
+<li>IP 被设计为各种链路工作，不同链路对数据报大小的要求不一致。
+<ul>
+<li>比如 Ethernet 携带的数据报长度不能超过 1500 字节。</li>
+</ul>
+</li>
+<li>IP 的 header 包含一些字段用于帮助路由器将一个数据报分开，并向对面主机提供信息需要重组数据。</li>
+</ul>
+</li>
+<li>IP 数据报 header 包含一个校验和字段，以确保数据报到达正确的位置。</li>
+<li>IP 有两种版本
+<ul>
+<li>IPV4: 当前广泛使用，32 bit 的地址</li>
+<li>IPV6: 128 bit 地址。</li>
+</ul>
+</li>
+<li>IP 允许新字段加入数据报 header 中。</li>
+</ul>
+<h4 id="ipv4-数据报-header-的细节">IPV4 数据报 header 的细节</h4>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS144/ipv4_datagram_header.png"
+        data-srcset="/img/CS144/ipv4_datagram_header.png, /img/CS144/ipv4_datagram_header.png 1.5x, /img/CS144/ipv4_datagram_header.png 2x"
+        data-sizes="auto"
+        alt="/img/CS144/ipv4_datagram_header.png"
+        title="IPV4 数据报" /></p>
+<ul>
+<li>Destination IP Address: 目标地址。</li>
+<li>Source IP Address: 源地址。</li>
+<li>Protocol ID: 数据字段的内容。允许目标主机对包解开并复用，如果 Portocal ID 是6，则该数据就包含一个 TCP 段。<a href="https://en.wikipedia.org/wiki/Internet_Assigned_Numbers_Authority" target="_blank" rel="noopener noreffer ">IANA</a> 定义了 140+种不同的协议值。</li>
+<li>Version: IP 当前的版本，V4 还是 V6。</li>
+<li>Total Packet Length: 数据报总长度。</li>
+<li>TTL: 防止数据报永远处于循环状态。</li>
+<li>Packet ID, Flags, Fragment Offset: 帮助路由器将 IP 数据报分成小份。</li>
+<li>Type of Service: 向路由器提示该数据报的重要性。</li>
+<li>Header Length: header 的长度，帮助自定义 header 字段。</li>
+<li>Checksum: 防止发送到错误的地方。</li>
+</ul>
+<h3 id="数据包的一生">数据包的一生</h3>
+<p>互联网四层模型中，从应用层获取数据流，传输层将其可靠地传递给另一台计算机上的应用程序。传输层将这些作为网络层数据包发送，网络层将其传递给另一台计算机。</p>
+<h4 id="以-tcp-流为例">以 TCP 流为例</h4>
+<p>客户端通过三次握手和服务器连接:</p>
+<ol>
+<li>当客户端发送服务器一个 synchronize 信息，通常称为 SYN。</li>
+<li>服务端收到 SYN 后，发送一个确认连接消息，通常称为 SYN-ACK。</li>
+<li>客户端收到后，再回复一个确认信息 ACK。</li>
+</ol>
+<p>为了标示将数据报传送给哪个应用程序，存在 TCP prot 用于标识。</p>
+<p>客户端第一步跳到 WiFi 接入点，接入点存在一个 broader Ethernet 有线连接，所以数据报强制沿着线路跳。路由器连接很多链路，当数据报到达时，路由器决定将其发送到哪个链路。</p>
+<p>路由器有 IP 地址，所以它可能不为了一个包，而是用自己的软件发送。例如使用 TCP 登录路由器时，IP 数据报将被发送到路由器自己的 IP 地址。这是通过转发表实现。</p>
+<p>数据报到达后，路由器检查那个转发条目和数据报最匹配。</p>
+<p>可以使用 Wireshark 验证这一过程。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS144/wireshark_demo.png"
+        data-srcset="/img/CS144/wireshark_demo.png, /img/CS144/wireshark_demo.png 1.5x, /img/CS144/wireshark_demo.png 2x"
+        data-sizes="auto"
+        alt="/img/CS144/wireshark_demo.png"
+        title="wireshark验证" /></p>
+<hr>
+<p>我认为现在没有什么网站是 HTTP 的了，我这里访问的是 BiliBili 所以三次握手后还有专属于 HTTPS 的 TLS 握手。</p>
+<p><code>traceroute</code> 可以 trace 数据包传递的每一跳的信息，但是貌似对方可以设置不回显，这样返回不了信息。</p>
+<hr>
+<h2 id="设计原则">设计原则</h2>
+<h3 id="原则数据包切换">原则：数据包切换</h3>
+<p>这是构建网络的常用做法。</p>
+<p>独立每个到达的数据包，选择将其传出链路，如果该链路空闲就发送，否则保存并等待。</p>
+<ol>
+<li>交换机可以为每个数据包单独做决定，不需要保留额外的数据包，它只需要负责转发。
+<ul>
+<li>例如语音电话由多个连续的数据包组成，它们属于同一组通信，将这种数据包序列称为流 (flow)。</li>
+<li>由于各个数据包是独立的，所以交换机不需要处理整个流。</li>
+<li>交换机不需要担心添加或删除流的状态，交换机会在合适的时候完成转发。交换机不会存储状态信息，因为交换机必须快速，将该状态存储到高速内存中的代价昂贵。</li>
+<li>如果手机发出一个 web 请求后没电了，交换机将保存请求的 &ldquo;per-flow state&rdquo;，但如果其中一个节点创建状态失败后，交换机需要知道如何清除它，否则你可能面临被一堆流量占内存的情况。对于数据报切换来说，交换机不存储 &ldquo;per-flow state&rdquo;，如果手机没电了，交换机只会停止接收来自它的数据包。</li>
+<li>因此，交换机在功能上就独立于发送流量的计算机。</li>
+</ul>
+</li>
+<li>更有效的共享链接
+<ul>
+<li>考虑到一点，用户使用的网络服务都是突发性的，不会以固定的频率发送和接收特定的数据。</li>
+<li>将所有流量都视作数据包，可以做到：假如 A 在阅读网页，B 在加载网页，路由器可以将A的容量都放B的数据包。如果 A 和 B 都在使用，那么路由器在二者之间共享。</li>
+<li>采取单一资源并以概率方式在多个用户之间共享的想法被称为统计复用。每个用户都会获得基于多少用户正在使用的资源的统计份额。例如 A 正在阅读，B 就可以使用所有的链路，如果两个人都在加载页面，那都得到一半的链路容量。</li>
+</ul>
+</li>
+</ol>
+<h3 id="分层原则">分层原则</h3>
+<p>就是模块化，每层只为它的上层，抽象接口。</p>
+<h3 id="封装原则">封装原则</h3>
+<p>封装是将分层和数据报切换结合发生的结果。</p>
+<p>发送一个数据包时，每个数据包都包含来自多个层的数据。例如 TCP 段位于 IP 数据包内，而 IP 数据包又会在以太网帧内。封装就是这个原则。</p>
+<p>关于封装的数据包，有两种画法:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS144/datagram_gram_p1.png"
+        data-srcset="/img/CS144/datagram_gram_p1.png, /img/CS144/datagram_gram_p1.png 1.5x, /img/CS144/datagram_gram_p1.png 2x"
+        data-sizes="auto"
+        alt="/img/CS144/datagram_gram_p1.png"
+        title="封装表示图1" /></p>
+<p>第一种是硬件的视角，header 在右边，右边也是第一位，离开交换机的第一位是最右边的位。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/CS144/datagram_gram_p2.png"
+        data-srcset="/img/CS144/datagram_gram_p2.png, /img/CS144/datagram_gram_p2.png 1.5x, /img/CS144/datagram_gram_p2.png 2x"
+        data-sizes="auto"
+        alt="/img/CS144/datagram_gram_p2.png"
+        title="封装示意图2" /></p>
+<p>第二种是软件的视角，header 在左边，许多文档和协议都这么画，这么画的出发点是数据包的开头是地址0，而左边是地址0，所以 header 在左边。</p>
+<h4 id="vpn-服务示例">VPN 服务示例</h4>
+<p>VPN (Virtual Private Network)</p>
+<p>当你与互联网通信并发送 IP 数据包而不是正常发送它们时，它们会被发送到 VPN 连接中，以便 IP 数据包到达私有网络内。</p>
+<p>在这种路线中，HTTP 被 TCP 封装，TCP 被 IP 封装，IP 被 TLS 封装，而 TLS 再被 TCP 封装，这个 TCP 被 IP 封装。</p>
+<p>外层的 TCP/IP 都是用于到达 VPN 网关而用，内部的 TCP/IP 用来访问具体的 web server。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-07-22</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/cs144_notes_001/" data-title="网络应用协议 &amp; 网络分层模型 &amp; 设计原则" data-hashtags="CS144_notes"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/cs144_notes_001/" data-title="网络应用协议 &amp; 网络分层模型 &amp; 设计原则"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/cs144_notes_001/" data-hashtag="CS144_notes"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/cs144_notes_001/" data-title="网络应用协议 &amp; 网络分层模型 &amp; 设计原则"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/cs144_notes_001/" data-title="网络应用协议 &amp; 网络分层模型 &amp; 设计原则"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/cs144_notes_001/" data-title="网络应用协议 &amp; 网络分层模型 &amp; 设计原则"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/cs144_notes_001/" data-title="网络应用协议 &amp; 网络分层模型 &amp; 设计原则" data-description="CS114 课程的课程笔记"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fcs144_notes_001%2f&amp;text=%e7%bd%91%e7%bb%9c%e5%ba%94%e7%94%a8%e5%8d%8f%e8%ae%ae%20%26%20%e7%bd%91%e7%bb%9c%e5%88%86%e5%b1%82%e6%a8%a1%e5%9e%8b%20%26%20%e8%ae%be%e8%ae%a1%e5%8e%9f%e5%88%99" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/cs144_notes/">CS144_notes</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/cs144_lab0/" class="prev" rel="prev" title="CS144-2024-lab_0: networking warmup"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CS144-2024-lab_0: networking warmup</a>
+            <a href="/posts/cs144_lab1/" class="next" rel="next" title="CS144-2024-lab_1: stitching substrings into a byte stream">CS144-2024-lab_1: stitching substrings into a byte stream<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

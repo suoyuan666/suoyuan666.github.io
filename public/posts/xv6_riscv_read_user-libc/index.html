@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>xv6-riscv 源码阅读 —— 用户态: libc - 索元的博客</title><meta name="Description" content="尝试把 xv6-riscv 读一遍，这是用户态的 libc 部分，一个小小小小小型的标准库"><meta property="og:url" content="http://localhost:1313/posts/xv6_riscv_read_user-libc/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="xv6-riscv 源码阅读 —— 用户态: libc">
+  <meta property="og:description" content="尝试把 xv6-riscv 读一遍，这是用户态的 libc 部分，一个小小小小小型的标准库">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-01-17T11:45:06+00:00">
+    <meta property="article:modified_time" content="2025-01-17T11:45:06+00:00">
+    <meta property="article:tag" content="Xv6_RISC-V">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="xv6-riscv 源码阅读 —— 用户态: libc">
+  <meta name="twitter:description" content="尝试把 xv6-riscv 读一遍，这是用户态的 libc 部分，一个小小小小小型的标准库">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/xv6_riscv_read_user-libc/" /><link rel="prev" href="http://localhost:1313/posts/gentoo_hardened_guide/" /><link rel="next" href="http://localhost:1313/posts/xv6_riscv_read_mkfs/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "xv6-riscv 源码阅读 —— 用户态: libc",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/xv6_riscv_read_user-libc\/"
+        },"genre": "posts","keywords": "Xv6_RISC-V","wordcount":  1788 ,
+        "url": "http:\/\/localhost:1313\/posts\/xv6_riscv_read_user-libc\/","datePublished": "2025-01-17T11:45:06+00:00","dateModified": "2025-01-17T11:45:06+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "尝试把 xv6-riscv 读一遍，这是用户态的 libc 部分，一个小小小小小型的标准库"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">xv6-riscv 源码阅读 —— 用户态: libc</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>源码阅读</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-01-17">2025-01-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;1788 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;4 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#printfc">printf.c</a></li>
+    <li><a href="#umallocc">umalloc.c</a></li>
+    <li><a href="#ulibc-1">ulib.c</a></li>
+    <li><a href="#usyspl">usys.pl</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="ulibc">ulibc</h1>
+<p>xv6-riscv 实现了一个简单基础的 libc</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-Makefile">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Makefile" data-lang="Makefile"><span class="line"><span class="cl"><span class="nv">ULIB</span> <span class="o">=</span> <span class="nv">$U</span>/ulib.o <span class="nv">$U</span>/usys.o <span class="nv">$U</span>/printf.o <span class="nv">$U</span>/umalloc.o
+</span></span></code></pre></div></div>
+<p>由此可知，其由 ulib.c、printf.c、umalloc.c 和 usys.pl 组成</p>
+<h2 id="printfc">printf.c</h2>
+<p>首先，<code>printf</code> 基本就是对可变参数进行了处理，并调用 <code>vprintf</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span>
+</span></span><span class="line"><span class="cl"><span class="nf">printf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="p">...)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">va_list</span> <span class="n">ap</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nf">va_start</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">fmt</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">vprintf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="n">ap</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><code>va_list</code> 来自 <code>#include &lt;stdarg.h&gt;</code></p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// Print to the given fd. Only understands %d, %x, %p, %s.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">void</span>
+</span></span><span class="line"><span class="cl"><span class="nf">vprintf</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="n">va_list</span> <span class="n">ap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">c0</span><span class="p">,</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">state</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">fmt</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c0</span> <span class="o">=</span> <span class="n">fmt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;%&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="n">state</span> <span class="o">=</span> <span class="sc">&#39;%&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">putc</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">c0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="sc">&#39;%&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="n">c1</span> <span class="o">=</span> <span class="n">c2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="n">c0</span><span class="p">)</span> <span class="n">c1</span> <span class="o">=</span> <span class="n">fmt</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span> <span class="n">c2</span> <span class="o">=</span> <span class="n">fmt</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;d&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="kt">int</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c1</span> <span class="o">==</span> <span class="sc">&#39;d&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">uint64</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c1</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c2</span> <span class="o">==</span> <span class="sc">&#39;d&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">uint64</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;u&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="kt">int</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c1</span> <span class="o">==</span> <span class="sc">&#39;u&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">uint64</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c1</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c2</span> <span class="o">==</span> <span class="sc">&#39;u&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">uint64</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;x&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="kt">int</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c1</span> <span class="o">==</span> <span class="sc">&#39;x&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">uint64</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c1</span> <span class="o">==</span> <span class="sc">&#39;l&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">c2</span> <span class="o">==</span> <span class="sc">&#39;x&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printint</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">uint64</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;p&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printptr</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">uint64</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;s&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">((</span><span class="n">s</span> <span class="o">=</span> <span class="nf">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="n">s</span> <span class="o">=</span> <span class="s">&#34;(null)&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span><span class="p">(;</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span> <span class="n">s</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">putc</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">c0</span> <span class="o">==</span> <span class="sc">&#39;%&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">putc</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="sc">&#39;%&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Unknown % sequence.  Print it to draw attention.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nf">putc</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="sc">&#39;%&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">putc</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">c0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>ulib 实现的 <code>vprintf</code> 是比较简单的，只支持部分占位符</p>
+<p><code>c0 = fmt[i] &amp; 0xff</code> 的用处我暂时还没清晰的看到，无论是否和 <code>0xff</code> 按位与，都是那个值。</p>
+<p>之后看当前打印的字符是占位符的 <code>%</code> 还是正常字符，正常字符就调用 <code>putc</code>，<code>putc</code> 会直接调用 <code>write</code> 系统调用从而打印出来。</p>
+<blockquote>
+<p>系统调用</p>
+<p>系统调用是操作系统内核暴露给应用程序的接口，Unix 通过 <code>write</code> 系统调用向指定的文件描述符写入内容</p>
+<p>在自己的终端上执行 <code>man 2 write</code> 可以查看 Linux kernel 的 <code>write</code> 系统调用的接口描述</p>
+<p>ssize_t write(int fd, const void buf[.count], size_t count);</p>
+</blockquote>
+<p>xv6-riscv 的系统调用和 libc 的函数原型都定义在了 user/user.h 文件中</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">write</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span><span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>如果是占位符，就将 <code>state</code> 的值修改，这样等下一轮循环的时候，就会根据 <code>state</code> 的值跳到正确的处理逻辑。</p>
+<p>这里利用了 <code>printint(int fd, int xx, int base, int sgn)</code> 和 <code>va_arg(ap, type)</code> 完成将值根据占位符做格式转换并输出的目的</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span>
+</span></span><span class="line"><span class="cl"><span class="nf">printint</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">xx</span><span class="p">,</span> <span class="kt">int</span> <span class="n">base</span><span class="p">,</span> <span class="kt">int</span> <span class="n">sgn</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">neg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">uint</span> <span class="n">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">neg</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">sgn</span> <span class="o">&amp;&amp;</span> <span class="n">xx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">neg</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="n">xx</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">xx</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">do</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">digits</span><span class="p">[</span><span class="n">x</span> <span class="o">%</span> <span class="n">base</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span><span class="k">while</span><span class="p">((</span><span class="n">x</span> <span class="o">/=</span> <span class="n">base</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">neg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;-&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">while</span><span class="p">(</span><span class="o">--</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">putc</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><code>va_arg</code> 会根据参数指定的类型把参数列表的值返回出来。<code>base</code> 是指当前值的进制表示，<code>sgn</code> 指是否为 <code>signed</code></p>
+<p>这个函数也比较简单，就是根据是否为 <code>signed</code> 从而判断是否存在负数的问题，之后把数字每一位都赋给 <code>buf</code>，然后遍历 <code>buf</code> 的每个字符，都调用一遍 <code>putc</code>。</p>
+<h2 id="umallocc">umalloc.c</h2>
+<p>这部分的代码实现来自 K&amp;R 的 malloc 的实现</p>
+<p>涉及到了一些自定义的类型：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="kt">long</span> <span class="n">Align</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">union</span> <span class="n">header</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="n">header</span> <span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">uint</span> <span class="n">size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="n">s</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Align</span> <span class="n">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">union</span> <span class="n">header</span> <span class="n">Header</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">Header</span> <span class="n">base</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">Header</span> <span class="o">*</span><span class="n">freep</span><span class="p">;</span></span></span></code></pre></div></div>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">malloc</span><span class="p">(</span><span class="n">uint</span> <span class="n">nbytes</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Header</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">prevp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">uint</span> <span class="n">nunits</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">nunits</span> <span class="o">=</span> <span class="p">(</span><span class="n">nbytes</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Header</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Header</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">((</span><span class="n">prevp</span> <span class="o">=</span> <span class="n">freep</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">base</span><span class="p">.</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">freep</span> <span class="o">=</span> <span class="n">prevp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">base</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">base</span><span class="p">.</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span><span class="p">(</span><span class="n">p</span> <span class="o">=</span> <span class="n">prevp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">;</span> <span class="p">;</span> <span class="n">prevp</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">nunits</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">nunits</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">prevp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">-=</span> <span class="n">nunits</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">p</span> <span class="o">+=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">nunits</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="n">freep</span> <span class="o">=</span> <span class="n">prevp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">p</span> <span class="o">==</span> <span class="n">freep</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span><span class="p">((</span><span class="n">p</span> <span class="o">=</span> <span class="nf">morecore</span><span class="p">(</span><span class="n">nunits</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><code>nunits</code> 的计算中，<code>(nbytes + sizeof(Header) -1)/sizeof(Header)</code> 是为了向上取整，再 <code>+1</code> 是给 <code>Header</code> 预留空间</p>
+<p><code>(prevp = freep)</code> 会产生一个返回值，也就是赋的值，所以这段代码用来做初始化工作</p>
+<p>之后的 <code>for</code> 循环中</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">for</span><span class="p">(</span><span class="n">p</span> <span class="o">=</span> <span class="n">prevp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">;</span> <span class="p">;</span> <span class="n">prevp</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">nunits</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">nunits</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">prevp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">-=</span> <span class="n">nunits</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">p</span> <span class="o">+=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">nunits</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">freep</span> <span class="o">=</span> <span class="n">prevp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">p</span> <span class="o">==</span> <span class="n">freep</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">((</span><span class="n">p</span> <span class="o">=</span> <span class="nf">morecore</span><span class="p">(</span><span class="n">nunits</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里就是遍历释放的列表，然后如果能大小合适就给它，如果不合适的话，就调用 <code>morecore</code> 分配一次在 <code>free</code> 掉，之后在下一轮循环分配给它。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">static</span> <span class="n">Header</span><span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="nf">morecore</span><span class="p">(</span><span class="n">uint</span> <span class="n">nu</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">char</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Header</span> <span class="o">*</span><span class="n">hp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">nu</span> <span class="o">&lt;</span> <span class="mi">4096</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">nu</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">p</span> <span class="o">=</span> <span class="nf">sbrk</span><span class="p">(</span><span class="n">nu</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Header</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">p</span> <span class="o">==</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">hp</span> <span class="o">=</span> <span class="p">(</span><span class="n">Header</span><span class="o">*</span><span class="p">)</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">hp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">nu</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">free</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">hp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">freep</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p>这里涉及到 <code>sbrk</code> 系统调用，用于获取内存空间</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-c">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span>
+</span></span><span class="line"><span class="cl"><span class="nf">free</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">ap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Header</span> <span class="o">*</span><span class="n">bp</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">bp</span> <span class="o">=</span> <span class="p">(</span><span class="n">Header</span><span class="o">*</span><span class="p">)</span><span class="n">ap</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span><span class="p">(</span><span class="n">p</span> <span class="o">=</span> <span class="n">freep</span><span class="p">;</span> <span class="o">!</span><span class="p">(</span><span class="n">bp</span> <span class="o">&gt;</span> <span class="n">p</span> <span class="o">&amp;&amp;</span> <span class="n">bp</span> <span class="o">&lt;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">);</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">bp</span> <span class="o">&gt;</span> <span class="n">p</span> <span class="o">||</span> <span class="n">bp</span> <span class="o">&lt;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">bp</span> <span class="o">+</span> <span class="n">bp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">bp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">+=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">bp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="n">bp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">bp</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span> <span class="o">+=</span> <span class="n">bp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">bp</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="n">p</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">bp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">freep</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><code>for</code> 循环用来找到要回收的地址的相近的节点</p>
+<p>而之后的两组 <code>if</code> 都是为了回收这部分地址，我画了一个简单的草图用于方便理解</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/img/xv6-riscv-read/user/free_p_with_bp.svg"
+        data-srcset="/img/xv6-riscv-read/user/free_p_with_bp.svg, /img/xv6-riscv-read/user/free_p_with_bp.svg 1.5x, /img/xv6-riscv-read/user/free_p_with_bp.svg 2x"
+        data-sizes="auto"
+        alt="/img/xv6-riscv-read/user/free_p_with_bp.svg"
+        title="free_p_with_bp" /></p>
+<p>从这里需要 <code>-1</code> 也能看出之前计算 <code>nunits</code> 最后 <code>+1</code> 操作的用处</p>
+<h2 id="ulibc-1">ulib.c</h2>
+<p>ulib.c 中基本就是一些字符操作相关的函数了，比如 <code>strlen</code>、<code>memset</code>、<code>atoi</code> 之类的</p>
+<p>基本都是一些简单的实现，没什么可说的</p>
+<h2 id="usyspl">usys.pl</h2>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-perl">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-perl" data-lang="perl"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/perl -w</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate usys.S, the stubs for syscalls.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">print</span> <span class="s">&#34;# generated by usys.pl - do not edit\n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">print</span> <span class="s">&#34;#include \&#34;kernel/syscall.h\&#34;\n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">sub</span> <span class="nf">entry</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">my</span> <span class="nv">$name</span> <span class="o">=</span> <span class="nb">shift</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">print</span> <span class="s">&#34;.global $name\n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">print</span> <span class="s">&#34;${name}:\n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">print</span> <span class="s">&#34; li a7, SYS_${name}\n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">print</span> <span class="s">&#34; ecall\n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">print</span> <span class="s">&#34; ret\n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;fork&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;exit&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;wait&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;pipe&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;read&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;write&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;close&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;kill&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;exec&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;open&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;mknod&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;unlink&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;fstat&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;link&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;mkdir&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;chdir&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;dup&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;getpid&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;sbrk&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;sleep&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">entry</span><span class="p">(</span><span class="s">&#34;uptime&#34;</span><span class="p">);</span></span></span></code></pre></div></div>
+<p>这涉及到一个古老的脚本语言 <a href="https://en.wikipedia.org/wiki/Perl" target="_blank" rel="noopener noreffer ">Perl</a></p>
+<p>该脚本会生成一份汇编代码文件</p>
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+    <div class="code-header language-asm">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-asm" data-lang="asm"><span class="line"><span class="cl"><span class="c1"># generated by usys.pl - do not edit
+</span></span></span><span class="line"><span class="cl"><span class="c1">#include &#34;kernel/syscall.h&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="na">.global</span> <span class="no">fork</span>
+</span></span><span class="line"><span class="cl"><span class="nl">fork:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_fork</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">exit</span>
+</span></span><span class="line"><span class="cl"><span class="nl">exit:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_exit</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">wait</span>
+</span></span><span class="line"><span class="cl"><span class="nl">wait:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_wait</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">pipe</span>
+</span></span><span class="line"><span class="cl"><span class="nl">pipe:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_pipe</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">read</span>
+</span></span><span class="line"><span class="cl"><span class="nl">read:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_read</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">write</span>
+</span></span><span class="line"><span class="cl"><span class="nl">write:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_write</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">close</span>
+</span></span><span class="line"><span class="cl"><span class="nl">close:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_close</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">kill</span>
+</span></span><span class="line"><span class="cl"><span class="nl">kill:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_kill</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">exec</span>
+</span></span><span class="line"><span class="cl"><span class="nl">exec:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_exec</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">open</span>
+</span></span><span class="line"><span class="cl"><span class="nl">open:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_open</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">mknod</span>
+</span></span><span class="line"><span class="cl"><span class="nl">mknod:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_mknod</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">unlink</span>
+</span></span><span class="line"><span class="cl"><span class="nl">unlink:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_unlink</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">fstat</span>
+</span></span><span class="line"><span class="cl"><span class="nl">fstat:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_fstat</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">link</span>
+</span></span><span class="line"><span class="cl"><span class="nl">link:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_link</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">mkdir</span>
+</span></span><span class="line"><span class="cl"><span class="nl">mkdir:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_mkdir</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">chdir</span>
+</span></span><span class="line"><span class="cl"><span class="nl">chdir:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_chdir</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">dup</span>
+</span></span><span class="line"><span class="cl"><span class="nl">dup:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_dup</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">getpid</span>
+</span></span><span class="line"><span class="cl"><span class="nl">getpid:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_getpid</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">sbrk</span>
+</span></span><span class="line"><span class="cl"><span class="nl">sbrk:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_sbrk</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">sleep</span>
+</span></span><span class="line"><span class="cl"><span class="nl">sleep:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_sleep</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span>
+</span></span><span class="line"><span class="cl"><span class="na">.global</span> <span class="no">uptime</span>
+</span></span><span class="line"><span class="cl"><span class="nl">uptime:</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">li</span> <span class="no">a7</span><span class="p">,</span> <span class="no">SYS_uptime</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ecall</span>
+</span></span><span class="line"><span class="cl"> <span class="nf">ret</span></span></span></code></pre></div></div>
+<p>用来处理系统调用跳转的，RISC-V 规定了 <code>a7</code> 寄存器用于存放系统调用号，而 <code>ecall</code> 用于调用系统调用，amd64 结构也有类似的指令 <code>syscall</code></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2025-01-17</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/xv6_riscv_read_user-libc/" data-title="xv6-riscv 源码阅读 —— 用户态: libc" data-hashtags="Xv6_RISC-V"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/xv6_riscv_read_user-libc/" data-title="xv6-riscv 源码阅读 —— 用户态: libc"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/xv6_riscv_read_user-libc/" data-hashtag="Xv6_RISC-V"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/xv6_riscv_read_user-libc/" data-title="xv6-riscv 源码阅读 —— 用户态: libc"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/xv6_riscv_read_user-libc/" data-title="xv6-riscv 源码阅读 —— 用户态: libc"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/xv6_riscv_read_user-libc/" data-title="xv6-riscv 源码阅读 —— 用户态: libc"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/xv6_riscv_read_user-libc/" data-title="xv6-riscv 源码阅读 —— 用户态: libc" data-description="尝试把 xv6-riscv 读一遍，这是用户态的 libc 部分，一个小小小小小型的标准库"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fxv6_riscv_read_user-libc%2f&amp;text=xv6-riscv%20%e6%ba%90%e7%a0%81%e9%98%85%e8%af%bb%20%e2%80%94%e2%80%94%20%e7%94%a8%e6%88%b7%e6%80%81%3a%20libc" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/xv6_risc-v/">Xv6_RISC-V</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/gentoo_hardened_guide/" class="prev" rel="prev" title="Gentoo Linux 安全加固指南"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Gentoo Linux 安全加固指南</a>
+            <a href="/posts/xv6_riscv_read_mkfs/" class="next" rel="next" title="xv6-riscv 源码阅读 —— mkfs">xv6-riscv 源码阅读 —— mkfs<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

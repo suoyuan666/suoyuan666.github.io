@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>CS144-2024-lab_1: stitching substrings into a byte stream - 索元的博客</title><meta name="Description" content="CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substrings into a byte stream"><meta property="og:url" content="http://localhost:1313/posts/cs144_lab1/">
+  <meta property="og:site_name" content="索元的博客">
+  <meta property="og:title" content="CS144-2024-lab_1: stitching substrings into a byte stream">
+  <meta property="og:description" content="CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substrings into a byte stream">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-07-24T00:17:57+00:00">
+    <meta property="article:modified_time" content="2024-07-24T00:17:57+00:00">
+    <meta property="article:tag" content="CS144_lab">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="CS144-2024-lab_1: stitching substrings into a byte stream">
+  <meta name="twitter:description" content="CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substrings into a byte stream">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site">
+<meta name="referrer" content="no-referrer" /><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/cs144_lab1/" /><link rel="prev" href="http://localhost:1313/posts/cs144_notes_001/" /><link rel="next" href="http://localhost:1313/posts/cs144_notes_002/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/css/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "CS144-2024-lab_1: stitching substrings into a byte stream",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/cs144_lab1\/"
+        },"genre": "posts","keywords": "CS144_lab","wordcount":  994 ,
+        "url": "http:\/\/localhost:1313\/posts\/cs144_lab1\/","datePublished": "2024-07-24T00:17:57+00:00","dateModified": "2024-07-24T00:17:57+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suo yuan"
+            },"description": "CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substrings into a byte stream"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">CS144-2024-lab_1: stitching substrings into a byte stream</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>suo yuan</a></span>&nbsp;<span class="post-category">included in <a href="/categories/%E5%88%B7%E8%AF%BE_lab/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>刷课_Lab</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-07-24">2024-07-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;994 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><p>CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substrings into a byte stream</p>
+<h1 id="cs144-2024-lab_1-stitching-substrings-into-a-byte-stream">CS144-2024-lab_1: stitching substrings into a byte stream</h1>
+<blockquote>
+<p>As part of the lab assignment, you will implement a TCP receiver: the module that receives datagrams and turns them into a reliable byte stream to be read from the socket by the application—just as your webget program read the byte stream from the webserver in Checkpoint 0</p>
+<p>作为实验任务的一部分，你将实现一个 TCP 接收器：接收数据报并将其转化为可靠字节流的模块，以便应用程序从 socket 中读取&ndash;就像你的 webget 程序在 Checkpoint 0 中从网络服务器读取字节流一样。</p>
+</blockquote>
+<p>在 <code>Reassembler</code> 类中添加下面这些字段:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">deque</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">buffer_</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">deque</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">buf_enable_</span> <span class="p">{</span><span class="nb">false</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">uint64_t</span> <span class="n">used_index_</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">uint64_t</span> <span class="n">wcount_</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">bool</span> <span class="n">fetch_last_</span> <span class="p">{</span><span class="nb">false</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">uint64_t</span> <span class="n">max_length_</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span></span></span></code></pre></div></div>
+<p>对于 <code>insert()</code> 和 <code>bytes_pending()</code> 的实现:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-cpp">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">Reassembler</span><span class="o">::</span><span class="n">insert</span><span class="p">(</span> <span class="kt">uint64_t</span> <span class="n">first_index</span><span class="p">,</span> <span class="n">string</span> <span class="n">data</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">is_last_substring</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="k">auto</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">(</span> <span class="n">data</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">used_index_</span> <span class="o">+</span> <span class="n">output_</span><span class="p">.</span><span class="n">writer</span><span class="p">().</span><span class="n">available_capacity</span><span class="p">()</span> <span class="o">-</span> <span class="n">first_index</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">buffer_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">first_index</span> <span class="o">+</span> <span class="n">limit</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buffer_</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">first_index</span> <span class="o">+</span> <span class="n">limit</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buf_enable_</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">first_index</span> <span class="o">+</span> <span class="n">limit</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span> <span class="kt">uint64_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">limit</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buf_enable_</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">first_index</span> <span class="o">+</span> <span class="n">i</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buffer_</span><span class="p">[</span><span class="n">first_index</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buf_enable_</span><span class="p">[</span><span class="n">first_index</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">wcount_</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="n">is_last_substring</span> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fetch_last_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">max_length_</span> <span class="o">=</span> <span class="n">first_index</span> <span class="o">+</span> <span class="n">data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(;</span> <span class="n">used_index_</span> <span class="o">&lt;</span> <span class="n">buf_enable_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">buf_enable_</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">used_index_</span><span class="p">);</span> <span class="o">++</span><span class="n">used_index_</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">output_</span><span class="p">.</span><span class="n">writer</span><span class="p">().</span><span class="n">push</span><span class="p">(</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="p">{</span> <span class="n">buffer_</span><span class="p">.</span><span class="n">at</span><span class="p">(</span> <span class="n">used_index_</span> <span class="p">)</span> <span class="p">}</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">--</span><span class="n">wcount_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="n">fetch_last_</span> <span class="o">&amp;&amp;</span> <span class="n">used_index_</span> <span class="o">==</span> <span class="n">max_length_</span> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buffer_</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buf_enable_</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">output_</span><span class="p">.</span><span class="n">writer</span><span class="p">().</span><span class="n">close</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">uint64_t</span> <span class="n">Reassembler</span><span class="o">::</span><span class="n">bytes_pending</span><span class="p">()</span> <span class="k">const</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">wcount_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
+<p><del>不过这样得不到太高的速度，我等下次尝试优化一下吧（逃</del></p>
+<p>我就是 C++ 菜狗，优化也优化不了什么，换了个数据结构，一开始用 <code>std::unordered_map&lt;uint64_t, char&gt;</code>，查找很方便，但是插入擦除貌似就不是很行了，我选择用了 <code>std::deque&lt;char&gt;</code> 和 <code>std::deque&lt;bool&gt;</code> 来代替，需要一个 bool 类型的 <code>std::deque&lt;&gt;</code> 是因为我为了让插入字符的位置就是该字符实际的索引位置，直接 <code>resize</code> 放大 buffer 的大小，我想通过 <code>std::deque&lt;bool&gt; buf_enable_</code> 标示一下哪个位是真实有效的，哪个是还没有值的。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ cmake --build build -j<span class="sb">`</span>nproc<span class="sb">`</span> --target check1
+</span></span><span class="line"><span class="cl">Test project /home/zuos/codPjt/Cpp/minnow/build
+</span></span><span class="line"><span class="cl">Connected to MAKE jobserver
+</span></span><span class="line"><span class="cl">      Start  1: compile with bug-checkers
+</span></span><span class="line"><span class="cl"> 1/17 Test  <span class="c1">#1: compile with bug-checkers ........   Passed    0.17 sec</span>
+</span></span><span class="line"><span class="cl">      Start  3: byte_stream_basics
+</span></span><span class="line"><span class="cl"> 2/17 Test  <span class="c1">#3: byte_stream_basics ...............   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start  4: byte_stream_capacity
+</span></span><span class="line"><span class="cl"> 3/17 Test  <span class="c1">#4: byte_stream_capacity .............   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start  5: byte_stream_one_write
+</span></span><span class="line"><span class="cl"> 4/17 Test  <span class="c1">#5: byte_stream_one_write ............   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start  6: byte_stream_two_writes
+</span></span><span class="line"><span class="cl"> 5/17 Test  <span class="c1">#6: byte_stream_two_writes ...........   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start  7: byte_stream_many_writes
+</span></span><span class="line"><span class="cl"> 6/17 Test  <span class="c1">#7: byte_stream_many_writes ..........   Passed    0.04 sec</span>
+</span></span><span class="line"><span class="cl">      Start  8: byte_stream_stress_test
+</span></span><span class="line"><span class="cl"> 7/17 Test  <span class="c1">#8: byte_stream_stress_test ..........   Passed    0.25 sec</span>
+</span></span><span class="line"><span class="cl">      Start  9: reassembler_single
+</span></span><span class="line"><span class="cl"> 8/17 Test  <span class="c1">#9: reassembler_single ...............   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 10: reassembler_cap
+</span></span><span class="line"><span class="cl"> 9/17 Test <span class="c1">#10: reassembler_cap ..................   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 11: reassembler_seq
+</span></span><span class="line"><span class="cl">10/17 Test <span class="c1">#11: reassembler_seq ..................   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 12: reassembler_dup
+</span></span><span class="line"><span class="cl">11/17 Test <span class="c1">#12: reassembler_dup ..................   Passed    0.02 sec</span>
+</span></span><span class="line"><span class="cl">      Start 13: reassembler_holes
+</span></span><span class="line"><span class="cl">12/17 Test <span class="c1">#13: reassembler_holes ................   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 14: reassembler_overlapping
+</span></span><span class="line"><span class="cl">13/17 Test <span class="c1">#14: reassembler_overlapping ..........   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 15: reassembler_win
+</span></span><span class="line"><span class="cl">14/17 Test <span class="c1">#15: reassembler_win ..................   Passed    5.40 sec</span>
+</span></span><span class="line"><span class="cl">      Start 37: compile with optimization
+</span></span><span class="line"><span class="cl">15/17 Test <span class="c1">#37: compile with optimization ........   Passed    0.11 sec</span>
+</span></span><span class="line"><span class="cl">      Start 38: byte_stream_speed_test
+</span></span><span class="line"><span class="cl">             ByteStream throughput: 0.59 Gbit/s
+</span></span><span class="line"><span class="cl">16/17 Test <span class="c1">#38: byte_stream_speed_test ...........   Passed    0.19 sec</span>
+</span></span><span class="line"><span class="cl">      Start 39: reassembler_speed_test
+</span></span><span class="line"><span class="cl">             Reassembler throughput: 0.30 Gbit/s
+</span></span><span class="line"><span class="cl">17/17 Test <span class="c1">#39: reassembler_speed_test ...........   Passed    0.50 sec</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">100% tests passed, <span class="m">0</span> tests failed out of <span class="m">17</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Total Test <span class="nb">time</span> <span class="o">(</span>real<span class="o">)</span> <span class="o">=</span>   6.78 sec
+</span></span><span class="line"><span class="cl">Built target check1</span></span></code></pre></div></div>
+<p>后来我换成 clang++ 编译，速度还有所提升</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="Copy to clipboard"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ cmake --build build -j<span class="sb">`</span>nproc<span class="sb">`</span> --target check1
+</span></span><span class="line"><span class="cl">Test project /home/zuos/codPjt/Cpp/minnow/build
+</span></span><span class="line"><span class="cl">Connected to MAKE jobserver
+</span></span><span class="line"><span class="cl">      Start  1: compile with bug-checkers
+</span></span><span class="line"><span class="cl"> 1/17 Test  <span class="c1">#1: compile with bug-checkers ........   Passed    0.19 sec</span>
+</span></span><span class="line"><span class="cl">      Start  3: byte_stream_basics
+</span></span><span class="line"><span class="cl"> 2/17 Test  <span class="c1">#3: byte_stream_basics ...............   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start  4: byte_stream_capacity
+</span></span><span class="line"><span class="cl"> 3/17 Test  <span class="c1">#4: byte_stream_capacity .............   Passed    0.02 sec</span>
+</span></span><span class="line"><span class="cl">      Start  5: byte_stream_one_write
+</span></span><span class="line"><span class="cl"> 4/17 Test  <span class="c1">#5: byte_stream_one_write ............   Passed    0.02 sec</span>
+</span></span><span class="line"><span class="cl">      Start  6: byte_stream_two_writes
+</span></span><span class="line"><span class="cl"> 5/17 Test  <span class="c1">#6: byte_stream_two_writes ...........   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start  7: byte_stream_many_writes
+</span></span><span class="line"><span class="cl"> 6/17 Test  <span class="c1">#7: byte_stream_many_writes ..........   Passed    0.04 sec</span>
+</span></span><span class="line"><span class="cl">      Start  8: byte_stream_stress_test
+</span></span><span class="line"><span class="cl"> 7/17 Test  <span class="c1">#8: byte_stream_stress_test ..........   Passed    0.20 sec</span>
+</span></span><span class="line"><span class="cl">      Start  9: reassembler_single
+</span></span><span class="line"><span class="cl"> 8/17 Test  <span class="c1">#9: reassembler_single ...............   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 10: reassembler_cap
+</span></span><span class="line"><span class="cl"> 9/17 Test <span class="c1">#10: reassembler_cap ..................   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 11: reassembler_seq
+</span></span><span class="line"><span class="cl">10/17 Test <span class="c1">#11: reassembler_seq ..................   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 12: reassembler_dup
+</span></span><span class="line"><span class="cl">11/17 Test <span class="c1">#12: reassembler_dup ..................   Passed    0.02 sec</span>
+</span></span><span class="line"><span class="cl">      Start 13: reassembler_holes
+</span></span><span class="line"><span class="cl">12/17 Test <span class="c1">#13: reassembler_holes ................   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 14: reassembler_overlapping
+</span></span><span class="line"><span class="cl">13/17 Test <span class="c1">#14: reassembler_overlapping ..........   Passed    0.01 sec</span>
+</span></span><span class="line"><span class="cl">      Start 15: reassembler_win
+</span></span><span class="line"><span class="cl">14/17 Test <span class="c1">#15: reassembler_win ..................   Passed    4.12 sec</span>
+</span></span><span class="line"><span class="cl">      Start 37: compile with optimization
+</span></span><span class="line"><span class="cl">15/17 Test <span class="c1">#37: compile with optimization ........   Passed    0.10 sec</span>
+</span></span><span class="line"><span class="cl">      Start 38: byte_stream_speed_test
+</span></span><span class="line"><span class="cl">             ByteStream throughput: 0.72 Gbit/s
+</span></span><span class="line"><span class="cl">16/17 Test <span class="c1">#38: byte_stream_speed_test ...........   Passed    0.16 sec</span>
+</span></span><span class="line"><span class="cl">      Start 39: reassembler_speed_test
+</span></span><span class="line"><span class="cl">             Reassembler throughput: 0.35 Gbit/s
+</span></span><span class="line"><span class="cl">17/17 Test <span class="c1">#39: reassembler_speed_test ...........   Passed    0.43 sec</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">100% tests passed, <span class="m">0</span> tests failed out of <span class="m">17</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Total Test <span class="nb">time</span> <span class="o">(</span>real<span class="o">)</span> <span class="o">=</span>   5.36 sec
+</span></span><span class="line"><span class="cl">Built target check1</span></span></code></pre></div></div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2024-07-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on X" data-sharer="x" data-url="http://localhost:1313/posts/cs144_lab1/" data-title="CS144-2024-lab_1: stitching substrings into a byte stream" data-hashtags="CS144_lab"><i class="fab fa-x-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Threads" data-sharer="threads" data-url="http://localhost:1313/posts/cs144_lab1/" data-title="CS144-2024-lab_1: stitching substrings into a byte stream"><i class="fab fa-threads fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/cs144_lab1/" data-hashtag="CS144_lab"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="http://localhost:1313/posts/cs144_lab1/" data-title="CS144-2024-lab_1: stitching substrings into a byte stream"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="http://localhost:1313/posts/cs144_lab1/" data-title="CS144-2024-lab_1: stitching substrings into a byte stream"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="http://localhost:1313/posts/cs144_lab1/" data-title="CS144-2024-lab_1: stitching substrings into a byte stream"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Diaspora" data-sharer="diaspora" data-url="http://localhost:1313/posts/cs144_lab1/" data-title="CS144-2024-lab_1: stitching substrings into a byte stream" data-description="CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substrings into a byte stream"><i class="fab fa-diaspora fa-fw" aria-hidden="true"></i></a><a href="https://t.me/share/url?url=http%3a%2f%2flocalhost%3a1313%2fposts%2fcs144_lab1%2f&amp;text=CS144-2024-lab_1%3a%20stitching%20substrings%20into%20a%20byte%20stream" target="_blank" title="Share on Telegram"><i class="fab fa-telegram fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/cs144_lab/">CS144_lab</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/cs144_notes_001/" class="prev" rel="prev" title="网络应用协议 &amp; 网络分层模型 &amp; 设计原则"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>网络应用协议 & 网络分层模型 & 设计原则</a>
+            <a href="/posts/cs144_notes_002/" class="next" rel="next" title="字节序 &amp; IPV4 地址 &amp; ARP 协议">字节序 & IPV4 地址 & ARP 协议<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.142.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.1-DEV"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">suo yuan</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/katex/katex.min.css"><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script src="/lib/katex/katex.min.js"></script><script src="/lib/katex/contrib/auto-render.min.js"></script><script src="/lib/katex/contrib/copy-tex.min.js"></script><script src="/lib/katex/contrib/mhchem.min.js"></script><script>window.config={"comment":{},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":true,"left":"\\begin{equation}","right":"\\end{equation}"},{"display":true,"left":"\\begin{equation*}","right":"\\end{equation*}"},{"display":true,"left":"\\begin{align}","right":"\\end{align}"},{"display":true,"left":"\\begin{align*}","right":"\\end{align*}"},{"display":true,"left":"\\begin{alignat}","right":"\\end{alignat}"},{"display":true,"left":"\\begin{alignat*}","right":"\\end{alignat*}"},{"display":true,"left":"\\begin{gather}","right":"\\end{gather}"},{"display":true,"left":"\\begin{CD}","right":"\\end{CD}"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","maxResultLength":10,"noResultsFound":"No results found","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>
