@@ -2,7 +2,7 @@
 
 - 普通本科 大三在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
 - 算是一个操作系统爱好者 😗
-- INFJ-A 🤔
+- INTJ-T 🤔
 - 开发环境:
   - Fedora Silverblue && Windows 11 双系统
   - Neovim/Visual Studio Code
@@ -53,11 +53,3 @@ Ports 是 *BSD 使用的一种系统，可以自动下载源代码、解压缩�
 os-cpp 是一个使用 C++20 标准，目标 CPU 架构为 RISC-V 的类 Unix 操作系统
 
 项目链接: https://github.com/suoyuan666/os-cpp
-
-### GitHub Status
-
-<img src="https://github-readme-stats.vercel.app/api?username=suoyuan666&show_icons=true" alt="GitHub Status">
-
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=suoyuan666&hide=html,typescript,css,javascript" alt="GitHub Top Lang">
-
-<img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=suoyuan666" alt="GitHub Commit Status">
