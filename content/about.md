@@ -2,7 +2,7 @@
 
 - 普通本科 大三在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
 - 算是一个操作系统爱好者 😗
-- INFJ 🤔
+- INTJ 🤔
 - 开发环境:
   - Fedora Silverblue && Windows 11 双系统
   - Neovim/Visual Studio Code
@@ -32,6 +32,10 @@
     - [ ] MIT 6.824: Distributed System
         - [6.5840: Distributed Systems](https://pdos.csail.mit.edu/6.824/)
         - [简介 | MIT6.824](https://mit-public-courses-cn-translatio.gitbook.io/mit6-824)
+    - [ ] KAIST CS220: Programming Principles
+        - [KAIST CS220: Programming Principles](https://github.com/kaist-cp/cs220)
+    - [ ] KAIST CS420: Compiler Design
+        - [KAIST CS420: Compiler Design](https://github.com/kaist-cp/cs420)
 - [ ] 把 [xv6-riscv 源码阅读](../series/xv6-riscv_源码阅读/)的坑填上
     - 已经完成了用户态的部分，现在就差内核态了
     - ~~现在正在赶 os-cpp 的进度，应该得等到 os-cpp 写的差不多了再更新了~~
