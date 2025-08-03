@@ -35,8 +35,12 @@ summary: "一些感觉看起来不错的文章"
 
 ## CS
 
-- [内存模型和内存序](https://jia.je/hardware/2024/09/04/memory_model_and_memory_ordering/)
-- [开发一个链接器（1）](https://jia.je/software/2024/02/18/write-a-linker-1/个人数据安全不完全指南)
+- [内存模型和内存序](https://jia.je/hardware/2024/09/04/memory-model-and-memory-ordering/)
+- [glibc 内存分配器实现探究](https://jia.je/software/2025/03/30/glibc-allocator/)
+- [Thread Local Storage (TLS) 实现探究](https://jia.je/software/2025/04/07/tls-internals/)
+- [开发一个链接器（1）](https://jia.je/software/2024/02/18/write-a-linker-1/)
+- [QEMU 概述](https://martins3.github.io/qemu/introduction.html)
+- [阅读 musl 学到的一些东西](https://martins3.github.io/linux/musl.html)
 
 ## Security
 
