@@ -529,7 +529,7 @@
 </span></span><span class="line"><span class="cl">        <span class="nf">ret</span></span></span></code></pre></div></div>
 <p>所以当调用了 <code>ret</code> 就会跳转到 <code>ra</code> 寄存器的地方开始执行，也就是之前写好的 <code>forkret()</code></p>
 <p>这里有点跳跃了，因为 <code>userinit</code> 之后，初始化工作都完成了之后，<code>main()</code> 会调用 <code>scheduler()</code></p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-c">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -581,7 +581,7 @@
 </blockquote>
 <p><code>sret</code> 返回后，第一个程序就开始运行了 (?)</p>
 <p>之后 trap 处理程序就被设定为了 <code>trampoline_uservec</code> 也就是用户态的 trap 处理程序，改代码会保存当前进程的状态，之后就跳转到 <code>usertrap()</code>，该函数会根据 <code>status</code> 寄存器的值判断应该怎么处理，而 syscall 就在这里被处理</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-c">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -603,7 +603,7 @@
 </span></span><span class="line"><span class="cl">  <span class="nf">syscall</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
 <p>到了 <code>syscall()</code> 中，它会遍历一个函数指针数组</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-c">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
