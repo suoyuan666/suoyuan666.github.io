@@ -8,7 +8,7 @@
     <title>SQL Injection</title>
     <link>http://localhost:1313/posts/portswigger_sqlinj/</link>
     <pubDate>Tue, 27 Dec 2022 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/portswigger_sqlinj/</guid>
     <description><![CDATA[<p>PortSwigger Web Academy 中关于 Client-side prototype pollution 的部分</p>
 <h1 id="sql-injection">SQL Injection</h1>
@@ -884,7 +884,7 @@
     <title>JWT attacks</title>
     <link>http://localhost:1313/posts/portswigger_jwt/</link>
     <pubDate>Mon, 26 Dec 2022 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/portswigger_jwt/</guid>
     <description><![CDATA[<p>PortSwigger Web Academy 中关于 JWT 的部分</p>
 <h1 id="jwt-attacks">JWT attacks</h1>
@@ -1070,7 +1070,7 @@
     <title>Client-side prototype pollution</title>
     <link>http://localhost:1313/posts/portswigger_ppul/</link>
     <pubDate>Sun, 25 Dec 2022 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/portswigger_ppul/</guid>
     <description><![CDATA[<p>PortSwigger Web Academy 中关于 Client-side prototype pollution 的部分</p>
 <h1 id="client-side-prototype-pollution">Client-side prototype pollution</h1>

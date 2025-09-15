@@ -8,7 +8,7 @@
     <title>使用 Hyprland</title>
     <link>http://localhost:1313/posts/hyprland_tour/</link>
     <pubDate>Fri, 13 Sep 2024 10:50:42 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/hyprland_tour/</guid>
     <description><![CDATA[<h1 id="使用-hyprland">使用 Hyprland</h1>
 <p>目前也用 Hyprland 几个月了，故而写了这篇面向准备使用 Hyprland 的人群。</p>
@@ -97,7 +97,7 @@
     <title>在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境</title>
     <link>http://localhost:1313/posts/gentoo_musl_llvm/</link>
     <pubDate>Mon, 05 Aug 2024 09:34:33 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/gentoo_musl_llvm/</guid>
     <description><![CDATA[<p>尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统</p>
 <h1 id="在-gentooo-linux-上尝试-musl-libc--llvm-环境">在 Gentooo Linux 上尝试 musl libc + llvm 环境</h1>
@@ -247,7 +247,7 @@
     <title>NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧</title>
     <link>http://localhost:1313/posts/nvidia_with_linux/</link>
     <pubDate>Fri, 19 Jul 2024 01:21:25 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/nvidia_with_linux/</guid>
     <description><![CDATA[<p>如何在 GNU/Linux 发行版使用 Wayland 的情况下中舒服的使用 NVIDIA 驱动</p>
 <h1 id="nvidia-在-gnulinux-发行版上工作的技巧">NVIDIA 在 GNU/Linux 发行版上工作的技巧</h1>
@@ -314,7 +314,7 @@
     <title>为什么你应该(不)使用 GNU/Linux 作为日用操作系统</title>
     <link>http://localhost:1313/posts/whywinorlinux/</link>
     <pubDate>Sat, 13 Apr 2024 11:58:25 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/whywinorlinux/</guid>
     <description><![CDATA[<h1 id="为什么你应该不使用-gnulinux-作为日用操作系统">为什么你应该(不)使用 GNU/Linux 作为日用操作系统</h1>
 <hr>
@@ -407,7 +407,7 @@
     <title>我的 NixOS 安装记录</title>
     <link>http://localhost:1313/posts/nixos_install_rec/</link>
     <pubDate>Sat, 06 Apr 2024 12:59:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/nixos_install_rec/</guid>
     <description><![CDATA[<p>我这次安装 NixOS 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用 WM 用的是 Hyprland</p>
 <h1 id="我的-nixos-安装记录">我的 NixOS 安装记录</h1>
@@ -498,7 +498,7 @@
     <title>我写的 Gentoo Linux 安装指南</title>
     <link>http://localhost:1313/posts/gentooinstall_ng/</link>
     <pubDate>Thu, 28 Mar 2024 20:05:47 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/gentooinstall_ng/</guid>
     <description><![CDATA[<p>我这次安装 Gentoo Linux 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用的 init 是 openrc，WM 用的是 Hyprland</p>
 <h1 id="我写的-gentoo-linux-安装指南">我写的 Gentoo Linux 安装指南</h1>
@@ -590,7 +590,7 @@
     <title>面向 beginner: GNU/Linux 发行版浅评与介绍</title>
     <link>http://localhost:1313/posts/distrointro/</link>
     <pubDate>Fri, 01 Dec 2023 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/distrointro/</guid>
     <description><![CDATA[<h1 id="面向-beginner-gnulinux-发行版浅评与介绍">面向 beginner: GNU/Linux 发行版浅评与介绍</h1>
 <hr>

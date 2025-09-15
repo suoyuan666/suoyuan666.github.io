@@ -8,7 +8,7 @@
     <title>musl libc 阅读记录: malloc</title>
     <link>http://localhost:1313/posts/musl_malloc/</link>
     <pubDate>Mon, 07 Apr 2025 01:42:21 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/musl_malloc/</guid>
     <description><![CDATA[<h1 id="musl-libc-中-malloc-的实现">musl libc 中 malloc 的实现</h1>
 <p>本文说的 musl libc 是 musl libc 1.25，截止到 2025 年 4 月 6 日，该版本依旧是最新版。</p>
@@ -553,7 +553,7 @@
     <title>在 Gentoo Linux 上尝试 musl libc &#43; llvm 环境</title>
     <link>http://localhost:1313/posts/gentoo_musl_llvm/</link>
     <pubDate>Mon, 05 Aug 2024 09:34:33 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/gentoo_musl_llvm/</guid>
     <description><![CDATA[<p>尝试使用选择了 musl/llvm 的 profile 的 Gentoo Linux 作为日常使用的桌面操作系统</p>
 <h1 id="在-gentooo-linux-上尝试-musl-libc--llvm-环境">在 Gentooo Linux 上尝试 musl libc + llvm 环境</h1>
@@ -703,7 +703,7 @@
     <title>musl libc 阅读记录: printf</title>
     <link>http://localhost:1313/posts/musl_libc_printf/</link>
     <pubDate>Sat, 22 Apr 2023 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/musl_libc_printf/</guid>
     <description><![CDATA[<p>不自量力阅读 musl libc的记录</p>
 <h1 id="printf">printf</h1>

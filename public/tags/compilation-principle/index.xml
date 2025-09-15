@@ -8,7 +8,7 @@
     <title>程序员的自我修养：静态链接</title>
     <link>http://localhost:1313/posts/op_power-static-link/</link>
     <pubDate>Sun, 30 Oct 2022 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/op_power-static-link/</guid>
     <description><![CDATA[<p>程序员的自我修养：链接、装载与库这本书的读书笔记</p>
 <h1 id="编译和链接">编译和链接</h1>
@@ -2475,7 +2475,7 @@ Elf64_Shdr被定义在<code>/usr/include/elf.h</code>，</p>
     <title>程序员的自我修养：动态链接</title>
     <link>http://localhost:1313/posts/op_power-dymic-load/</link>
     <pubDate>Wed, 26 Oct 2022 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/op_power-dymic-load/</guid>
     <description><![CDATA[<p>程序员的自我修养：链接、装载与库这本书的读书笔记</p>
 <h1 id="可执行文件的装载与进程">可执行文件的装载与进程</h1>

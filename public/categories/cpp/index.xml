@@ -8,7 +8,7 @@
     <title>译文: C&#43;&#43; 对象的生命周期</title>
     <link>http://localhost:1313/posts/cpp_object_life/</link>
     <pubDate>Thu, 24 Oct 2024 01:49:02 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cpp_object_life/</guid>
     <description><![CDATA[<h1 id="译文-c-对象的生命周期">译文: C++ 对象的生命周期</h1>
 <hr>
@@ -451,7 +451,7 @@
     <title>C&#43;&#43; 项目编写初步入门</title>
     <link>http://localhost:1313/posts/cmake_intro/</link>
     <pubDate>Sun, 12 May 2024 14:23:43 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cmake_intro/</guid>
     <description><![CDATA[<p>我第一次尝试使用 CMake 等工具管理自己的 C++ 项目的记录</p>
 <h1 id="c-项目编写初步入门">C++ 项目编写初步入门</h1>
@@ -893,7 +893,7 @@
     <title>CS106L: Type &amp; RAII</title>
     <link>http://localhost:1313/posts/cs106l_type_raii/</link>
     <pubDate>Mon, 05 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_type_raii/</guid>
     <description><![CDATA[<p>CS106L 中关于 Type 和 RAII 的部分</p>
 <h1 id="type--raii">Type &amp; RAII</h1>
@@ -1086,7 +1086,7 @@ This prohibition also applies to exception handling related features such as <co
     <title>CS106L: Class</title>
     <link>http://localhost:1313/posts/cs106l_class_op/</link>
     <pubDate>Sun, 04 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_class_op/</guid>
     <description><![CDATA[<p>CS106L 中关于类的部分</p>
 <h1 id="class">Class</h1>
@@ -1393,7 +1393,7 @@ This prohibition also applies to exception handling related features such as <co
     <title>CS106L: Templates</title>
     <link>http://localhost:1313/posts/cs106l_template_algorithms/</link>
     <pubDate>Sat, 03 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_template_algorithms/</guid>
     <description><![CDATA[<p>CS106L 中关于 Templates 的部分</p>
 <h1 id="templates">Templates</h1>
@@ -1555,7 +1555,7 @@ This prohibition also applies to exception handling related features such as <co
     <title>CS106L: Containers &amp; Iterators</title>
     <link>http://localhost:1313/posts/cs106l_container_iterator/</link>
     <pubDate>Fri, 02 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_container_iterator/</guid>
     <description><![CDATA[<p>CS106L 中关于 container 和 iterators 的部分</p>
 <h1 id="containers">Containers</h1>
@@ -1666,7 +1666,7 @@ The std::queue class is a container adaptor that gives the functionality of a qu
     <title>CS106L: Streams &amp; Type</title>
     <link>http://localhost:1313/posts/cs106l_stream_type/</link>
     <pubDate>Thu, 01 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_stream_type/</guid>
     <description><![CDATA[<p>CS106L 中关于 Streams 和 type 的部分</p>
 <h1 id="streams">Streams</h1>

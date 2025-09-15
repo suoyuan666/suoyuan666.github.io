@@ -8,7 +8,7 @@
     <title>TCP 的错误检测 &amp; 流量控制 &amp; 状态转换</title>
     <link>http://localhost:1313/posts/cs144_notes_004/</link>
     <pubDate>Mon, 12 Aug 2024 22:28:09 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs144_notes_004/</guid>
     <description><![CDATA[<p>CS114 课程的课程笔记</p>
 <h1 id="tcp-的错误检测--流量控制--状态转换">TCP 的错误检测 &amp; 流量控制 &amp; 状态转换</h1>
@@ -123,7 +123,7 @@
     <title>TCP &amp; UDP &amp; ICMP</title>
     <link>http://localhost:1313/posts/cs144_notes_003/</link>
     <pubDate>Fri, 26 Jul 2024 00:01:22 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs144_notes_003/</guid>
     <description><![CDATA[<p>CS114 课程的课程笔记</p>
 <h2 id="tcp-服务">TCP 服务</h2>
@@ -220,7 +220,7 @@
     <title>字节序 &amp; IPV4 地址 &amp; ARP 协议</title>
     <link>http://localhost:1313/posts/cs144_notes_002/</link>
     <pubDate>Thu, 25 Jul 2024 06:28:24 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs144_notes_002/</guid>
     <description><![CDATA[<p>CS114 课程的课程笔记</p>
 <h1 id="字节序--ipv4-地址--arp-协议">字节序 &amp; IPV4 地址 &amp; ARP 协议</h1>
@@ -321,7 +321,7 @@
     <title>网络应用协议 &amp; 网络分层模型 &amp; 设计原则</title>
     <link>http://localhost:1313/posts/cs144_notes_001/</link>
     <pubDate>Mon, 22 Jul 2024 00:31:31 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs144_notes_001/</guid>
     <description><![CDATA[<p>CS114 课程的课程笔记</p>
 <h1 id="网络应用协议--网络分层模型--设计原则">网络应用协议 &amp; 网络分层模型 &amp; 设计原则</h1>
@@ -474,7 +474,7 @@
     <title>CS106L: Type &amp; RAII</title>
     <link>http://localhost:1313/posts/cs106l_type_raii/</link>
     <pubDate>Mon, 05 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_type_raii/</guid>
     <description><![CDATA[<p>CS106L 中关于 Type 和 RAII 的部分</p>
 <h1 id="type--raii">Type &amp; RAII</h1>
@@ -667,7 +667,7 @@ This prohibition also applies to exception handling related features such as <co
     <title>CS106L: Class</title>
     <link>http://localhost:1313/posts/cs106l_class_op/</link>
     <pubDate>Sun, 04 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_class_op/</guid>
     <description><![CDATA[<p>CS106L 中关于类的部分</p>
 <h1 id="class">Class</h1>
@@ -974,7 +974,7 @@ This prohibition also applies to exception handling related features such as <co
     <title>CS106L: Templates</title>
     <link>http://localhost:1313/posts/cs106l_template_algorithms/</link>
     <pubDate>Sat, 03 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_template_algorithms/</guid>
     <description><![CDATA[<p>CS106L 中关于 Templates 的部分</p>
 <h1 id="templates">Templates</h1>
@@ -1136,7 +1136,7 @@ This prohibition also applies to exception handling related features such as <co
     <title>CS106L: Containers &amp; Iterators</title>
     <link>http://localhost:1313/posts/cs106l_container_iterator/</link>
     <pubDate>Fri, 02 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_container_iterator/</guid>
     <description><![CDATA[<p>CS106L 中关于 container 和 iterators 的部分</p>
 <h1 id="containers">Containers</h1>
@@ -1247,7 +1247,7 @@ The std::queue class is a container adaptor that gives the functionality of a qu
     <title>CS106L: Streams &amp; Type</title>
     <link>http://localhost:1313/posts/cs106l_stream_type/</link>
     <pubDate>Thu, 01 Feb 2024 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cs106l_stream_type/</guid>
     <description><![CDATA[<p>CS106L 中关于 Streams 和 type 的部分</p>
 <h1 id="streams">Streams</h1>
@@ -1607,7 +1607,7 @@ The std::queue class is a container adaptor that gives the functionality of a qu
     <title>Xv6 book: File system</title>
     <link>http://localhost:1313/posts/xv6_book_chapter_8/</link>
     <pubDate>Sat, 22 Apr 2023 03:42:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/xv6_book_chapter_8/</guid>
     <description><![CDATA[<p>Xv6 book 的第八章节</p>
 <h1 id="file-system">File system</h1>

@@ -8,7 +8,7 @@
     <title>我本次安装 Windows 的配置</title>
     <link>http://localhost:1313/posts/windows_note/</link>
     <pubDate>Sun, 01 Dec 2024 04:13:26 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/windows_note/</guid>
     <description><![CDATA[<p>我给我的笔记本再次安装了一遍 Windows，它曾经被写了家庭版的密钥。我希望再次安装的时候可以直接安装专业版（Pro）</p>
 <p>我通过 <a href="https://msdl.gravesoft.dev/#3113" target="_blank" rel="noopener noreffer ">https://msdl.gravesoft.dev/#3113</a> 下载了 Windows 11 24H2 的系统镜像，我看下载链接没什么问题就用了</p>
@@ -163,7 +163,7 @@
     <title>译文: 为什么没有很多人使用 Linux</title>
     <link>http://localhost:1313/posts/why_not_linux/</link>
     <pubDate>Fri, 01 Nov 2024 14:03:45 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/why_not_linux/</guid>
     <description><![CDATA[<h1 id="译文-为什么没有很多人使用-linux">译文: 为什么没有很多人使用 Linux</h1>
 <hr>
@@ -187,7 +187,7 @@
     <title>Verilator 使用</title>
     <link>http://localhost:1313/posts/verilator_intro/</link>
     <pubDate>Fri, 20 Sep 2024 04:54:29 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/verilator_intro/</guid>
     <description><![CDATA[<h1 id="verilator-使用">Verilator 使用</h1>
 <p>因为报名了<a href="https://ysyx.oscc.cc/" target="_blank" rel="noopener noreffer ">一生一芯</a>，所以简单学习了一下 Verilator 的使用。</p>
@@ -230,7 +230,7 @@
     <title>使用 Hyprland</title>
     <link>http://localhost:1313/posts/hyprland_tour/</link>
     <pubDate>Fri, 13 Sep 2024 10:50:42 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/hyprland_tour/</guid>
     <description><![CDATA[<h1 id="使用-hyprland">使用 Hyprland</h1>
 <p>目前也用 Hyprland 几个月了，故而写了这篇面向准备使用 Hyprland 的人群。</p>
@@ -319,7 +319,7 @@
     <title>我的 neovim 配置</title>
     <link>http://localhost:1313/posts/neovim_setup/</link>
     <pubDate>Wed, 31 Jul 2024 22:55:02 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/neovim_setup/</guid>
     <description><![CDATA[<p>尝试配置 neovim，具体就是安装了一些插件，这里没有太详细介绍我的配置，等之后有时间我再补上</p>
 <h1 id="我的-neovim-配置">我的 neovim 配置</h1>
@@ -531,7 +531,7 @@
     <title>NVIDIA 在 GNU/Linux 发行版上和 Wayland 一起工作的技巧</title>
     <link>http://localhost:1313/posts/nvidia_with_linux/</link>
     <pubDate>Fri, 19 Jul 2024 01:21:25 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/nvidia_with_linux/</guid>
     <description><![CDATA[<p>如何在 GNU/Linux 发行版使用 Wayland 的情况下中舒服的使用 NVIDIA 驱动</p>
 <h1 id="nvidia-在-gnulinux-发行版上工作的技巧">NVIDIA 在 GNU/Linux 发行版上工作的技巧</h1>
@@ -598,7 +598,7 @@
     <title>C&#43;&#43; 项目编写初步入门</title>
     <link>http://localhost:1313/posts/cmake_intro/</link>
     <pubDate>Sun, 12 May 2024 14:23:43 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cmake_intro/</guid>
     <description><![CDATA[<p>我第一次尝试使用 CMake 等工具管理自己的 C++ 项目的记录</p>
 <h1 id="c-项目编写初步入门">C++ 项目编写初步入门</h1>
@@ -1040,7 +1040,7 @@
     <title>为什么你应该(不)使用 GNU/Linux 作为日用操作系统</title>
     <link>http://localhost:1313/posts/whywinorlinux/</link>
     <pubDate>Sat, 13 Apr 2024 11:58:25 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/whywinorlinux/</guid>
     <description><![CDATA[<h1 id="为什么你应该不使用-gnulinux-作为日用操作系统">为什么你应该(不)使用 GNU/Linux 作为日用操作系统</h1>
 <hr>
@@ -1133,7 +1133,7 @@
     <title>我的 NixOS 安装记录</title>
     <link>http://localhost:1313/posts/nixos_install_rec/</link>
     <pubDate>Sat, 06 Apr 2024 12:59:51 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/nixos_install_rec/</guid>
     <description><![CDATA[<p>我这次安装 NixOS 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用 WM 用的是 Hyprland</p>
 <h1 id="我的-nixos-安装记录">我的 NixOS 安装记录</h1>
@@ -1224,7 +1224,7 @@
     <title>我写的 Gentoo Linux 安装指南</title>
     <link>http://localhost:1313/posts/gentooinstall_ng/</link>
     <pubDate>Thu, 28 Mar 2024 20:05:47 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/gentooinstall_ng/</guid>
     <description><![CDATA[<p>我这次安装 Gentoo Linux 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用的 init 是 openrc，WM 用的是 Hyprland</p>
 <h1 id="我写的-gentoo-linux-安装指南">我写的 Gentoo Linux 安装指南</h1>

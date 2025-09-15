@@ -10,7 +10,7 @@
     <title>威胁建模: 你到底想做到什么</title>
     <link>http://localhost:1313/posts/threat_modeling/</link>
     <pubDate>Mon, 15 Sep 2025 08:44:40 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/threat_modeling/</guid>
     <description><![CDATA[<h1 id="威胁模型-你到底想做什么">威胁模型: 你到底想做什么</h1>
 <p>事实上在我看来，威胁模型的提出就是为了平衡，因为很多时候大家是身不由己的，很难做到所谓绝对的安全隐私防范。威胁模型就是针对你个人安全和影视最具威胁的清单，我们应该只关注那些最有可能存在你身边的威胁。</p>
@@ -93,7 +93,7 @@
     <title>musl libc 阅读记录: malloc</title>
     <link>http://localhost:1313/posts/musl_malloc/</link>
     <pubDate>Mon, 07 Apr 2025 01:42:21 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/musl_malloc/</guid>
     <description><![CDATA[<h1 id="musl-libc-中-malloc-的实现">musl libc 中 malloc 的实现</h1>
 <p>本文说的 musl libc 是 musl libc 1.25，截止到 2025 年 4 月 6 日，该版本依旧是最新版。</p>
@@ -638,7 +638,7 @@
     <title>字节跳动 基础架构 一面</title>
     <link>http://localhost:1313/posts/bytedance_test_interview_1/</link>
     <pubDate>Sun, 06 Apr 2025 07:29:02 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/bytedance_test_interview_1/</guid>
     <description><![CDATA[<p>首先是自我介绍，然后紧接着是一道很简单的算法题:</p>
 <p>统计字符串中出现的单词的个数和单词的长度</p>
@@ -692,7 +692,7 @@
     <title>腾讯云智 后台开发 一面</title>
     <link>http://localhost:1313/posts/tencent_cloud_interview_1/</link>
     <pubDate>Fri, 28 Mar 2025 11:38:22 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/tencent_cloud_interview_1/</guid>
     <description><![CDATA[<p>首先当然是自我介绍了，然后就是：</p>
 <h2 id="八股">八股</h2>
@@ -726,7 +726,7 @@
     <title>正在读的文章</title>
     <link>http://localhost:1313/posts/reading/</link>
     <pubDate>Fri, 14 Mar 2025 10:27:26 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/reading/</guid>
     <description><![CDATA[<h2 id="c">C</h2>
 <ul>
@@ -780,7 +780,7 @@
     <title>xv6-riscv 源码阅读 —— 内核态: 虚拟化</title>
     <link>http://localhost:1313/posts/xv6_riscv_read_kernel_virtual/</link>
     <pubDate>Fri, 24 Jan 2025 13:55:50 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/xv6_riscv_read_kernel_virtual/</guid>
     <description><![CDATA[<h1 id="虚拟化">虚拟化</h1>
 <blockquote>
@@ -1170,7 +1170,7 @@
 </span></span><span class="line"><span class="cl">        <span class="nf">ret</span></span></span></code></pre></div></div>
 <p>所以当调用了 <code>ret</code> 就会跳转到 <code>ra</code> 寄存器的地方开始执行，也就是之前写好的 <code>forkret()</code></p>
 <p>这里有点跳跃了，因为 <code>userinit</code> 之后，初始化工作都完成了之后，<code>main()</code> 会调用 <code>scheduler()</code></p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-c">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -1222,7 +1222,7 @@
 </blockquote>
 <p><code>sret</code> 返回后，第一个程序就开始运行了 (?)</p>
 <p>之后 trap 处理程序就被设定为了 <code>trampoline_uservec</code> 也就是用户态的 trap 处理程序，改代码会保存当前进程的状态，之后就跳转到 <code>usertrap()</code>，该函数会根据 <code>status</code> 寄存器的值判断应该怎么处理，而 syscall 就在这里被处理</p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-c">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -1244,7 +1244,7 @@
 </span></span><span class="line"><span class="cl">  <span class="nf">syscall</span><span class="p">();</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div>
 <p>到了 <code>syscall()</code> 中，它会遍历一个函数指针数组</p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-c">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -1279,7 +1279,7 @@
     <title>xv6-riscv 源码阅读 —— 内核态: 启动流程</title>
     <link>http://localhost:1313/posts/xv6_riscv_read_kernel_boot/</link>
     <pubDate>Tue, 21 Jan 2025 10:21:12 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/xv6_riscv_read_kernel_boot/</guid>
     <description><![CDATA[<h1 id="启动流程">启动流程</h1>
 <p>从 Makefile</p>
@@ -1294,7 +1294,7 @@
 </span></span><span class="line"><span class="cl">	<span class="k">$(</span>OBJDUMP<span class="k">)</span> -t <span class="nv">$K</span>/kernel <span class="p">|</span> sed <span class="s1">&#39;1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d&#39;</span> &gt; <span class="nv">$K</span>/kernel.sym
 </span></span></code></pre></div></div>
 <p>可以看出这里特地使用了链接脚本 kernel/kernel.ld 用于对 kenrel 进行额外的处理</p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-ld">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -1345,7 +1345,7 @@
 </span></span><span class="line"><span class="cl">}</span></span></code></pre></div></div>
 <p>这里它将入口函数设置为了 <code>_entry</code>，这个函数来自 kernel/entry.S，然后是合并一些段</p>
 <p>entry.S：</p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-asm">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -1368,7 +1368,7 @@
 </span></span><span class="line"><span class="cl"><span class="nl">spin:</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">j</span> <span class="no">spin</span></span></span></code></pre></div></div>
 <p>之后它调用了 kernel/start.c 中的 <code>start()</code></p>
-<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
     <div class="code-header language-c">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -1597,7 +1597,7 @@
     <title>xv6-riscv 源码阅读 —— mkfs</title>
     <link>http://localhost:1313/posts/xv6_riscv_read_mkfs/</link>
     <pubDate>Mon, 20 Jan 2025 05:38:31 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/xv6_riscv_read_mkfs/</guid>
     <description><![CDATA[<h1 id="mkfs">mkfs</h1>
 <p>mkfs 用来生成硬盘镜像文件 fs.img</p>
@@ -1842,7 +1842,7 @@
     <title>xv6-riscv 源码阅读 —— 用户态: libc</title>
     <link>http://localhost:1313/posts/xv6_riscv_read_user-libc/</link>
     <pubDate>Fri, 17 Jan 2025 11:45:06 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/xv6_riscv_read_user-libc/</guid>
     <description><![CDATA[<h1 id="ulibc">ulibc</h1>
 <p>xv6-riscv 实现了一个简单基础的 libc</p>
@@ -2288,7 +2288,7 @@
     <title>Gentoo Linux 安全加固指南</title>
     <link>http://localhost:1313/posts/gentoo_hardened_guide/</link>
     <pubDate>Tue, 07 Jan 2025 10:00:36 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/gentoo_hardened_guide/</guid>
     <description><![CDATA[<h1 id="gentoo-linux-安全加固指南">Gentoo Linux 安全加固指南</h1>
 <blockquote>

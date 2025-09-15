@@ -8,7 +8,7 @@
     <title>C&#43;&#43; 项目编写初步入门</title>
     <link>http://localhost:1313/posts/cmake_intro/</link>
     <pubDate>Sun, 12 May 2024 14:23:43 &#43;0000</pubDate>
-    <author>suo yuan</author>
+    <author>s5n666@outlook.com (suo yuan)</author>
     <guid>http://localhost:1313/posts/cmake_intro/</guid>
     <description><![CDATA[<p>我第一次尝试使用 CMake 等工具管理自己的 C++ 项目的记录</p>
 <h1 id="c-项目编写初步入门">C++ 项目编写初步入门</h1>
