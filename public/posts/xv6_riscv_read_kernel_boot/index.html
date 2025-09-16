@@ -61,7 +61,7 @@
             <a href="/" title="索元的博客">SuoYuan&#39;s Blog</a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/posts/reading"> 索元正在读的文章 </a><a class="menu-item" href="/about"> 关于 </a><a class="menu-item" href="/friends"> 友情链接 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
                         <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
                         <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
                             <i class="fas fa-search fa-fw" aria-hidden="true"></i>
@@ -103,7 +103,7 @@
                     <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
                         Cancel
                     </a>
-                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                </div><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/posts/reading" title="">索元正在读的文章</a><a class="menu-item" href="/about" title="">关于</a><a class="menu-item" href="/friends" title="">友情链接</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
@@ -139,7 +139,7 @@
 </span></span><span class="line"><span class="cl">	<span class="k">$(</span>OBJDUMP<span class="k">)</span> -t <span class="nv">$K</span>/kernel <span class="p">|</span> sed <span class="s1">&#39;1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d&#39;</span> &gt; <span class="nv">$K</span>/kernel.sym
 </span></span></code></pre></div></div>
 <p>可以看出这里特地使用了链接脚本 kernel/kernel.ld 用于对 kenrel 进行额外的处理</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-ld">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -190,7 +190,7 @@
 </span></span><span class="line"><span class="cl">}</span></span></code></pre></div></div>
 <p>这里它将入口函数设置为了 <code>_entry</code>，这个函数来自 kernel/entry.S，然后是合并一些段</p>
 <p>entry.S：</p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-asm">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
@@ -213,7 +213,7 @@
 </span></span><span class="line"><span class="cl"><span class="nl">spin:</span>
 </span></span><span class="line"><span class="cl">        <span class="nf">j</span> <span class="no">spin</span></span></span></code></pre></div></div>
 <p>之后它调用了 kernel/start.c 中的 <code>start()</code></p>
-<div class="code-block code-line-numbers" style="counter-reset: code-block 0">
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
     <div class="code-header language-c">
         <span class="code-title"><i class="arrow fas fa-angle-right fa-fw" aria-hidden="true"></i></span>
         <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>

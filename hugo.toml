@@ -38,6 +38,12 @@ enableEmoji = true
     identifier = "about"
     name = "关于"
     url = "/about"
+  [[menu.main]]
+    weight = 7
+    identifier = "friends"
+    name = "友情链接"
+    url = "/friends"
+
 
 
 [params]
