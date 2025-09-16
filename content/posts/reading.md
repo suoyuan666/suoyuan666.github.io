@@ -1,9 +1,8 @@
 ---
 title: 正在读的文章
 author: suo yuan
-date: 2025-09-16T07:52:23Z
 featured: true
-draft: true
+draft: false
 description: "一些感觉看起来不错的文章"
 summary: "一些感觉看起来不错的文章"
 ---
