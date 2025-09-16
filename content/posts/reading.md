@@ -1,7 +1,7 @@
 ---
 title: 正在读的文章
 author: suo yuan
-date: 2025-03-14T10:27:26Z
+date: 2025-09-16T07:52:23Z
 featured: true
 draft: false
 description: "一些感觉看起来不错的文章"
@@ -15,6 +15,7 @@ summary: "一些感觉看起来不错的文章"
 
 ## C++
 
+- [C++自救指南](https://www.blogchn.com/pages/3001d9/#c-%E8%87%AA%E6%95%91%E6%8C%87%E5%8D%97-%E6%80%BB%E8%A7%88)
 - [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
 - [The History of constexpr in C++! (Part One)](https://ykiko.me/zh-cn/articles/682031684/)
 - [彻底理解 C++ ABI](https://ykiko.me/zh-cn/articles/692886292/)
@@ -53,3 +54,7 @@ summary: "一些感觉看起来不错的文章"
 - [浅谈Linux的Nvidia闭源驱动问题，以及nvidia-open、Nouveau、NVK驱动的选择](https://ivonblog.com/posts/linux-nvidia-driver-issues/)
 - [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
 - [Gentoo PCI KVM设备直通](https://blog.plz.ac/posts/gentoo-kvm-pci-passthrough/)
+
+## Privacy
+
+- [一场有关数字世界自决权的战争](https://0x7f.cc/digital-autonomy-war/)
