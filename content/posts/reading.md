@@ -30,6 +30,7 @@ summary: "一些感觉看起来不错的文章"
 
 ## Debug
 
+- [I do not use a debugger](https://lemire.me/blog/2016/06/21/i-do-not-use-a-debugger/)
 - [Debugger 的理念，原理和使用](https://martins3.github.io/linux/gdb.html)
 - [Skipping boring functions in debuggers](https://maskray.me/blog/2024-12-30-skipping-boring-functions-in-debuggers)
 
@@ -48,7 +49,7 @@ summary: "一些感觉看起来不错的文章"
 - [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)
 - [Compiler Options Hardening Guide for C and C++](https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Guide-for-C-and-C++.html)
 
-## Linux 使用
+## Linux distro usage
 
 - [浅谈Linux的Nvidia闭源驱动问题，以及nvidia-open、Nouveau、NVK驱动的选择](https://ivonblog.com/posts/linux-nvidia-driver-issues/)
 - [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
