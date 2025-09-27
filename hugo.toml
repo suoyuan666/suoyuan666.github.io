@@ -43,6 +43,12 @@ enableEmoji = true
     identifier = "friends"
     name = "友情链接"
     url = "/friends"
+  [[menu.main]]
+    weight = 7
+    identifier = "open-source"
+    name = "开源贡献"
+    url = "/open-source"
+
 
 
 
