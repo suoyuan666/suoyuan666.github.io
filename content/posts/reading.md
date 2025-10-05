@@ -48,12 +48,14 @@ summary: "一些感觉看起来不错的文章"
 - [个人数据安全不完全指南](https://thiscute.world/posts/an-incomplete-guide-to-data-security/)
 - [Linux Hardening Guide](https://madaidans-insecurities.github.io/guides/linux-hardening.html)
 - [Compiler Options Hardening Guide for C and C++](https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Guide-for-C-and-C++.html)
+- [GNU/Linux Sandboxing - A Brief Review](https://hardenedlinux.org/blog/2024-08-20-gnu/linux-sandboxing-a-brief-review/)
 
 ## Linux distro usage
 
 - [浅谈Linux的Nvidia闭源驱动问题，以及nvidia-open、Nouveau、NVK驱动的选择](https://ivonblog.com/posts/linux-nvidia-driver-issues/)
 - [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
 - [Gentoo PCI KVM设备直通](https://blog.plz.ac/posts/gentoo-kvm-pci-passthrough/)
+- [Linux 桌面系统组件概览与故障排查指南](https://thiscute.world/posts/linux-desktop-explained/)
 
 ## Privacy
 

@@ -2,7 +2,7 @@
 
 - 普通本科 大四在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
 - 算是一个操作系统爱好者 😗
-- INTJ 🤔
+- INTP-A 🤔
 - 开发环境:
   - Fedora Silverblue && Windows 11 双系统
   - Neovim/Visual Studio Code
