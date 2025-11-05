@@ -2,7 +2,7 @@
 
 - 普通本科 大四在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
 - 算是一个操作系统爱好者 😗
-- INTP-A 🤔
+- INTJ 🤔
 - 开发环境:
   - Fedora Silverblue && Windows 11 双系统
   - Neovim/Visual Studio Code
@@ -45,17 +45,12 @@
 
 ### Project
 
-#### ReleaseButler: 基于 GitHub 类 Ports 构建系统
-
-Ports 是 *BSD 使用的一种系统，可以自动下载源代码、解压缩、打补丁、编译和安装软件。ReleaseButler 基于该理念，能够自动检测 Linux 发行版并构建软件，同时记录安装信息，方便用户快速重现配置环境。
-
-- 设计并实现系统检测功能，确保跨 Linux 发行版的兼容性
-- 开发了软件环境复现功能，显著提升了开发效率
-
-项目链接: https://github.com/suoyuan666/ReleaseButler
-
 #### os-cpp : 使用 C++20 编写的 RISC-V 为后端的操作系统
 
 os-cpp 是一个使用 C++20 标准，目标 CPU 架构为 RISC-V 的类 Unix 操作系统
 
 项目链接: https://github.com/suoyuan666/os-cpp
+
+#### gdbrpc: 一个用于和远程 GDB 交互的 Python RPC 框架
+
+项目链接：https://github.com/suoyuanG/gdbrpc
