@@ -21,7 +21,7 @@ enableEmoji = true
   [[menu.main]]
     weight = 3
     identifier = "categories"
-    name = "分类"
+    name = "系列"
     url = "/categories/"
   [[menu.main]]
     weight = 4
@@ -48,8 +48,6 @@ enableEmoji = true
     identifier = "open-source"
     name = "开源贡献"
     url = "/open-source"
-
-
 
 
 [params]
@@ -97,6 +95,9 @@ enableEmoji = true
     [params.page.code]
       copy = true
       maxShownLines = 50
+      [params.page.code.render]
+        goat = true
+        mermaid = true
     [params.page.math]
       enable = true
 
@@ -116,7 +117,6 @@ enableEmoji = true
     guessSyntax = true
     lineNos = true
     lineNumbersInTable = true
-    # false 是必要的设置 (https://github.com/dillonzq/LoveIt/issues/158)
     noClasses = false
 
 [outputs]
