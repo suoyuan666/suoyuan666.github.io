@@ -87,8 +87,74 @@ seL4 的 root task 有所有资源的 capability，之后的每个进程拥有�
 
 capability 同样也有权限管理，比如对 endpoint 的 capability 就会有读和写。endpoint 是 seL4 中 IPC 的一个抽象，一对发送和接受将会对应一个 endpoint。
 
+#### Capability 与 ACL 的对比
+
+capability 是微内核架构中的重要概念，可以说现在的微内核架构的操作系统内核都在使用基于 capability 设计的安全模型。
+
+说到 capability 安全模型，大家可能不太熟悉，但是另一种安全策略 ACL，大家应该是有所了解了。在计算机网络和文件系统中都有 ACL 的概念。
+
+ACL (Access Control List) 是使用 Linux kernel 时常见的安全模型。在使用 Linux 发行版时，你可以很轻松地发现它的存在，这也就是对文件的权限控制 (rwx)
+
+```bash
+$ getfacl ~/.bashrc 
+getfacl: Removing leading '/' from absolute path names
+# file: home/test/.bashrc
+# owner: test
+# group: test
+user::rw-
+group::r--
+other::r--
+```
+
+这也就是 ~/.bashrc 文件的具体权限了，ACL 允许用户针对文件所属用户、组和其他用户设置权限，具体就是 rwx 这三个权限了，更多的，可以参阅 [Arch wiki 的条目](https://wiki.archlinux.org/title/Access_Control_Lists)
+
+不考虑这些操作系统内核的具体实现的话，ACL 带来的也就是可以设置每个用户对某个文件的访问权限。以 Linux 为代表的类 Unix 宣扬的一切皆文件的思想也可以在这里得到很好的运用，将一些系统资源视为文件后，那么对资源的访问也可以对应到文件权限上来。
+
+根据我在刚刚的讲述，大家可能会认为 ACL 和 capability 其实是一样的，唯一的区别就是，ACL 侧重于把权限落到资源上，即某个资源对谁到底有什么权限，而 capability 侧重于把权限放到具体的使用资源的一方，即它到底拥有对哪些资源的什么权限。
+
+虽然这个区别看起来没什么，甚至有可能会有人认为这也不算什么区别，但实际上，后者在动态管理权限时有明显的优势。
+
+我们可以用下面这张图看出其中的区别：
+
+![micro_kernel_acl_permission_example](./images/micro_kernel_capability/micro_kernel_acl_permission_example.png)
+
+这张图片是 ACL 模型，三个文件都有读写两个权限，并分别分配给不同的用户。
+
+> 实际上，默认情况下的这几个文件不会这么分配权限的，/etc/shadow 是 root 可读写，shadow 组可读，而 /etc/passwd 同样也是 root 用户可读可写，root 组可读，其他组可读。/etc/sudoers 的限制就更低一点。我这里只是想起来这三个文件名才写上去，实际上应该不会这么分配权限，User B 都有 /etc/passwd 的读写权限了，居然连 /etc/shadow 的读权限都没有...
+
+![micro_kernel_acl_permission_example](./images/micro_kernel_capability/micro_kernel_capability_model.png)
+
+这张图片表示了 capability 模型
+
+两个模型的区别在于箭头的指向（当然权限应该也不完全一致，因为我是分两次画的，我懒得对照着看了）
+
+在 ACL 中，权限和资源绑定到了一起，是资源对某些用户有什么权限，但这存在一个问题，那就是实际使用中，是用户运行的线程要操作文件，那此时的鉴权流程是什么呢：首先我们需要能得到文件对应的描述符，其次才能知道权限。哪怕这个用户没有这个权限，但它依旧可以发起对这个文件的操作，只是会被拒绝而已。
+
+```bash
+$ cat /etc/sudoers
+cat: /etc/sudoers: Permission denied
+```
+
+但在 capability 模型中，如果你没有对这个文件的 capability，那么你就没有办法发起对这个文件的访问。
+
+ACL 还有一个问题是，权限的一端是文件，另一端是用户。我不知道你有没有想过为什么会这样，我很喜欢 Android 的一个功能就是：
+
+> The Android platform takes advantage of the Linux user-based protection to identify and isolate app resources. This isolates apps from each other and protects apps and the system from malicious apps. To do this, Android assigns a unique user ID (UID) to each Android app and runs it in its own process. 
+>
+> -- https://source.android.com/docs/security/app-sandbox
+
+当然，这是因为 Android 都做好了这一切。我自己使用 Gentoo Linux 的时候也不会选择这样的隔离方式，我更倾向于使用 bwrap 这样利用 Linux namespaces 的隔离手段。
+
+把用户作为 ACL 模型中使用权限的主体其实是妥协的结果，我们很难承受 ACL 模型下把权限和进程绑定的后果，因为加入或去掉一个使用权限的主体是昂贵的操作。
+
+首先，我们需要标识这个主体，如果是进程的话就可以是 PID，如果是用户就可以是 UID 之类的，当然，权限作用的那一方也需要表示，传统 Unix 都是落到文件上，那就是 inode 或者先简单理解为文件名称吧。如果以进程为单位的话，那么就是创建或销毁一个进程就要更新 ACL 模型，同时我们还要保证全局的 PID 状态和文件的权限状态是稳定的，毕竟现在文件的权限直接和进程绑定。我们需要保证整个操作都是原子的，否则并发状态下 ACL 模型很容易混乱。
+
+由此可见我们难以直接用进程标识，否则 ACL 模型的更新会很频繁，所以最终选择了用户，用户执行的进程会拥有用户的全部权限。
+
+在 capability 模型中不会存在这个问题，因为权限落在了使用权限的主体上，所以创建和移除这个主体相对来说没那么困难。由此可见，capability 更容易做到最小权限。
+
 ### 内存管理
 
 seL4 的内存管理是在用户态做的，root task 启动时拥有所有的未初始化内存的 capability，这里的 memory 叫做 untyped memory，意思就是没有初始化，这块内存也没有实际表示什么类型。
 
-进程创建时，root task 会 "retype" 一块 untyped memory 用来给即将分配的进程使用，同时，"retype" 操作会产生对新对象的 capability。
+进程创建时，root task 会 "retype" 一块 untyped memory 用来给即将分配的进程使用，同时，"retype" 操作会产生对新对象的 capability 给申请者。

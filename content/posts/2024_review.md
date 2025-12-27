@@ -5,6 +5,8 @@ date: 2024-12-31T06:38:19Z
 draft: false
 tags:
   - life
+categories:
+  - 年终总结
 description: "2024 年终总结"
 summary: "2024 年终总结"
 ---
