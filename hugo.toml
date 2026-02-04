@@ -57,7 +57,7 @@ enableEmoji = true
   descript = "计算机科班出身的野路子选手"
   [params.author]
     name = "suo yuan"
-    email = "s5n666@outlook.com"
+    email = "suoyuan666@s5n.xyz"
   [params.header]
     desktopMode = "fixed"
     mobileMode = "auto"
@@ -83,7 +83,7 @@ enableEmoji = true
       disclaimer = ""
   [params.social]
     GitHub = "suoyuan666"
-    Email = "s5n666@outlook.com"
+    Email = "suoyuan666@s5n.xyz"
     RSS = true
   [params.page]
     rssFullText = true
