@@ -26,21 +26,26 @@ LLVM 指的是一整套编译器和相关的工具链的集合，而 LLVM 这个
 $ git clone https://github.com/llvm/llvm-project.git
 $ cd llvm-project
 $ cmake -S llvm -B build -G Ninja \
+        -DCMAKE_INSTALL_PREFIX=~/.bin/ \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
         -DLLVM_ENABLE_PROJECTS="clang" \
         -DLLVM_ENABLE_RUNTIMES=compiler-rt \
+        -DLLVM_INSTALL_UTILS=ON \
         -DLLVM_TARGETS_TO_BUILD="X86;RISCV" \
-        -DBUILD_SHARED_LIBS=ON \
         -DLLVM_USE_LINKER=lld \
         -DLLVM_OPTIMIZED_TABLEGEN=ON \
-        -DLLVM_CCACHE_BUILD=ON
+        -DLLVM_CCACHE_BUILD=ON \
+        -DLLVM_BUILD_LLVM_DYLIB=ON \
+        -DLLVM_LINK_LLVM_DYLIB=ON
 $ cmake --build build
-$ sudo cmake --build build -t install # /usr/local/bin
+$ sudo cmake --build build -t install # $HOME/.bin/
 ```
 
 默认情况下，大多数 GNU/Linux 发行版不会预装 lld 链接器。建议手动安装它，因为它的链接速度比 GNU ld 快很多，对于 LLVM 这种大型项目的编译非常有帮助。或者也可以尝试目前链接速度最快的 [mold](https://github.com/rui314/mold)，不过我个人没有试过。我因为是 Gentoo Linux + LLVM Profile 所以根本不存在没有 lld 的问题，直接就用了。
 
 这里的 RelWithDebInfo 是带有 Debug info 的 Release 版本，不会有 Debug 版本那么大的磁盘空间占用以及性能损耗，我这里使用了 RelWithDebInfo 和动态链接方式，编译后的构建目录占用了 7 GB，之前看到有人说在 Debug 模式下的 LLVM + Clang 编译，即使是单个后端也会占用 200 GB，太恐怖了，我现在只有 240+ GB 的空间，所以我根本没尝试 Debug 模式，虽然这个应该更适合开发者使用。
+
+我为什么特意设置 `CMAKE_INSTALL_PREFIX`，纯粹是因为默认是 /usr/local/bin/ 的话有些麻烦
 
 ## 导出 LLVM IR
 
