@@ -16,7 +16,7 @@ summary: "这是我学习 LLVM 开发的笔记，本篇是第二篇，简单介�
 
 [上一篇](../llvm_ir_intro/)我们简单了解了 LLVM IR，现在我来介绍 LLVM New Pass Manager，这是现在 LLVM 推行的 Pass 注册方式。
 
-LLVM 的优化器部分会利用 New Pass Manager 把 LLVM IR 优化一遍，这里每个优化都叫一个 Pass，比如 [mem2reg](https://llvm.org/docs/Passes.html#mem2reg-promote-memory-to-register) 优化就属于一种 Pass，它将栈上局部变量（`alloca` 指令）提升为 SSA 虚拟寄存器，需要注意的是 mem2reg 只处理栈上的局部变量，不处理堆内存、全局变量或逃逸指针等其他内存访问
+LLVM 的优化器部分会利用 New Pass Manager 把 LLVM IR 优化一遍，这里每个优化都叫一个 Pass，比如 [mem2reg](https://llvm.org/docs/Passes.html#mem2reg-promote-memory-to-register) 优化就属于一种 Pass，它将栈上局部变量（`alloca` 指令）提升为 SSA 虚拟寄存器，需要注意的是 mem2reg 只处理栈上的局部变量，不处理堆内存、全局变量等其他内存访问
 
 Pass 总共分为三种
 
@@ -369,7 +369,8 @@ AnalysisCore::Result AnalysisCore::run(llvm::Function &Func,
 
 这里我会介绍两个 Transform Pass 的例子，一个是把 LLVM IR 中对整数的加法换成一个等效的运算，另一个是插入一个全局变量的定义，在每个 Basic Block 的开头把这个变量加一。
 
-> 不过第一个还勉强能说是代码混淆，第二个更是什么用也没有，谁 Profile 统计 Basic Block 个数... PGO 插桩也不这么干
+> 不过第一个还勉强能说是代码混淆，第二个更是什么用也没有，谁 Profile 会这么生硬的统计一个程序运行时的 Basic Block 执行次数... PGO 插桩也不这么干，而且还是一个全局变量。
+> 这里简单说一下，因为我对 PGO 插桩逻辑有所了解，PGO 插桩是对一些关键的 "边" 进行插桩，也就是只插入部分 Basic Block，其他 Basic Block 的执行次数都能通过插入的 Basic Block 的执行次数算出来，我有计划在未来单开一篇介绍当前 PGO 优化的现状，不过那是未来了。PGO 也不是只插入一个全局的整型变量用来计数，这样根本区分不了。
 
 我这里就不叙述先前的注册部分了，直接看 Pass 的定义
 
@@ -422,7 +423,7 @@ struct MyTransfrom : llvm::PassInfoMixin<MyTransfrom> {
 };
 ```
 
-下面这段代码，我就是遍历每个指令，并尝试转换成二元运算符，`llvm::dyn_cast<>` 会在转换失败时返回 `nullptr`，之后就是判断是否是加法，且操作的是整数就收集起来，这是因为不能在遍历的时候修改当前正在迭代的指令（会导致迭代器失效）
+下面这段代码，我就是遍历每个指令，并尝试转换成二元运算符，`llvm::dyn_cast<>` 会在转换失败时返回 `nullptr`，之后就是判断是否是加法，且操作的是整数就收集起来，这是因为不能在遍历的时候修改当前正在迭代的指令（否则这个迭代器会失效）
 
 
 ```cpp
@@ -463,7 +464,7 @@ for (auto BinaryOp : OpVec) {
 }
 ```
 
-这里就是具体的逻辑，把 `a + b` 改成 `(a ^ b) + 2 * (a & b)`，接下来的基本都能从函数名称看出来什么意思，我就不过多叙述了，唯一值得一提的是这个函数的返回值
+这里具体的逻辑，就是把 `a + b` 改成 `(a ^ b) + 2 * (a & b)`，具体的基本都能从函数名称看出来什么意思，我就不过多叙述了，唯一值得一提的是这个函数的返回值
 
 ```cpp
 return Changed ? llvm::PreservedAnalyses::none()
@@ -515,4 +516,4 @@ struct MyProfile : llvm::PassInfoMixin<MyProfile> {
 };
 ```
 
-这是一个 Module 层级的 Pass，因为这里我会插入一个全局变量的定义，所以这并不是 Function 层级能解决的，当然也可以在 Function Pass 里这么做，只需要调用 `Func.getParent()` 就能得到对应的 Module 了。
+这是一个 Module 层级的 Pass，因为这里我会插入一个全局变量的定义，所以这并不是 Function 层级能解决的，当然也可以在 Function Pass 里这么做，只需要调用 `Func.getParent()` 就能得到对应的 Module 了，拿到 Module 也可以做和我上面这个一样的操作。
