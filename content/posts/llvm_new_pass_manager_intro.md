@@ -14,6 +14,10 @@ summary: "这是我学习 LLVM 开发的笔记，本篇是第二篇，简单介�
 
 # LLVM 初探: 2. LLVM New Pass Manager
 
+> 2026 年 2 月 10 日修改
+>   - 找到了我自己编译的 LLVM 23 不可用的解决办法了
+>   - 修改一些阅读起来有些困难的地方
+
 [上一篇](../llvm_ir_intro/)我们简单了解了 LLVM IR，现在我来介绍 LLVM New Pass Manager，这是现在 LLVM 推行的 Pass 注册方式。
 
 LLVM 的优化器部分会利用 New Pass Manager 把 LLVM IR 优化一遍，这里每个优化都叫一个 Pass，比如 [mem2reg](https://llvm.org/docs/Passes.html#mem2reg-promote-memory-to-register) 优化就属于一种 Pass，它将栈上局部变量（`alloca` 指令）提升为 SSA 虚拟寄存器，需要注意的是 mem2reg 只处理栈上的局部变量，不处理堆内存、全局变量等其他内存访问
@@ -101,7 +105,7 @@ rs: 24
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/PassManager.h>
 #include <llvm/Passes/PassBuilder.h>
-#include <llvm/Passes/PassPlugin.h>
+#include <llvm/Plugins/PassPlugin.h>
 #include <llvm/Support/raw_ostream.h>
 
 struct AnalysisCore : llvm::AnalysisInfoMixin<AnalysisCore> {
@@ -197,12 +201,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 add_definitions(${LLVM_DEFINITIONS})
 include_directories(${LLVM_INCLUDE_DIRS})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+
 if(NOT LLVM_ENABLE_RTTI)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
 endif()
 
 add_library(pass-plugin SHARED analysis.cpp)
 ```
+
+> 需要解释一下，我这里的 CMakeLists.txt 中加入了 `-stdlib=libc++` 是因为我系统用的是 LLVM 的 libc++，我系统的 Clang 的配置里就会让它编译的软件用上 libc++，所以我需要保证我编译的 Clang 的行为也是如此
+>
+> 并且我这个代码应该是 LLVM 22.1 之后才能编译通过，目前 LLVM stable 的版本中，PassPlugin.h 是在 llvm/Passes 下的，对应的 commit URL 是 https://github.com/llvm/llvm-project/commit/f54df0d09e19ec6b205cb0af45c7ecea2fd8aeff
 
 这里的 `MY_LLVM_INSTALL_DIR` 就是 LLVM 的安装位置了，我的位于 /usr/lib/llvm/21/ 下，所以 `cmake -S . -B build` 的时候指定一下就好了。
 
@@ -220,8 +230,6 @@ block counts: 5, phi counts: 3, max_loop_deep: 1
 - `--disable-output` - 不输出优化后的 IR，只执行 Pass（我们的 Pass 只是打印信息，不需要输出 IR）
 
 可以看出这就是我上面那个阶乘程序 IR 的信息，有两个是因为总共就两个函数，第一个 main 函数基本没什么，而第二个有五个 basic block，有三个 phi 函数，这也都能和结果对的上。
-
-> 为什么用系统 LLVM 21 不用上文编译的 LLVM 23，因为 LLVM 23 编译之后没注册上这个 Pass，我简单调试了一下感觉是我编译的时候 opt 和我这个 plugin 的 PassBuiler 注册实例不是同一个导致 opt 那边没拿到，等我解决了这个问题就会更新使用自己编译的 LLVM 23 的例子，不过 LLVM 23 还需要改一下这个 `#include`，PassPlugin.h 被挪到了单独的 llvm/Plugins 目录下
 
 现在我来解释一下代码都做了什么
 
@@ -370,7 +378,10 @@ AnalysisCore::Result AnalysisCore::run(llvm::Function &Func,
 这里我会介绍两个 Transform Pass 的例子，一个是把 LLVM IR 中对整数的加法换成一个等效的运算，另一个是插入一个全局变量的定义，在每个 Basic Block 的开头把这个变量加一。
 
 > 不过第一个还勉强能说是代码混淆，第二个更是什么用也没有，谁 Profile 会这么生硬的统计一个程序运行时的 Basic Block 执行次数... PGO 插桩也不这么干，而且还是一个全局变量。
-> 这里简单说一下，因为我对 PGO 插桩逻辑有所了解，PGO 插桩是对一些关键的 "边" 进行插桩，也就是只插入部分 Basic Block，其他 Basic Block 的执行次数都能通过插入的 Basic Block 的执行次数算出来，我有计划在未来单开一篇介绍当前 PGO 优化的现状，不过那是未来了。PGO 也不是只插入一个全局的整型变量用来计数，这样根本区分不了。
+>
+> 这里简单说一下，因为我对 PGO 插桩逻辑有所了解，PGO 插桩是对一些关键的 "边" 进行插桩，也就是只插入部分 Basic Block，其他 Basic Block 的执行次数都能通过插入的 Basic Block 的执行次数算出来，我有计划在未来单开一篇介绍当前 PGO 优化的现状，不过那是未来了。
+>
+> PGO 也不是只插入一个全局的整型变量用来计数，这样根本区分不了。
 
 我这里就不叙述先前的注册部分了，直接看 Pass 的定义
 
