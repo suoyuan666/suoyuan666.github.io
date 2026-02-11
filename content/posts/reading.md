@@ -12,22 +12,19 @@ summary: "一些感觉看起来不错的文章"
 - [内核学习经验](https://martins3.github.io/kernel/learn-linux-kernel.html)
 - [Linux 的性能分析（Perf）实现探究](https://jia.je/software/2024/12/10/linux-perf-pmu/)
 
-## Debug
-
-- [I do not use a debugger](https://lemire.me/blog/2016/06/21/i-do-not-use-a-debugger/)
-- [Debugger 的理念，原理和使用](https://martins3.github.io/linux/gdb.html)
-- [Skipping boring functions in debuggers](https://maskray.me/blog/2024-12-30-skipping-boring-functions-in-debuggers)
-
 ## CS
 
 - [内存模型和内存序](https://jia.je/hardware/2024/09/04/memory-model-and-memory-ordering/)
 - [glibc 内存分配器实现探究](https://jia.je/software/2025/03/30/glibc-allocator/)
-- [Thread Local Storage (TLS) 实现探究](https://jia.je/software/2025/04/07/tls-internals/)
 - [开发一个链接器（1）](https://jia.je/software/2024/02/18/write-a-linker-1/)
 - [QEMU 概述](https://martins3.github.io/qemu/introduction.html)
 - [阅读 musl 学到的一些东西](https://martins3.github.io/linux/musl.html)
+- [条件分支预测器逆向工程（以 Apple M1 Firestorm 为例）](https://jia.je/hardware/2025/10/28/cbp-reverse-engineer/)
+
 ## Compiler
 
+- [Thread Local Storage (TLS) 实现探究](https://jia.je/software/2025/04/07/tls-internals/)
+- [All about thread-local storage](https://maskray.me/blog/2021-02-14-all-about-thread-local-storage)
 - [议题：编译技术驱动静态分析革新](https://ssa.to/static-analysis-guide/topic-compiler-for-static-analysis)
 
 ## C
@@ -41,10 +38,16 @@ summary: "一些感觉看起来不错的文章"
 - [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
 - [The History of constexpr in C++! (Part One)](https://ykiko.me/zh-cn/articles/682031684/)
 - [彻底理解 C++ ABI](https://ykiko.me/zh-cn/articles/692886292/)
-- [使用 Clang 工具自由的支配 C++ 代码吧](https://ykiko.me/zh-cn/articles/669360731/)
 - [C++ 成员指针完全解析](https://ykiko.me/zh-cn/articles/659510753/)
 - [C++ 禁忌黑魔法：STMP （上）](https://ykiko.me/zh-cn/articles/646752343/)
 - [Coroutine Theory](https://lewissbaker.github.io/2017/09/25/coroutine-theory)
+
+## Linux distro usage
+
+- [浅谈Linux的Nvidia闭源驱动问题，以及nvidia-open、Nouveau、NVK驱动的选择](https://ivonblog.com/posts/linux-nvidia-driver-issues/)
+- [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
+- [Gentoo PCI KVM设备直通](https://blog.plz.ac/posts/gentoo-kvm-pci-passthrough/)
+- [Linux 桌面系统组件概览与故障排查指南](https://thiscute.world/posts/linux-desktop-explained/)
 
 ## Security
 
@@ -53,12 +56,11 @@ summary: "一些感觉看起来不错的文章"
 - [Compiler Options Hardening Guide for C and C++](https://best.openssf.org/Compiler-Hardening-Guides/Compiler-Options-Hardening-Guide-for-C-and-C++.html)
 - [GNU/Linux Sandboxing - A Brief Review](https://hardenedlinux.org/blog/2024-08-20-gnu/linux-sandboxing-a-brief-review/)
 
-## Linux distro usage
+## Debug
 
-- [浅谈Linux的Nvidia闭源驱动问题，以及nvidia-open、Nouveau、NVK驱动的选择](https://ivonblog.com/posts/linux-nvidia-driver-issues/)
-- [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
-- [Gentoo PCI KVM设备直通](https://blog.plz.ac/posts/gentoo-kvm-pci-passthrough/)
-- [Linux 桌面系统组件概览与故障排查指南](https://thiscute.world/posts/linux-desktop-explained/)
+- [Debugger 的理念，原理和使用](https://martins3.github.io/linux/gdb.html)
+- [I do not use a debugger](https://lemire.me/blog/2016/06/21/i-do-not-use-a-debugger/)
+- [Skipping boring functions in debuggers](https://maskray.me/blog/2024-12-30-skipping-boring-functions-in-debuggers)
 
 ## Privacy
 
