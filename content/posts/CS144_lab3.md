@@ -3,8 +3,6 @@ title: "CS144-2024-lab_3: the TCP sender"
 author: suo yuan
 date: 2024-08-12T07:40:42Z
 draft: false
-categories:
-  - 刷课_Lab
 tags:
   - CS144_lab
 description: "CS144 课程 Lab Assignment 中的 Checkpoint 3: the TCP sender"

@@ -1,14 +1,14 @@
 ---
-title: "安装FreeBSD的初步感受"
+title: "安装 FreeBSD 的初步感受"
 author: suo yuan
 date: 2023-10-04T03:42:51Z
 draft: false
 categories:
-  - BSD_杂谈
+  - 杂谈
 tags:
   - BSD
   - intro
-description: "在笔记本上安装FreeBSD的初步感受，因为无法日常使用，所以只是初步感受"
+description: "在笔记本电脑上安装 FreeBSD 的初步感受，因为无法日常使用，所以只是初步感受"
 ---
 
 <!--more-->

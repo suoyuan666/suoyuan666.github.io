@@ -3,8 +3,6 @@ title: "CS144-2024-lab_0: networking warmup"
 author: suo yuan
 date: 2024-07-21T01:21:25
 draft: false
-categories:
-  - 刷课_Lab
 tags:
   - CS144_lab
 description: "CS144 课程 Lab Assignment 中的  Checkpoint 0: networking warmup"

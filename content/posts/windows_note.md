@@ -5,7 +5,7 @@ date: 2024-12-01T04:13:26Z
 lastmod: 2024-12-02T00:09:32Z
 draft: false
 categories:
-  - Windows_杂谈
+  - 杂谈
 tags:
   - windows
   - intro

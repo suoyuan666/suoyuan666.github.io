@@ -3,8 +3,6 @@ title: "TCP & UDP & ICMP"
 author: suo yuan
 date: 2024-07-26T00:01:22Z
 draft: false
-categories:
-  - 刷课笔记
 tags:
   - CS144_notes
 description: "CS114 课程的课程笔记"

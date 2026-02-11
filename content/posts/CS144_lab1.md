@@ -3,8 +3,6 @@ title: "CS144-2024-lab_1: stitching substrings into a byte stream"
 author: suo yuan
 date: 2024-07-24T00:17:57Z
 draft: false
-categories:
-  - 刷课_Lab
 tags:
   - CS144_lab
 description: "CS144 课程 Lab Assignment 中的  Checkpoint 1: stitching substrings into a byte stream"

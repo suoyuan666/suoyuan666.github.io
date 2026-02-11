@@ -3,8 +3,6 @@ title: "字节序 & IPV4 地址 & ARP 协议"
 author: suo yuan
 date: 2024-07-25T06:28:24Z
 draft: false
-categories:
-  - 刷课笔记
 tags:
   - CS144_notes
 description: "CS114 课程的课程笔记"

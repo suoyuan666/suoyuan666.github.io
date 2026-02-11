@@ -3,8 +3,6 @@ title: "Xv6 book: Traps and system calls"
 author: suo yuan
 date: 2023-03-26T03:42:51Z
 draft: false
-categories:
-  - 刷课笔记
 tags:
   - Xv6_RISC-V
 description:

@@ -5,7 +5,6 @@ date: 2024-02-04T03:42:51Z
 draft: false
 categories:
   - Cpp
-  - 刷课笔记
 tags:
   - CS106L notes
   - Cpp notes
