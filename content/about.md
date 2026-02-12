@@ -1,8 +1,8 @@
-## 关于
+## 关于我
 
 - 普通本科 大四在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
-- 算是一个操作系统爱好者与编译器爱好者 😗
-    - 不过目前主要在 OS 上
+- 爱好操作系统内核和编译器 😗
+    - 正在努力学习 LLVM 开发
 - INTJ 🤔
 - 开发环境:
   - Gentoo Linux && Windows 11 双系统
@@ -12,23 +12,6 @@
   - C/C++
   - Python/Shell
   - ~~Java/C#/Rust ?~~
-
-### Task
-
-- [ ] 刷课
-    - [x] MIT 6.1810: Operating System Engineering
-        - [6.1810](https://pdos.csail.mit.edu/6.828/)
-    - [ ] NJU ICS PA: 计算机系统基础课程实验
-        - [南京大学 计算机科学与技术系 计算机系统基础 课程实验 2025](https://nju-projectn.github.io/ics-pa-gitbook/ics2025/)
-    - [x] Stanford CS106L: Standard C++ Programming
-        - [CS106L: Standard C++ Programming](https://web.stanford.edu/class/cs106l/)
-    - [ ] UFMG DCC888: Static Program Analysis
-        - [Static Program Analysis - DCC888](https://homepages.dcc.ufmg.br/~fernando/classes/dcc888/)
-    - [ ] ASU CSE466: Computer Systems Security
-        - [CSE 466 - Fall 2024](https://pwn.college/cse466-f2024/)
-- [ ] 把 [xv6-riscv 源码阅读](../series/xv6-riscv_源码阅读/)的坑填上
-    - 已经完成了用户态的部分，现在就差内核态了
-    - 等我有时间的吧（短期内应该不会了
 
 ### Project
 

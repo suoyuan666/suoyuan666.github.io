@@ -6,6 +6,7 @@ languageCode = "zh-CN"
 hasCJKLanguage = true
 enableRobotsTXT = true
 enableEmoji = true
+defaultContentLanguage = "zh-cn"
 
 [menu]
   [[menu.main]]
@@ -26,20 +27,15 @@ enableEmoji = true
   [[menu.main]]
     weight = 4
     identifier = "page"
-    name = "友情链接"
-    url = "/friend"
-  [[menu.main]]
-    weight = 5
-    identifier = "page"
     name = "索元正在读的文章"
     url = "/posts/reading"
   [[menu.main]]
-    weight = 6
+    weight = 5
     identifier = "about"
     name = "关于"
     url = "/about"
   [[menu.main]]
-    weight = 7
+    weight = 6
     identifier = "friends"
     name = "友情链接"
     url = "/friends"
@@ -49,6 +45,88 @@ enableEmoji = true
     name = "开源贡献"
     url = "/open-source"
 
+[languages]
+  [languages.en]
+    weight = 1
+    title = "SuoYuan's Blog"
+    languageCode = "en"
+    languageName = "English"
+    [[languages.en.menu.main]]
+      weight = 1
+      identifier = "posts"
+      name = "Posts"
+      url = "/posts/"
+    [[languages.en.menu.main]]
+      weight = 2
+      identifier = "tags"
+      name = "Tags"
+      url = "/tags/"
+    [[languages.en.menu.main]]
+      weight = 3
+      identifier = "categories"
+      name = "Series"
+      url = "/categories/"
+    [[languages.en.menu.main]]
+      weight = 4
+      identifier = "page"
+      name = "Articles Worth Reading"
+      url = "/posts/reading"
+    [[languages.en.menu.main]]
+      weight = 5
+      identifier = "about"
+      name = "About Me"
+      url = "/about"
+    [[languages.en.menu.main]]
+      weight = 6
+      identifier = "friends"
+      name = "Blogroll"
+      url = "/friends"
+    [[languages.en.menu.main]]
+      weight = 7
+      identifier = "open-source"
+      name = "Open Source Contributions Log"
+      url = "/open-source"
+  [languages.zh-cn]
+    weight = 2
+    title = "索元的博客"
+    languageCode = "zh-CN"
+    languageName = "简体中文"
+    hasCJKLanguage = true
+    [[languages.zh-cn.menu.main]]
+      weight = 1
+      identifier = "posts"
+      name = "文章"
+      url = "/posts/"
+    [[languages.zh-cn.menu.main]]
+      weight = 2
+      identifier = "tags"
+      name = "标签"
+      url = "/tags/"
+    [[languages.zh-cn.menu.main]]
+      weight = 3
+      identifier = "categories"
+      name = "系列"
+      url = "/categories/"
+    [[languages.zh-cn.menu.main]]
+      weight = 4
+      identifier = "page"
+      name = "索元正在读的文章"
+      url = "/posts/reading"
+    [[languages.zh-cn.menu.main]]
+      weight = 5
+      identifier = "about"
+      name = "关于我"
+      url = "/about"
+    [[languages.zh-cn.menu.main]]
+      weight = 6
+      identifier = "friends"
+      name = "友情链接"
+      url = "/friends"
+    [[languages.zh-cn.menu.main]]
+      weight = 7
+      identifier = "open-source"
+      name = "开源贡献"
+      url = "/open-source"
 
 [params]
   defaultTheme = "auto"
