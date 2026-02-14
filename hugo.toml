@@ -140,8 +140,6 @@ defaultContentLanguage = "zh-cn"
     enable = true
     [params.analytics.google]
       id = "G-DXMWTR2RQH"
-      anonymizeIP = true
-      respectDoNotTrack = true
   [params.header]
     desktopMode = "fixed"
     mobileMode = "auto"
