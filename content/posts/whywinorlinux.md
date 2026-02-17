@@ -2,21 +2,23 @@
 title: 为什么你应该(不)使用 GNU/Linux 作为日用操作系统
 author: suo yuan
 date: 2024-04-13T11:58:25
-lastmod: 2025-05-02T08:57:47Z
+lastmod: 2026-02-16T23:01:15Z
 draft: false
 categories:
   - Linux_杂谈
 tags:
   - Linux
   - intro
-description: "一个简单的评价文章，关于是否应该选择使用 GNU/Linux 作为你的个人日用桌面操作系统"
+description: "一个评价文章"
 ---
 
 # 为什么你应该(不)使用 GNU/Linux 作为日用操作系统
 
 ---
 > - 2025 05 02 更新:
->   - 删除了一些不合适的评价，修改了一些语句不通顺的地方
+>     - 删除了一些不合适的评价，修改了一些语句不通顺的地方
+> - 2026 02 17 更新:
+>     - 新加了我更多的理解，由于加的比较杂我就这么笼统的概括了
 ---
 
 本章关于使用 GNU/Linux 作为个人日用桌面操作系统做了一些评价，主要是从是否应该使用两方面来评价。
@@ -25,17 +27,17 @@ description: "一个简单的评价文章，关于是否应该选择使用 GNU/L
 
 ### 从应用软件的层面来看
 
-直到 2023 年初，腾讯才正式推出 Linux 版本的 QQ，并且开发进度落后于 Windows 和 Mac 端，不过几乎所有发行版都可以使用，不过还会存在一些小 BUG。
+直到 2023 年初，腾讯才正式推出 Linux 版本的 QQ，并且开发进度落后于 Windows 和 Mac 端，不过几乎所有发行版都可以使用，虽然还会存在一些小 BUG
 
 直到 2024 年 3 月，腾讯才正式推出 Linux 版本的微信，大致上的该有的功能基本都有，但是原生只能安装在部分国产操作系统上。如果使用的是其他的 Linux 发行版，可以使用 bwrap 套一层绕过检测。
 
 直到 2024 年 10 月，腾讯才推出可以在其他发行版上使用的微信。
 
-网易云音乐已经不再分发官方的 Linux 版本的软件包了，如果需要使用可以选择安装其他的第三方网易云音乐客户端。
+网易云音乐已经不再分发官方的 Linux 版本的软件包了，如果需要使用可以选择安装其他的第三方网易云音乐客户端。不过现在网易云给 Linux 版标了一个 web 界面: https://music.163.com/st/webplayer，而且现在网易云似乎加强了对第三方客户端上伪装网页端登陆的检测，虽然我还没遇到（可能因为我不怎么常用第三方客户端
 
 Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 onlyoffice。很多 Linux 用户貌似会用 libreoffice？
 
-只有部分游戏是提供了原生的 Linux 版本（其中有一部分大概是因为 Steam Deck，Steam Deck 上的操作系统 Steam OS 是一个 GNU/Linux 发行版）。不过 Valve 公司开发了 Proton 兼容层以运行只支持 Windows 的游戏。
+只有部分游戏是提供了原生的 Linux 版本（原因大概是因为 Steam Deck，Steam Deck 上的操作系统 Steam OS 是一个 GNU/Linux 发行版）。不过 Valve 公司开发了 Proton 兼容层以运行只支持 Windows 的游戏。
 
 很多专业的软件可能处于没有 Linux 版本的状态。我又不是任何领域的专业人士，这个还是需要自己去搜集。如果是计算机相关还是有很多平替的，可以参考网站 [AlternativeTo](https://alternativeto.net/)，这个网站列出了一些软件的替代品可供参考。
 
@@ -43,11 +45,17 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 芯片厂商对于 Linux 的支持总是落后于 Windows 的。
 
-对于硬件视频加速来说，Firefox 的支持还可以，Chromium 只是实验性支持（不过貌似也可以用）。这里 Intel 和 AMD 都会使用 VAAPI，NVIDIA 开发了一套 VDPAU 和 NVDEC。不过貌似 VDPAU 的 driver 好久不开发了，NVIDIA 可以安装 nvidia-vaapi-driver，这样可以将 NVDEC 转成 VAAPI 供 Firefox 使用。虽然 nvidia-vaapi-driver 只支持解码，不支持编码，但视频播放器，录屏软件都支持 NVIDIA 原有的编解码格式，所以也还好。
+对于硬件视频解码来说，Firefox 和 Chromium 都是只支持 VAAPI。这里 Intel 和 AMD 都会使用 VAAPI，NVIDIA 开发了一套 VDPAU 和 NVDEC/NVENC。不过貌似 VDPAU 的 driver 好久不开发了，NVIDIA 可以安装 nvidia-vaapi-driver，这样可以将 NVDEC 转成 VAAPI 供 Firefox 使用。虽然 nvidia-vaapi-driver 只支持解码，不支持编码，但视频播放器，录屏软件都支持 NVIDIA 原有的编解码格式，所以也还好。
+
+NVIDIA 专注于 NVDEC/NVENC 提供编解码的支持，但只有 ffmpeg、mpv 以及 OBS Studio 这些软件支持，浏览器还是只支持 VAAPI
+
+不过 GNOME 的 Web Browser 可能支持 NVDEC 硬件解码，我还没试过，只是猜测，因为我有段时间没用 GNOME 了（
+
+[Mesa 去除了 VDPAU 的支持要求全都使用 VAAPI](https://www.phoronix.com/news/Mesa-Drops-VDPAU)，Mesa 下属的 [NVK](https://docs.mesa3d.org/drivers/nvk.html) 正在借助 Zink 为 NVIDIA 显卡提供开源的 Vulkan 支持，不过我还没有尝试效果。
 
 ### 从安全的角度来看
 
-这个其实不好说，从开源的角度来说，可以审查理论上下限不会太低，但是[xz 的投毒事件](https://en.wikipedia.org/wiki/XZ_Utils_backdoor)也可以看出这个安全性也么那么绝对
+这个其实不好说，从开源的角度来说，可以审查理论上下限不会太低，但是从 [xz 的投毒事件](https://en.wikipedia.org/wiki/XZ_Utils_backdoor)也可以看出这个安全性也么那么绝对
 
 > 今天有人提到 Lasse Collin 对于 xz 项目早就疲惫不堪，Jia Tan 是极少数愿意真正贡献代码的“开发者”，这都是这场悲剧不可或缺的背景条件。
 >
@@ -63,16 +71,14 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 上面这段话转自[知乎的一个回答](https://www.zhihu.com/question/650826484/answer/3451699113)
 
-基础开源软件组件有些是几个人的为爱发电。但基础组件一旦出现了安全问题，影响还是挺大的。
+基础开源软件组件有些是几个人的为爱发电。但基础组件一旦出现了安全问题，影响还是挺大的，供应链攻击防不胜防。
 
 从安全角度来讲，
 
-- 你不应该使用原版的 linux-kernel，而是 [linux-hardened](https://github.com/anthraxx/linux-hardened)
-  - 这样的 kernel 使用了基本内核加固补丁集和更多安全相关的编译时配置选项
-  - 还应该使用 sysctl 更加细粒度的调整一些安全相关的参数
-  - 或者至少应该自己编译内核，删除不必要的 module，选择更安全的内核编译选项。
-- 不应该使用 pulseaudio 这个音频服务，而是使用 pipewire
-  - 这一点还好，现在应该都在使用 pipewire
+- 不应该使用原版的 linux-kernel，而是 [linux-hardened](https://github.com/anthraxx/linux-hardened)
+    - 这样的 kernel 使用了基本内核加固补丁集和更多安全相关的编译时配置选项
+    - 还应该使用 sysctl 更加细粒度的调整一些安全相关的参数
+    - 或者至少应该自己编译内核，删除不必要的 module，选择更安全的内核编译选项。
 - 应该使用 SELinux 或者 AppArmor 这样的软件更细致的管控文件权限
 - flatpak 安装的软件，应该使用 flatseal 用于管理软件的权限
 - 使用 sudo 应该只允许用户执行部分软件而不是直接允许执行全部软件
@@ -80,13 +86,21 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 - grub 这个 bootloader 也应该加密，BIOS 也应该加密
 - 一些文件目录挂载的时候可以禁用读写权限或者执行权限之类的
 - 应该尝试使用 firejail 或者 bwrap 这样的沙盒程序
-  - bwrap 貌似比 firejail 更好一些
+    - bwrap 貌似比 firejail 更好一些
 - 不应该使用 Xorg，应该使用 Wayland
-  - 这一点还好，现在大部分的桌面环境都带有 Wayland 的支持，最新版本的 KDE Plasma 和 GNOME 甚至默认就是 Wayland 会话
+    - 这一点还好，现在大部分的桌面环境都带有 Wayland 的支持
+    - 最新版本的 KDE Plasma 和 GNOME 甚至默认就是 Wayland 会话
+    - GOME 50 甚至要去除 Xorg 的支持
 
-这里还存在一个问题是——是否要选择 _使用源码分发的包管理器_ 的发行版。
+这里还存在一个问题是——是否要选择 **使用源码分发的包管理器** 的发行版，当然也可以认为是对可重构建性的追求。
 
-这种发行版的软件分发的是其源代码，软件的编译工作是跑在用户的机器上这样的好处是可以控制软件的功能的选择，软件的体积减小，攻击面理论上也会少一些。并且由于编译是跑在用户自己的机器上，你可以开很多为了安全考虑的编译选项。甚至编译工具链也可以选择。
+这种发行版的软件分发的是源码的构建脚本，软件的编译工作是跑在用户的机器上这样的好处是可以控制软件的功能的选择，软件的体积减小，攻击面理论上也会少一些。并且由于编译是跑在用户自己的机器上，你可以开很多为了安全考虑的编译选项。甚至编译工具链也可以选择。
+
+不过可重构建性更多的是想要让用户能够相信自己运行的二进制软件和用户得到的源码是对应的。
+
+大部分 Linux 发行版默认提供的安全特性在我看来都不如 Mac OS，Mac OS 的软硬件结合提供了很多安全特性，但 Linux 发行版更多的是在乎自由带来的可掌控性，而不是一些安全特性，虽然现在大多数个人桌面 PC 使用 Linux 发行版的用户应该都会注意一下安全特性方面的事情。
+
+虽然说有些安全特性被 [Richard Stallman](https://en.wikipedia.org/wiki/Richard_Stallman) 在 [Can You Trust Your Computer?](https://www.gnu.org/philosophy/can-you-trust.html) 批评为是 Treacherous computing，不过我个人对自由的追求还没有到那种程度，虽然这确实可以认为是一种退让（
 
 ## 为什么应该使用
 
@@ -94,7 +108,7 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 我认为，终端通过 shell 将系统的细节暴露给用户，使得用户可以做很多事情。尤其 Linux 更大限度的暴露细节。
 
-[Richard Stallman](https://en.wikipedia.org/wiki/Richard_Stallman) 因为认为当时黑客文化式微，发起了 GNU 项目，组织了自由软件基金会并发起了自由软件运动。
+Richard Stallman 因为认为当时黑客文化式微，发起了 GNU 项目，组织了自由软件基金会并发起了自由软件运动。
 
 我认为这一定程度上影响了一批人，导致开发者会用开源软件并回馈开源社区。
 
@@ -112,8 +126,8 @@ Microsoft office 365 没有 Linux 的版本，目前要么用 WPS。要么用 on
 
 目前应该还是更适合编程开发。
 
-应用程序角度来看，目前 GNU/Linux 最友好的桌面环境应该是 KDE Plasma。目前国内软件大部分都可以在 Linux 找到官方分发的软件包，就算没有也有非官方的开源实现。部分软件没有 Linux 的版本，也许会有替代品，但效果可能会差一些。
+应用程序角度来看，目前 GNU/Linux 最新手友好的桌面环境应该是 KDE Plasma。目前国内软件大部分都可以在 Linux 找到官方分发的软件包，就算没有也有非官方的开源实现。部分软件没有 Linux 的版本，也许会有替代品，但效果可能会差一些。
 
 硬件上来看，NVIDIA 显卡的支持目前还是不错，不过还是有些小毛病，其他的芯片我不太了解，应该都还好。
 
-安全性还说，默认的还是不行，用户还是需要一定的自设定。我一直认为，如果真的追求安全性，应该装 QubesOS 这个操作系统。
+安全性还说，默认的还是不行，用户还是需要一定的自设定。我一直认为，如果真的追求安全性，应该装 QubesOS 这个操作系统，其次是 Fedora Silverblue，然后是 NixOS 之类。
