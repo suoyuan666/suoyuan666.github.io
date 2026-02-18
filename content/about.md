@@ -7,6 +7,9 @@
 - 开发环境:
   - Gentoo Linux && Windows 11 双系统
      - 主要是 Gentoo Linux，我计划以后把 Windows 才能运行的应用都跑在我的 Windows 虚拟机里
+     - 正在准备从 Gentoo Linux 换到 Nix OS
+          - 因为我的笔记本电脑性能不好，编译大型软件所需的时间并不短
+          - Gentoo Linux 的官方开发者无法很及时地维护所有官方软件仓库的软件包，有些软件包没有维护者，有些软件包的更新维护也不及时
   - Neovim/Visual Studio Code
 - 编程语言:
   - C/C++
