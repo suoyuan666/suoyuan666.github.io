@@ -15,49 +15,40 @@ description: "介绍了大部分主流的 GNU/Linux 发行版"
 
 ---
 > - 2025 05 02 更新:
->   - 修改了一些语法问题，添加了 Fedora Silverblue 的介绍，删除了一些过时的评价。
+>     - 修改了一些语法问题，添加了 Fedora Silverblue 的介绍，删除了一些过时的评价。
+> - 2026 02 17 更新：
+>     - 以现在的视角修改了一些表述过时的地方
 ---
 
-这里我会介绍常见的几个 GNU/Linux 发行版，这里我会假定你对计算机领域的一些知识有了解。
+本文将介绍几个常见的 GNU/Linux 发行版，并假定读者对计算机领域有一定的了解。
 
-首先，选择 GNU/Linux 发行版这件事，很大程度上等同于选择什么软件包管理器，选择什么样的系统更新策略。
+首先，我们需要知道为什么会有发行版这个概念。
 
-因为软件就在那里不会改变，这与发行版无关，发行版之间的不同的原因可以认为是使用的软件包管理器导致的。软件包管理器大概可分成两种类型：直接装二进制软件包和从拉取源代码开始编译。系统的更新策略一般分成随版本的更新，比如 Ubuntu 的 LTS ( Long-term support ) 是推送五年的安全更新，之后就要换更新的 LTS 版本了；以及滚动更新，这样会一直向前更新，也就不会有版本的概念。
+因为 Linux 指的都是 Linux kernel 本身，但我们日常使用肯定不是 Linux kernel 一个操作系统内核就完事了。一个操作系统内核会负责软件和硬件的交互以及正在运行的程序的管理，但不会提供桌面环境，不会提供一个名叫 "设置" 的应用让你设置屏幕亮度，不会提供 "应用商店" 让你安装应用。
 
-这里我再解释一下为什么我特地加上 GNU/Linux，这就表明了一些 de-GNU 的 Linux 发行版不会在这里（在我看来，de-GNU 这个词的意思指的是在系统中去掉 GNU 的软件），而且我也没用过这样的发行版。说实话，我很少看到 de-GNU 这样的字眼，GNU 对开源世界的贡献十分大，我很少会看到有人会批驳它什么，我更多的看到的是 de-Google，指在移动端避免 GMS 等服务。
+因为 Linux kernel 只是一个 OS kernel，所以我们需要更多的软件才能够正常使用，比如我们需要一个让用户能够管理无线网络的程序、需要一个浏览器、需要文本编辑器、需要一个桌面环境显示出图形化的程序...
+
+而这些发行版就是做这个的，把不同的软件组合到一起发行，让用户有一个开箱即用的体验。
+
+这里也可以解释为什么说 GNU/Linux 发行版，这代表这类发行版都使用了 Linux kernel 和 GNU 的软件。
 
 > There really is a Linux, and these people are using it, but it is just a part of the system they use. Linux is the kernel: the program in the system that allocates the machine's resources to the other programs that you run. The kernel is an essential part of an operating system, but useless by itself; it can only function in the context of a complete operating system. Linux is normally used in combination with the GNU operating system: the whole system is basically GNU with Linux added, or GNU/Linux. All the so-called “Linux” distributions are really distributions of GNU/Linux.
 >
 > -- https://www.gnu.org/gnu/linux-and-gnu.html
 
-从这里看到，GNU 认为应该将以 GNU 为基础的 “Linux 发行版” 都叫成 GNU/Linux，因为 Linux 指代的应该是 Linux kernel，而非一整套系统。GNU 工具链确实是基本上所有 Linux 发行版的必备了，不过依旧存在一些一定程度上要 de-gnu 的 Linux 发行版。当然，我们应该尊重一下发行版官方给出的名字，比如 Debian 而不是 Debian Linux。
+从这里看到，GNU 认为应该将以 GNU 为基础的 “Linux 发行版” 都叫成 GNU/Linux，因为 Linux 指代的应该是 Linux kernel，而非一整套系统。GNU 工具链几乎是所有 Linux 发行版的必备组件，不过依旧存在一些一定程度上要 de-gnu 的 Linux 发行版。当然，我们应该尊重发行版官方给出的名称，例如 Debian 而非 Debian Linux。
 
-这里我先说一下 GNU 为什么这么重要，**以下的部分内容是我的个人看法** 。我认为很大的原因是 GNU 的软件都很不错，而且出现的也足够早，这就是原因。在 Linux kernel 还没发布的时候，GNU 项目早就开始写了，它们的目的是要写一个完全自由的操作系统。它们先开始写一些操作系统必备的程序，比如文本编辑器，编译器等等，但当最后写操作系统内核的时候，由于想要实现一个微内核 GNU Hurd，但是微内核调试更为困难，这极大的拖慢了开发进度。这个时候 Linux kernel 就已经发布出来，并且可以运行 GNU 的各种程序。
+其次，选择 GNU/Linux 发行版这件事，很大程度上等同于选择什么软件包管理器，选择什么样的系统更新策略。
 
-GNU 这部分十分重要，而且一定程度上没太多替代品。Linux 发行版运行必备的 [libc](https://en.wikipedia.org/wiki/C_standard_library) 基本上都在用 GNU 开发的 glibc，编译器用的是 `gcc`，一些核心程序用的是 [GNU core utilities](https://www.gnu.org/software/coreutils/)，这些都是很难避免的，你也许可以避免 glibc —— 选择使用 [musl libc](https://www.musl-libc.org/) 或者其他 libc；可以不用 gcc，选择使用 clang/llvm；不使用 GNU core utilities 而使用 [BusyBox](https://www.busybox.net/)。但很少有这么做的，一方面是 glibc 现在很全面，并且还有一些不属于 ISO C 标准的部分。
+因为软件就在那里不会改变，这与发行版无关，发行版之间的不同的原因可以认为是使用的软件包管理器导致的。软件包管理器大概可分成两种类型：直接装二进制软件包和从拉取源代码开始编译。系统的更新策略一般分成随版本的更新，比如 Ubuntu 的 LTS ( Long-term support ) 是推送五年的安全更新，之后就要换更新的 LTS 版本了；以及滚动更新，这样会一直向前更新，也就不会有版本的概念。
 
-> The GNU C Library - The project provides the core libraries for the GNU system and GNU/Linux systems, as well as many other systems that use Linux as the kernel. These libraries provide critical APIs including ISO C11, POSIX.1-2008, BSD, OS-specific APIs and more. These APIs include such foundational facilities as open, read, write, malloc, printf, getaddrinfo, dlopen, pthread_create, crypt, login, exit and more.
->
-> -- https://www.gnu.org/software/libc/
+这里我再先说一下 GNU 为什么这么重要，**以下的部分内容是我的个人看法** 。我认为很大的原因是 GNU 的软件都很不错，而且出现的也足够早，这就是原因。在 Linux kernel 还没发布的时候，GNU 项目早就开始写了，它们的目的是要写一个完全自由的操作系统。它们先开始写一些操作系统必备的程序，比如文本编辑器，编译器等等，但当最后写操作系统内核的时候，由于想要实现一个微内核 GNU Hurd，但是微内核调试更为困难，这极大的拖慢了开发进度。这个时候 Linux kernel 就已经发布出来，并且可以运行 GNU 的各种程序。
 
-从 [glibc 的文档](https://sourceware.org/glibc/manual/latest/html_node/Standards-and-Portability.html) 可以看出 glibc 除了对 ISO C 标准的支持外，还包括：
-
-- POSIX (The Portable Operating System Interface)
-- Berkeley Unix
-- SVID (The System V Interface Description)
-- XPG (The X/Open Portability Guide)
-
-这导致一些软件可能用到一些非标准的符号，从而导致使用 musl libc 的时候无法正常运行它们。
-
-gcc 本身也支持一些额外功能，比如嵌套函数，glibc 使用了 gcc 这个特性导致其无法使用 clang/llvm 编译。
+gcc 本身也支持一些额外功能，比如嵌套函数，glibc 使用了 gcc 这个特性导致其无法使用 clang/llvm 编译，不过最新版的 glibc 似乎实验性支持了使用 clang 编译？我没细看
 
 根据 [Comparison of C/POSIX standard library implementations for Linux](https://www.etalabs.net/compare_libcs.html)，musl libc 的字符串和内存分配相关的函数性能不如 glibc。
 
 [Alpine Linux](https://alpinelinux.org/) 就是使用的 musl libc 替换了 glibc，用 busybox 替换了 gnu-coreutils，不过软件支持的还不是很多。
-
-理论上，闭源依赖 glibc 的软件才有概率更难运行在 musl libc 的环境上，不过 chromium 内核的也会如此，目前 chromium 官方对 musl libc 没什么支持。systemd 也依赖于 glibc，nvidia 官方的闭源驱动同样需要 glibc 的环境。
-
-systemd 是一个广泛应用于各种 GNU/Linux 发行版的 init 系统，init 系统用于负责在系统初始化的时候进行一些初始化服务，不过 systemd 做的更多，引导启动这部分也可以交给 systemd-boot，还有其他的一些非传统 init 应该管理的部分也被 systemd 集成管理。有批评的声音认为 systemd 这个做法扩大了攻击面，不过事实是很多人都选择使用它。
 
 我不会介绍这种 de-GNU 的 Linux 发行版。
 
@@ -65,13 +56,13 @@ systemd 是一个广泛应用于各种 GNU/Linux 发行版的 init 系统，init
 
 如果你并不是虚拟机安装 Linux 发行版的话，我认为应该还是要思考该类系统是否符合你的需求再说，当然如果你并不在意就当我没说。
 
-浏览器对硬件解码的支持不是很完美。关于视频硬解加速，NVIDIA 有自己的一套 NVDEC/VDPAU，其他显卡用另一套 VAAPI （[nvidia-vaapi-driver](https://github.com/elFarto/nvidia-vaapi-driver) 可以让 NVIDIA 的 NVDEC 以 VAAPI 解码，但只支持解码，编码尚不支持）。FireFox 还支持了 VAAPI，但不支持 NVDEC，Chromium 内核的浏览器也是只支持 VAAPI。
+浏览器对硬件解码的支持不是很完美。视频硬解加速方面，NVIDIA 采用自家的 NVDEC 方案，而其他显卡通常使用 VAAPI。[nvidia-vaapi-driver](https://github.com/elFarto/nvidia-vaapi-driver) 可将 NVIDIA 的 NVDEC 映射为 VAAPI 解码。FireFox 支持 VAAPI 但不支持 NVDEC，Chromium 内核的浏览器同样只支持 VAAPI。
 
 我不好评价 GNU/Linux 玩游戏会是怎样的体验。Valve 公司基于 wine 开发了 [Proton](<https://en.wikipedia.org/wiki/Proton_(software)>)，只要在 Steam Play 中勾选为所有应用启用 Steam Play 就可以玩那些只支持 Windows 平台的游戏了，Steam Deck 上搭载的系统 Steam OS 是基于 Arch Linux 做的，所以使用 GNU/Linux 玩游戏方面也不至于那么难绷。
 
 非官方的网站 [protondb](https://www.protondb.com/)，这上面可以搜索到一些游戏的评价，有玩家会在上面分享这个游戏在他使用的发行版运行起来的体验如何，并且还有给出他运行这个游戏的发行版的相关信息，如果是不太好运行的游戏，也许还会分享他们是如何让这个游戏跑起来的。
 
-国内软件的适配还不是很好，腾讯会议虽然支持了 Wayland，但是 Wayland 下的运行，窗口分享和摄像头都不能正常工作。QQ 虽然存在 Linux 平台的版本，但仍然有一些小问题等待修复。
+国内软件的适配尚不完善。腾讯会议虽已支持 Wayland，但在 Wayland 下运行时，窗口分享和摄像头功能可能无法正常工作。QQ 虽有 Linux 版本，但仍存在一些小问题待修复。
 
 更多的可以参考我新写的一篇文章：[为什么你应该(不)使用 GNU/Linux 作为日用操作系统](../whywinorlinux/)
 
@@ -79,27 +70,23 @@ systemd 是一个广泛应用于各种 GNU/Linux 发行版的 init 系统，init
 
 ## OS
 
-下面关于发行版的截图大部分来自 Wikipedia 的图片，有一部分来自其在社交媒体上的官方账号发送的图片，当然也有几张是我自己截的。因为我自己懒得再装一遍，所以有的图片用的别人的，如果有机会装他们的发行版我就替换一下。
-
-> **所以如果你是某张图片的利益相关人员，认为我使用这张和你利益相关的图片是种侵权行为，请通过一些我可以看到的方式联系我**
-
 ### Debian 相关
 
-首先介绍 Debian，因为如果有国内软件是被官方支持开发 Linux 版本的，那么至少会给一个 deb 包（deb 就是 Debian 系使用的软件包格式）。Debian 系使用 dpkg 作为软件包管理器。
+首先介绍 Debian，因为如果有国内软件是被官方支持开发 Linux 版本的，那么至少会给一个 deb 包（也就是用 .deb 作为后缀，deb 就是 Debian 系使用的软件包格式）。Debian 系使用 dpkg 作为软件包管理器。
 
 #### Debian
 
 官网链接：https://www.debian.org/
 
-历史悠久的 GNU/Linux 发行版，在我认知中比 Debian 历史更加久远的应该就是 Slackware。Debian 被认为是稳定的操作系统，这个稳定就带来了使用的不是新版本的软件的特点，毕竟时间方面，新版本没有经历过考验。不过如果给 Debian 添加一个 testing 软件源就可以尝鲜新版本了。
+历史相对来说极其悠久的 GNU/Linux 发行版，在我认知中比 Debian 历史更加久远的应该就是 Slackware
+
+Debian 被认为是稳定的操作系统，这个稳定就带来了使用的不是新版本的软件的特点，毕竟时间方面，新版本没有经历过考验。不过如果给 Debian 添加一个 testing 软件源就可以尝鲜新版本了。
 
 Debian 默认不安装类似 sudo 这样的执行特权命令的程序，所以需要你自己安装，然后自己写相应的配置文件。（sudo 这样的软件是很有必要的，老生常谈的就是尽量减少攻击面之类的，直接 su 切换到 root 用户去执行*和系统相关的命令*是很危险的行为）
 
-Debian Linux 是随版本更新，不过影响中 testing 软件源可以让它作为滚动更新而存在。
+Debian 采用版本发布周期，不过印象中 testing 分支可以让它变成滚动更新。
 
-![Debian_12_Bookworm_GNOME_Desktop](/img/introdistro/Debian_12_Bookworm_GNOME_Desktop_English.png)
-
-图为 Debian 12 下的 GNOME 桌面。
+> 个人认为，Debian 的特点在于稳定，但缺乏让我感到眼前一亮的 feature，除了稳定本身
 
 #### Ubuntu
 
@@ -107,17 +94,15 @@ Debian Linux 是随版本更新，不过影响中 testing 软件源可以让它�
 
 基于 Debian 的操作系统。
 
-Ubuntu 是我安装系统时体验最差的操作系统了（印象中，我好久不再安装 Ubuntu），启动速度慢，安装的速度也不快（这个可能是我自己网络的问题），而且默认安装的就是 GNOME 桌面环境，不允许安装的时候做出选择，桌面环境 (DE，Desktop Environment) 这个后续再谈。当然有使用不同 DE 的 Ubuntu，但得下载对应系统的镜像文件了，比如使用 KDE Plasma 的叫做 KUbuntu。这个 KUbuntu 大抵是比较适合作为一些新手（我指的是从 Windows 换到 GNU/Linux）的，因为 KDE 和 Windows 桌面的使用习惯在我看来是差不多的（甚至 KDE 有一个主题就是旨在模仿 Win11）。
+Ubuntu 默认安装 GNOME 桌面环境，安装过程中不提供桌面环境选择。桌面环境（DE，Desktop Environment）后续再谈。
 
-再解释一下为什么认为 KUbuntu 大抵是比较适合作为一些新手，因为 Debian/Ubuntu 有着大量的用户群体，这里在我国貌似也不例外（可能是这样，我并不知道全国使用 GNU/Linux 发行版的这个具体情况，所以只能说可能是如此）。很多软件如若要有一个针对 GNU/Linux 平台的版本，那么很大概率就是 Debian/Ubuntu 了，而且一些教程如若提到了在 GNU/Linux 平台下该如何操作的话，大多至少都会假定读者使用的是 Debian/Ubuntu 发行版。
+当然有使用不同 DE 的 Ubuntu，但得下载对应系统的镜像文件了，比如使用 KDE Plasma 的叫做 KUbuntu。这个 KUbuntu 大抵是比较适合作为一些新手（我指的是从 Windows 换到 GNU/Linux）的，因为 KDE 和 Windows 桌面的使用习惯在我看来是差不多的（甚至 KDE 有一个主题就是旨在模仿 Win11）。
 
-![Ubuntu_22.04_LTS_Jammy_Jellyfish](/img/introdistro/Ubuntu_22.04_LTS_Jammy_Jellyfish.png)
-
-图为 Ubuntu 22.04 LTS 版本的桌面图片，可以看到这里的 Gnome 和上面 Debian 的不太一样，Ubuntu 的 GNOME 做了他们自己的修改。
+再解释一下为什么认为 KUbuntu 大抵是比较适合作为一些新手，因为 Debian/Ubuntu 有着大量的用户群体，这里在我国貌似也不例外（可能是这样，我并不知道全国使用 GNU/Linux 发行版的这个具体情况，所以只能说可能是如此）。很多软件如若要有一个针对 GNU/Linux 平台的版本，那么很大概率就是 Debian/Ubuntu 了，而且一些教程如若提到了在 GNU/Linux 平台下该如何操作的话，大多至少都会考虑到读者可能使用的是 Debian/Ubuntu 发行版。
 
 Ubuntu 随版本更新。
 
-但我说实话，我一直不认为安装 Ubuntu 作为自己的日用操作系统是个什么好主意，因为和 Ubuntu 相比，明显 Debian 要更好一些。如果是虚拟机安装就当我没说，虚拟机安装主要为了方便，能快点装完开始干活就好。
+> 个人认为，安装 Ubuntu 作为日用操作系统并非最佳选择，因为 Debian 是更合适的选择。两个发行版都使用了 dpkg，那为什么不用社区支持的 Debian。我唯一认可的场景是快速安装以立即开始工作，否则我认为直接安装 Debian 更好。
 
 #### Kali Linux
 
@@ -125,81 +110,69 @@ Ubuntu 随版本更新。
 
 基于 Debian testing 源的 Kali Linux 安装界面类似 Debian 的系统安装界面。
 
-Kali Linux 是否是一个可日用的操作系统，我无法评价（因为我没试过）。Kali Linux 对 DE 做的美化还是不错的。有一点值得说一下，Kali Linux 不需要更换软件源的网址，大多数 GNU/Linux 发行版因为网络问题都需要更换软件源，除了国内公司搞的（比如 Deepin/UOS 或者 openKylin 之类）或者 Kali Linux、OpenSUSE Linux，Fedora Linux，其他的影响中都需要更换软件源。
+Kali Linux 是否适合作为日常操作系统，我无法评价（我没有长期用过，不过官方文档提到过不推荐日常使用，因为他们做了很多客制化可能导致一些软件无法正常运行）。
 
-机缘巧合之下，我安装了 Kali Linux 虚拟机，故而下边两张 Kali Linux 的桌面截图的第一张就是我截的了。
+> While Kali Linux is architected to be highly customizable, do not expect to be able to add random unrelated packages and repositories that are “out of band” of the regular Kali software sources and have it Just Work. In particular, there is absolutely no support whatsoever for the apt-add-repository command, LaunchPad, or PPAs. Trying to install Steam on your Kali Linux desktop is an experiment that will not end well. Even getting a package as mainstream as NodeJS onto a Kali Linux installation can take a little extra effort and tinkering.
+>
+> https://www.kali.org/docs/introduction/should-i-use-kali-linux/#is-kali-linux-right-for-you
 
-![Kali_Linux_Xfce](/img/introdistro/Kali_Linux_Xfce.png)
 
-![VirtualBox_Kali_Linux_GNOME_44](/img/introdistro/VirtualBox_Kali_Linux_GNOME_44.png)
+Kali Linux 对桌面环境的美化做得不错。值得一提的是，Kali Linux 通常不需要更换软件源，而大多数 GNU/Linux 发行版因网络延迟可能需要更换软件源。不过，国内公司开发的发行版（如 Deepin/UOS、openKylin）以及 Kali Linux、OpenSUSE、Fedora 等，其官方源在国内的访问速度尚可，不一定需要更换。
 
-第一张图片是 Xfce 桌面，第二张是 GNOME 桌面，这里没有太表现出来 Kali Linux 中对各家 DE 的美化。不过能看出来 Terminal 中对 Shell 的美化。
+Kali Linux 采用滚动更新模式。
 
-你可以和 Debian 的那张图片对比一下就可以发现不同之处。Debian 那个使用的是 bash 并且没有看出有什么美化，尤其是 PS1 变量（就是 **debian@debian** 那个东西）就是默认的设置，但是 Kali Linux 默认除了 bash 之外还安装了 zsh 并且将 zsh 作为其默认的 shell。并且它对 zsh 做了一些配置，比如那个 **kali@kali**，zsh 默认并不是这样的，这是 Kali Linux 自己的配置，而且默认还有对历史命令的猜测和对你输入的命令颜色上的美化，这是靠两个 zsh 的插件实现的。
-
-插件 [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
-
-插件 [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
-
-写到这里突然发现我无法真正确定 Kali Linux 上的 zsh 是通过这两个插件得到的这个效果，但是这俩插件很受欢迎，大多数发行版对都是默认不装 zsh 的，所以你装 zsh，网上的美化教程大多都会提到装上这两个插件。
-
-我本身是 bash 作为 shell 环境，也懒得整 zsh，我就贴一个 fish shell 官网的截图，zsh 这两个插件就是旨在还原 fish shell 的效果
-
-![fish_shell](/img/introdistro/fish_autosuggestions.png)
-
-可以看到 ssh 后面是灰色的，这就是对历史命令的读取，只需要一个右键就可以直接根据这条历史命令补全当前输入的命令，并且 cat 和 ssh 之类的都有颜色，这是语法高亮，那两个插件就是还原这个效果。
-
-Kali Linux 我记得是滚动更新。
+> 个人认为 Kali Linux 没有必要安装，因为它主要是安全工具的集合，使用其他发行版搭配所需工具也能达到类似效果。
 
 #### Deepin 23 之前
 
 官网链接：https://www.deepin.org/
 
-Deepin 作为我国国产的操作系统，我自然是要体验一番的（虽然只使用了一天左右吧），V20.x 都是基于 Debian 的，Deepin 操作系统是我比较推荐新手使用的，不过我自己没使用过太久，所以可能这个 OS 没有我想象中那么新手友好。作为一款国产的操作系统，一些没有推出 Linux 版本的国内软件它有自带的解决方案（虽然我没记错的话，应该是用 wine 模拟的，wine 是一个类 Unix 平台中运行 exe 程序的解决方案），Deepin 自带的软件商店可以点击一下就安装了，还是比较方便的。Deepin 默认使用自家的 DE——DDE，这个 DE 我自认为不咋好看。
+Deepin 作为我国国产的操作系统，我自然是要体验一番的（虽然只使用了一天左右吧），Deepin V20.x 都是基于 Debian 做的。Deepin 23 开始，包管理器就不再使用 Debian 的 dpkg 而是开始自己做了，所以标题写的是 Deepin 23 之前。
+
+Deepin 操作系统是我比较推荐新手使用的，不过我自己没使用过太久，所以可能这个 OS 没有我想象中那么新手友好。作为一款国产的操作系统，一些没有推出 Linux 版本的国内软件它有自带的解决方案（虽然我没记错的话，应该是用 wine 模拟的，wine 是一个类 Unix 平台中运行 exe 程序的解决方案），Deepin 自带的软件商店可以点击一下就安装了，还是比较方便的。Deepin 默认使用自家的 DE——DDE，这个 DE 我自认为不咋好看。
 
 > Wine 通过提供一个兼容层来将 Windows 的系统调用转换成与 POSIX 标准的系统调用。它还提供了 Windows 系统运行库的替代品和一些系统组件（像 Internet Explorer，注册表，Windows Installer）的替代品
 
 上面这一小段摘自[维基百科对 wine 的介绍](https://zh.wikipedia.org/wiki/Wine)。
 
-目前使用 Deepin 这类国内公司发行的 GNU/Linux 发行版应该还有一个好处 —— Linux 版本的微信目前只支持这些发行版。
-
-![Deepin_with_20.9](/img/introdistro/DEEPIN_DDE_20_9.jpg)
-
 Deepin 是随版本更新。
-
-Deepin 23 开始，包管理器就不再使用 Debian 的 dpkg 了，所以标题写的是 Deepin 23 之前。
 
 ### Fedora Linux 相关
 
-Fedora Linux 有 Fedora Workstation、Fedora Spins、Fedora coreos 等，这里介绍两位。
+Fedora Linux 有 Fedora Workstation、Fedora Spins、Fedora Coreos 等，这里介绍两位。
 
 #### Fedora Workstation
 
 官网链接：https://fedoraproject.org/workstation/
 
-作为一个商业公司的产品，软件版本比较新。宣传特色就是为开发者设计和注重隐私和安全。
+Fedora 的最大特点是软件版本比较新。宣传特色就是为开发者设计和注重隐私和安全。
 
 确实是为开发者设计，默认安装了 QEMU 和 GNOME BOX 可以用来安装虚拟机，还安装了 podman 用于安装一些容器。
 
-Fedora 默认启用 firewalld 防火墙，使用了 [SELinux](https://fedoraproject.org/wiki/SELinux) 安全模块，安装时可选全盘加密，开箱即用的安全启动支持，软件仓库中的软件编译的时候也都是开启了 NX，PIE，fstack-protector，ALSR 等选项，内核也开启了一些安全选项编译。
+Fedora 默认启用 firewalld 防火墙，使用了 [SELinux](https://fedoraproject.org/wiki/SELinux) 安全模块，安装时可选全盘加密，开箱即用的安全启动支持，软件仓库中的软件编译时也都开启了 NX、PIE、fstack-protector、ASLR 等选项，内核也开启了一些安全选项编译。
 
-不要看我说了上面一小段来介绍它的安全特色，大多数发行版基本和它差不太多。
+不过不要看我说了上面一小段来介绍它的安全特色，大多数发行版基本和它差不太多（除了 SELinux 和 firewalld 之外
 
-Fedora 40 开始，会为每个 WIFI 连接生成一份单独的 MAC 地址保护隐私: https://fedoraproject.org/wiki/Changes/StableSSIDMACAddress
+Fedora 40 开始，会为每个 Wi-Fi 连接生成独立的 MAC 地址以保护隐私：https://fedoraproject.org/wiki/Changes/StableSSIDMACAddress
 
 Fedora 原本提案要使用 systemd 服务编写中的一些安全相关的代码加强系统服务的安全性，但该提案最终并没有通过
 
 [Enable systemd service hardening features for default system services](https://fedoraproject.org/wiki/Changes/SystemdSecurityHardening)
 
-![Fedora_Workstation_39_Desktop](/img/introdistro/Fedora_Workstation_38_Desktop.png)
+Fedora 和 GNOME 配合的很好，接受 GNOME 的更新也是最新的那一批。
 
-Fedora 和 GNOME 配合的很好，接收 GNOME 的更新也是最新的那一批。Fedora Workstation 使用 GNOME 桌面环境，安装时不可选桌面环境。如果想要安装其他桌面环境的 Fedora，要么安装后再使用包管理器更换（不推荐），要么选择其他桌面环境的 Fedora，在官网最下边有其他桌面环境和用途的 Fedora Linux。
-
-这里可以发现和 Debian 差不多，Kali Linux 那张没有体现出其对 GNOME 的主题美化。三家的 GNOME 都差不多，因为版本没有差出那么多，三家发行版其软件仓库中的软件版本可能不同，但仅局限于此。
-
-Fedora 默认会开 lzo 算法的 zram，这点可以的。
+Fedora Workstation 使用 GNOME 桌面环境，安装时不可选桌面环境。如果想要安装其他桌面环境的 Fedora，要么安装后再使用包管理器更换（不推荐），要么选择其他桌面环境的 Fedora，在官网最下边有其他桌面环境和用途的 Fedora Linux。
 
 Fedora Linux 是随版本更新。
+
+> - Fedora 默认会开 lzo 算法的 zram，这点可以的。
+>
+> - Fedora 的软件足够的新，有时候也会引入了一些"先进"的东西
+>     - pipewire 作为现代化的音视频服务框架，是 Fedora 率先引入
+>     - systemd 这个大家都在用的 init 系统，也是 Fedora 先用
+>     - Wayland 显示协议也是 Fedora 率先做出了支持
+>         - RedHat 曾在 GNOME 上发起提案让 GNOME 只保留对 Wayland 的支持，并在那时在 Fedora 上率先不默认提供非 Wayland 的 GNOME
+> - 新技术总是需要试验田的，Fedora 往往就扮演了这个角色
 
 #### Fedora Silverblue
 
@@ -213,25 +186,25 @@ Fedora Silverblue 鼓励使用容器化和系统主机隔离，系统默认安�
 
 但值得注意的是 toolbox 的虚拟化不意味着强隔离，它拥有对用户 home 目录的读写权限，这只是一个用来安装 CLI 工具（如 neovim、gcc）的好办法。
 
-对于图形化软件，可以使用 flatpak 安装。
+对于图形化软件，推荐使用 flatpak 安装。
+
+> 我个人很推荐 Fedora Silverblue，它非常适合个人桌面 PC 的日常使用。
 
 ### Arch Linux 相关
 
-Arch Linux 相关的发行版使用 pacman 作为软件包管理器。Arch Linux 提供了 [AUR](https://aur.archlinux.org/)，这是一个用户软件仓库，提供了 Arch Linux 官方仓库没有的软件，比如 linuxqq，一些国产软件都在 AUR 里可以找到，不过 AUR 不过是一个构建软件的脚本，对应软件得在 AUR 的 PKGBUILD 中写好的网址去拿对应的包。如果是国内软件安装还好说，其他的比如有些从 GitHub 拿的就得配置好网络了。Arch 有个 archlinuxcn 软件仓库，有一些额外的软件可以直接安装，中科大有 archlinuxcn 的软件源。 AUR 应该是 GNU/Linux 平台中软件包数量很多的平台了，能超过它的可能只有 NixOS 的软件仓库。
+Arch Linux 相关的发行版使用 pacman 作为软件包管理器。Arch Linux 提供了 [AUR](https://aur.archlinux.org/)，这是一个用户软件仓库，提供了 Arch Linux 官方仓库没有的软件，例如 linuxqq 等国产软件。但 AUR 本质上是一个构建脚本（PKGBUILD）的集合，软件仍需从脚本中指定的网址下载。国内软件安装尚可，但从 GitHub 等境外源获取软件时需要配置网络。
+
+archlinuxcn 软件仓库提供一些额外软件用于国内用户使用，中科大有对应的镜像源。AUR 是 GNU/Linux 平台中软件包数量极多的仓库之一，可能只有 NixOS 的仓库能超越它。
 
 #### Arch Linux
 
 官网链接：https://archlinux.org/
 
-Arch Linux 我只用了五个月左右就换成 Gentoo Linux 了，时间不长，我也不清楚滚动更新带来的滚挂能不能出现，反正我没遇到过，不过这个问题讨论之前应该定义一下什么是滚挂，之前我有过一回在登陆管理器登进去就黑屏，后来看到了错误日志发现貌似是 nouveau 的问题，我在 kernel 启动参数禁用 nouveau 就好了。这种算不算挂，应该不算吧。不过可以尝试安装 TimeShift 定时做快照给自己一个心理安慰，我当时整来着，就是快照就没有用过。
+Arch Linux 是我推荐在 Deepin 待过一会就尝试的操作系统，虽然这个系统需要使用命令来安装，没有安装界面，所以可能有些困难。不过[Arch Wiki](https://wiki.archlinux.org/title/Main_page)写的还是不错的，可以结合着别人的安装指南来看，wiki 和指南一起看，虚拟机尝试一手，就差不多了。
 
-Arch Linux 是我推荐在 Deepin 待过一会就尝试的操作系统，虽然这个系统需要使用命令来安装，没有安装界面，所以可能有些困难，不过[Arch Wiki](https://wiki.archlinux.org/title/Main_page)写的还是不错的，可以结合着别人的安装指南来看，wiki 和指南一起看，虚拟机尝试一手，就差不多了。这样的命令安装也许能让你对你的操作系统更有一个掌握的感觉。
+这样的命令安装也许能让你对你的操作系统更有一个掌握的感觉。
 
 而且我认为有一个 Arch Linux 的启动盘是有些必要的，因为这样能一定程度上解决一些你需要进入系统才能解决的类似无法进入系统的问题。
-
-![KDE5](/img/introdistro/KDE_5.png)
-
-这里放一个 KDE Plasma 桌面的截图，之后也就不放截图了，因为后续的发行版没有对桌面环境有什么太出彩的美化，这里放截图纯属因为还没放过 KDE Plasma 的截图。
 
 很多软件在 AUR 上都有对应的 BUILD 脚本，这一块的生态是我选择 Arch Linux 的一个很重要的原因
 
@@ -241,25 +214,27 @@ Arch Linux 提供了 [archinstall](https://github.com/archlinux/archinstall) 可
 
 Arch Linux 是滚动更新。
 
+> 我使用 Arch Linux 大约五个月后转向了 Gentoo Linux，时间不长，因此未亲历滚动更新可能导致的“滚挂”。首先需要明确“滚挂”的定义：我曾遇到一次登录管理器进入后黑屏的情况，查看错误日志发现是 nouveau 驱动问题，通过在 kernel 启动参数中禁用 nouveau 解决。此类问题是否算作“滚挂”？我认为不算。用户可安装 TimeShift 定期创建快照作为备份，不过我个人安装后并未实际使用过。
+
 #### Manjaro
 
 官网链接：https://manjaro.org
 
-Manjaro 是基于 Arch Linux 做的 OS，比 Arch 仓库的软件推送慢了两周。Manjaro 的优势或许就在于它有一个安装界面，可以点点点就开始安装了，不需要输入命令。我看到过一个吐槽 Manjaro Linux 的言论，所 Manjaro 降低了使用 Arch Linux 的门槛，反而让一些因此才使用的用户无法应对使用中可能遇到的问题。当然我并不认为这会有大不了的。我曾经在某年冬天就抱着要装 Manjaro 双系统的想法，当然后来我是 Arch Linux 单系统（逃）。
+Manjaro 是基于 Arch Linux 的发行版，其软件仓库的更新比 Arch 晚两周。Manjaro 的优势在于提供图形化安装界面，用户可通过点击完成安装，无需输入命令。我看到过一个吐槽 Manjaro Linux 的言论，说 Manjaro 降低了使用 Arch Linux 的门槛，反而让一些用户难以应对使用中可能遇到的问题。当然我并不认为这有太大问题。我曾经在某年冬天计划安装 Manjaro 双系统，但后来直接安装了 Arch Linux 单系统。
 
-有人说 Manjaro 有一个很好的驱动管理软件，我懒得考证了。
+Manjaro 提供了图形化的驱动管理工具，方便用户安装专有驱动。
 
 Manjaro Linux 是滚动更新。
 
 ### OpenSUSE 相关
 
-说实话，我目前还不知道哪个系统是基于 OpenSUSE 做的。OpenSUSE 使用 zypper 作为软件包管理器。
+OpenSUSE 使用 zypper 作为软件包管理器。
 
 #### OpenSUSE
 
 官网链接：https://www.opensuse.org/
 
-OpenSUSE提供了滚动更新和版本更新两种更新方式，这对应它两个版本。有个类似 AUR 的用户软件仓库 OBS，不过我不是很了解 OBS，也不再多说什么了。OpenSUSE Linux 有别的 OS 都没有的 Yast 客户端，这个 GUI 软件可以完成很多特权操作，类似 Windows 的控制面板。而且 OpenSUSE 的软件源网址貌似可以自动给你选一个近的软件源去下载软件，可以让你使用官方源的时候也保持着还不错的速度。
+OpenSUSE 提供了滚动更新和版本更新两种更新方式，这对应它两个版本。有个类似 AUR 的用户软件仓库 OBS，不过我不是很了解 OBS，也不再多说什么了。OpenSUSE Linux 有别的 OS 都没有的 Yast 客户端，这个 GUI 软件可以完成很多特权操作，类似 Windows 的控制面板。而且 OpenSUSE 的软件源网址貌似可以自动给你选一个近的软件源去下载软件，可以让你使用官方源的时候也保持着还不错的速度。
 
 就像上一段开头说的那样，OpenSUSE 提供了滚动更新和依版本更新两种方式，分别是 OpenSUSE Tumbleweed 和 OpenSUSE Leap。
 
@@ -267,7 +242,9 @@ OpenSUSE 默认启用了 Apparmor，GRUB 启动引导界面有自己的皮肤，
 
 之前在 Fedora 那里提到了 Fedora 没有通过加强 systemd 服务的提案，但 OpenSUSE 的安全特色之一就是这个。
 
-OpenSUSE 还提供了 x86-64-v3 指令集的软件包。x86-64-v3 典型的就是有 SIMD 指令的添加，使用 `x86-64-v3` 编译的软件性能可能会有点提升。目前市面上大家买的 x86-64 CPU，都会支持 x86-64-v3，如果是一些服务器 CPU，可能还支持 x86-64-v4。
+OpenSUSE 还提供了 x86-64-v3 指令集的软件包。相比于普通的 x86-64，x86-64-v3 典型的就是有 SIMD 的增强，使用 x86-64-v3 编译的软件性能可能会有点提升。目前市面上大家买的 x86-64 CPU，都会支持 x86-64-v3，如果是一些服务器 CPU，可能还支持 x86-64-v4
+
+为了兼容性，一些发行版可能使用 x86-64 为目标编译而不是 x86-64-v3
 
 ### Gentoo Linux 相关
 
@@ -281,7 +258,9 @@ Gentoo 使用 portage 软件包管理器，软件大多都是从源码开始安�
 
 这个自由是选择的自由。
 
-Gentoo Linux 是少数可以让你选择非 systemd 作为系统 init 系统的 Linux 发行版，但在这个世界，使用非 systemd 作为自己桌面操作系统的 init 系统就像用 linux-libre 作为自己的系统内核一样难绷，不过非 systemd 的 init（如 openrc ）还算可用，但我很怀疑 linux-libre 的使用情况。
+Gentoo Linux 是少数允许你选择非 systemd 作为 init 系统的发行版，但在当前环境下，使用非 systemd 作为桌面操作系统的 init 系统，就像使用 linux-libre 作为内核一样难以想象。不过，非 systemd 的 init（如 openrc）仍然可用，而 linux-libre 的实际使用情况我比较怀疑。
+
+> 曾经我认为我是用 openrc 的场景就是用 Gentoo Linux 的时候把 musl libc 作为系统的 libc，因为 systemd v259 之前只支持 glibc，不过 systemd 在 v259 之后就实验性的加入了对 musl libc 的支持
 
 我不知道你是否对部分发行版打包的策略有意见，比如某些软件你希望直接上 O3 + lto 编译（虽然这些都是理论上的性能提升，用户难以直接感知到变化），但是为了稳定，少有软件会选择这个编译策略，但是 Gentoo Linux 可以让你的想法成真。
 
@@ -311,7 +290,7 @@ Gentoo Linux 是滚动更新。
 
 ### Nix 相关
 
-Nix 系使用的是 Nix 作为包管理器，这是一个[是一个纯函数式包管理器，旨在使软件包管理可靠且可重现](https://wiki.archlinuxcn.org/wiki/Nix)。特点在于不遵守 FHS 标准，每个软件的每个版本都有一个独特的哈希值标明，并且通过符号链接的方式自由选择某些软件的某个版本作为当前使用版本，所以可以避免所谓依赖地狱这样的问题。Nix 系大抵只有 NixOS 吧，有个和 Nix 包管理器差不多的叫作[GNU Guix](https://en.wikipedia.org/wiki/GNU_Guix)，基于这个包管理器也有一个 OS，就是 Guix OS。
+Nix 系使用 Nix 作为包管理器，这是一种[纯函数式包管理器，旨在使软件包管理可靠且可重现](https://wiki.archlinuxcn.org/wiki/Nix)。其特点是不遵守 FHS 标准，每个软件的每个版本都有唯一的哈希值标识，并通过符号链接自由选择软件版本，从而避免依赖地狱问题。Nix 系发行版主要有 NixOS，另有一个类似的包管理器 [GNU Guix](https://en.wikipedia.org/wiki/GNU_Guix)，基于它也有一个发行版 Guix OS。
 
 FHS (Filesystem Hierarchy Standard)标准规定了文件系统中每个部分的大致用途和名称，比如/etc 存放配置文件，/bin 存放可执行文件，/lib 存放可执行文件使用的链接库。
 
@@ -327,17 +306,17 @@ Nix 靠将每个软件包都安装在 `/nix/store` 文件夹中并附上一个�
 
 NixOS 提供两种安装方式——图形化安装和手动安装。图形化安装就像 Fedora 这样的发行版一样提供一个带 DE 的 LiveCD 环境，不过这种安装受到我国网络环境的限制，不过都有 DE 了，是否在设置里设定一下代理，或者像 clash 这样的代理工具开 tun 模式可以完成下载软件的步骤 🤔。反正我是手动安装的。该系统的特点是大部分的配置可以写在 `/etc/nixos/` 中的文件中，比如对软件，services，用户的管理等等。在安装软件的时候可能涉及到从诸如 GitHub 之类的网站下载补丁或者源码，所以做好网络环境的配置是必要的。
 
-但是安装软件的是否可能涉及到从 GitHub 之类的网站下载东西，或者如果你使用 NUR 的话（我不清楚 NUR 是否有国内源），NUR 仓库在 GitHub 上，所以你需要配置好网络环境才行。
+安装软件时可能涉及从 GitHub 等网站下载资源，如果你使用 NUR（我不确定 NUR 是否有国内镜像源），由于 NUR 仓库托管在 GitHub，配置好网络环境是必要的。
 
-之后我发现，Nix 这种特性在我安装交叉编译链的时候有那么一点点不友好，我难以忍受我需要为了 RISC-V 64 架构的 qemu 装那么多软件（逃）。当然 NixOS 有很多有意思的 feature，所以可能存在一个更加好的方式去安装交叉编译链，只不过我不知道了。
+不过，Nix 的这种特性在安装交叉编译链时可能显得不够友好，例如为 RISC-V 64 架构安装 QEMU 会引入大量依赖。当然 NixOS 有许多有趣的功能，可能存在更好的交叉编译链安装方式，只是我尚未了解。
 
-NixOS 不遵守 FHS 标准，所以正常的 chroot 也不好进去，使用它们自己提供的程序即可，我记得是叫做`nix-enter`。
+NixOS 不遵守 FHS 标准，因此常规的 chroot 不易操作，需使用其自带的工具 `nixos-enter`
 
 NixOS 的 flakes 和 home-manager 结合可以更好的声明你的系统配置，很多东西都可以用这些声明文件自动生成。但是现在的问题是文档质量不足，太多的东西都需要直接看 [nixpkgs](https://github.com/NixOS/nixpkgs) 中的源代码，虽然现在有 [NixOS Search](https://search.nixos.org/options) 和 [MyNixOS](https://mynixos.com/) 可以搜索相关的部分细节，但也不是很够。如果要全面的了解还是需要去看源码是怎么写的。
 
 ---
 
-只要你不是安装那种不能选择 DE 的发行版，那么选择一个 DE 就是你不得不做的一件事。
+除非你选择不安装桌面环境（直接使用窗口管理器），否则选择一款合适的 DE 是安装后的一项重要决策。
 
 ---
 
@@ -363,8 +342,7 @@ NixOS 的 flakes 和 home-manager 结合可以更好的声明你的系统配置�
 
 - 比 KDE Plasma 更漂亮的外观
 - 也许因为貌似大部分代码由商业公司贡献，导致更加激进？
-  - RedHat 甚至发起过提案要让 GNOME 只使用 Wayland，RedHat 开发的 Fedora 在 Fedora 42 版本（目前正在开发中）貌似就要这么做了。
-    - 更新: Fedora 41 默认只提供 GNOME Wayland。
+    - GNOME 50 都要去除掉 X11 只保留 Wayland 的支持了，但 KDE Plasma 貌似还没这个想法
 
 但 GNOME 难绷的地方在于：
 
@@ -375,9 +353,9 @@ NixOS 的 flakes 和 home-manager 结合可以更好的声明你的系统配置�
 
 ### KDE plasma
 
-KDE Plasma 是相当受欢迎的 DE 了，而且一定程度上和 Win10 的桌面有些像，所以对于一些人来说可能会比较熟悉。KDE 设置提供了很多选项，可以说 KDE 可以设置的地方很多。KDE 的音频控制组件貌似不是很支持 pipewire，我知道的是 Arch Linux 用户可以安装 pipewire-pulse 兼容层解决这个问题，Gentoo 虽然也有这个，但貌似不是很好使的样子（后来好使了，不清楚我这两回之间有什么操作上的差异）。KDE 自带一些监控硬件参数的状态栏组件还是比较不错的，Xfce 也有类似的，GNOME 就没有这东西了（GNOME 也有 SystemMonitor 提供这个功能，但无法在状态栏上显示）。甚至 GNOME 默认是没有系统托盘的，这个还需要安装相应的插件来实现。
+KDE Plasma 是相当受欢迎的 DE 了，而且一定程度上和 Win10 的桌面有些像，所以对于一些人来说可能会比较熟悉。KDE 设置提供了很多选项，可以说 KDE 可以设置的地方很多。KDE 的音频控制组件对 pipewire 的支持可能不够完善，Arch Linux 用户可以安装 pipewire-pulse 兼容层来解决，Gentoo 虽也提供此兼容层，但似乎不太稳定（后来变得可用，不清楚期间有何操作差异）。
 
-我认为 KDE Plasma 什么都不错，就是颜值差了些。
+KDE Plasma 功能全面，但外观设计可能不如其他桌面环境。
 
 ### GNOME
 
@@ -397,9 +375,9 @@ KDE Plasma 和 GNOME 都默认 Waylnd 了，Xfce 还是在下个版本才默认 
 
 ## WM
 
-WM（WIndow Manager,窗口管理器）是比 DE 更低级的东西，一般可以带来更低的消耗，尤其是平铺式的 WM 可以带来更好的视觉体验。由于 WM 大多数时候都是需要键盘就行，我还听到一个言论就是使用 WM 更不容易得鼠标手。
+WM（Window Manager，窗口管理器）是比 DE 更低层的组件，通常资源消耗更低，尤其是平铺式 WM 能提供更高效的视觉体验。由于 WM 大多依赖键盘操作，有人声称使用 WM 更不易患上鼠标手。
 
-WM 不会自带很多东西，比如应用程度启动器，壁纸，窗口渲染，声音和亮度调节，polkit 前端组件等等，这些都需要你去自己装上，当然有的 WM 可能会自带窗口渲染或是其他什么的。那些 DE 也都有自家的 Terminal，虽然 WM 也可能自家有 Terminal（比如开发 dwm 的组织也开发了 st Terminal）不过不会自动安装，这个也需要自己装上。
+WM 通常不包含许多组件，例如应用程序启动器、壁纸设置、窗口渲染、声音与亮度调节、polkit 前端组件等，这些都需要用户自行安装。当然，某些 WM 可能自带窗口渲染或其他功能。桌面环境通常提供自家的终端模拟器，而 WM 也可能有配套的终端（如开发 dwm 的组织也开发了 st），但不会自动安装，需要手动安装。
 
 窗口管理器会少一些小组件：
 
@@ -413,7 +391,7 @@ WM 不会自带很多东西，比如应用程度启动器，壁纸，窗口渲�
 - 状态栏
 
 
-WM 我只浅谈一下 i3wm, dwm，sway 和 Hyprland。
+WM 我只浅谈一下 i3wm, dwm，sway 和 Hyprland
 
 ### i3wm
 
@@ -433,20 +411,16 @@ sway 是 Wayland 版本的 i3，i3 的配置文件可以直接拿来用。
 
 sway 依赖于 wlroots 这个 compositor，很多 Wayland 的窗口管理器都使用的这位。Hyprland 0.42 之前也是使用的它，后来自己写了一个。
 
-sway 没有 XWayland 分数缩放的支持，sway 和 Hyprland 貌似都倾向于让 XWayland 自己实现这个功能，但是 Hyprland 提供了一个将 XWayland 的缩放设为 0，不跟配置的缩放走的选项，这样用户可以自己显示地通过设置或者命令行参数的方式单独 XWayland 的应用的缩放，sway 并没有提供这个方式。
+sway 不支持 XWayland 分数缩放，而 Hyprland 允许将 XWayland 缩放设为 0（即不跟随全局缩放），用户可单独为每个 XWayland 应用配置缩放。sway 未提供此选项。
 
 ### Hyparland
 
-Hyprland 是基于 Wayland 做的 WM，Hyprland 戳我的点就是官网主页列的截图。
-
-![Hyprland](/img/introdistro/hyprland.png)
-
-真的好帅啊，当然 Hyparland 默认不是这样的，你需要安装其他的软件进行进一步的配置。
+Hyprland 是基于 Wayland 做的 WM，Hyprland 戳我的点就是官网主页列的截图，真的好帅啊，当然那都不是 Hyprland 安装后就能有的样子，都需要安装其他的软件进行进一步的配置。
 
 我尝试使用了几周，期间写的配置文件让我存放到 GitHub 仓库内了。
 
 Hyprland 可以很好的设置环境变量，并且自带对窗口的美化。目前的最新版（0.42）移除了对 wlroots 的依赖，而是使用自己的一套。
 
-Hyprland 比 sway 好的地方则是实现了 text-input-v1。并且支持将 XWayland 的缩放设置为 0，而不是直接按照全局的缩放比例走（我本身只有一个 electron 的应用只能跑在 XWayland 下，所以我用 flatpak 安装了它，并用 electron 命令行的方式缩放，这样还是可用的，所以 XWayland 设置为 0 缩放，我自己手动给应用缩放这个办法我还算接受）
+Hyprland 的优势在于实现了 text-input-v1 协议，并支持将 XWayland 缩放设为 0（不跟随全局缩放），方便用户单独调整 XWayland 应用的缩放比例。
 
-Hyprland 官方可能是用 Arch Linux 和 NixOS 的多？文档中的部分解决方案基本都是针对这两个发行版的。
+Hyprland 的文档中许多解决方案针对 Arch Linux 和 NixOS。
