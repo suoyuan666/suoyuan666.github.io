@@ -4,6 +4,8 @@ author: suo yuan
 date: 2025-01-07T10:00:36Z
 lastmod: 2025-01-28T01:11:53Z
 draft: false
+categories:
+  - Linux_杂谈
 tags:
   - gentoo-linux
   - linux
