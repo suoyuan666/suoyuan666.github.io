@@ -14,6 +14,10 @@ summary: "这是我学习 LLVM 开发的笔记，本篇是第一篇，简单介�
 
 # LLVM 初探: 1. LLVM IR
 
+> - 2026 02 23 更新:
+>     - 修改了 LLVM 的编译选项
+>     - 修补了对于 SSA 的解释中可能让人误会的部分
+
 我想试试看能不能入门 LLVM 开发，所以这系列博客将会是我这段时间学习的记录
 
 LLVM 指的是一整套编译器和相关的工具链的集合，而 LLVM 这个名字也不是什么缩写，就是这个项目的名称。LLVM 不仅包含 Clang、LLVM core、LLD 这些编译器相关的工具，同时还有 LLDB 调试器、libc 和 libc++、Clang 下面还有 clang-tidy 和 clang-format，不过 libc 还在开发中。
@@ -25,17 +29,18 @@ LLVM 指的是一整套编译器和相关的工具链的集合，而 LLVM 这个
 ```bash
 $ git clone https://github.com/llvm/llvm-project.git
 $ cd llvm-project
-$ cmake -S llvm -B build -G Ninja \
-        -DCMAKE_INSTALL_PREFIX=~/.bin/ \
-        -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-        -DLLVM_ENABLE_PROJECTS="clang" \
-        -DLLVM_ENABLE_RUNTIMES=compiler-rt \
-        -DLLVM_INSTALL_UTILS=ON \
+$ cmake -S llvm -B build -G Ninja           \
+        -DCMAKE_INSTALL_PREFIX=~/.bin/      \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo   \
+        -DLLVM_ENABLE_ASSERTIONS=ON         \
+        -DLLVM_ENABLE_PROJECTS="clang"      \
+        -DLLVM_ENABLE_RUNTIMES=compiler-rt  \
+        -DLLVM_INSTALL_UTILS=ON             \
         -DLLVM_TARGETS_TO_BUILD="X86;RISCV" \
-        -DLLVM_USE_LINKER=lld \
-        -DLLVM_OPTIMIZED_TABLEGEN=ON \
-        -DLLVM_CCACHE_BUILD=ON \
-        -DLLVM_BUILD_LLVM_DYLIB=ON \
+        -DLLVM_USE_LINKER=lld               \
+        -DLLVM_OPTIMIZED_TABLEGEN=ON        \
+        -DLLVM_CCACHE_BUILD=ON              \
+        -DLLVM_BUILD_LLVM_DYLIB=ON          \
         -DLLVM_LINK_LLVM_DYLIB=ON
 $ cmake --build build
 $ sudo cmake --build build -t install # $HOME/.bin/
@@ -386,6 +391,11 @@ return:
 2. 如果执行流从 `for.body` 基本块进入(即循环回边)，则值为 `%inc`
 
 这是循环中 phi 函数的典型用法：在循环开始时选择初始值，在循环体执行后选择更新后的值。`%result.06` 同理，在循环开始时是 1，循环体中是 `%mul`
+
+值得注意的是，phi 节点的插入往往是 mem2reg 优化后的结果，因为 SSA 需要保证这里的 virtual register (也就是上面的 `%inc`、`%5` 这种) 不会出现重复赋值的结果，但内存的写入不再此列。
+
+换句话说，通过 alloca 声明的内存使用可以被重复 store，每次 load 都会产生一个新的 virtual register，但 virtual register 不会再被 store 了。而一旦使用了 mem2reg 优化，对栈内存的访问就要被优化为直接对 virtual register 的访问，那么就有可能会把之前多次 store 的情况暴露出来，就可能需要 phi 节点。
+
 如果你用 O2 或更高级别的优化编译，你会发现这个阶乘函数会被自动向量化，使用 SIMD 指令进行优化
 
 ```txt

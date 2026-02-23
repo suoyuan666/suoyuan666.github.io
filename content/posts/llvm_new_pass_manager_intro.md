@@ -15,7 +15,7 @@ summary: "这是我学习 LLVM 开发的笔记，本篇是第二篇，简单介�
 # LLVM 初探: 2. LLVM New Pass Manager
 
 > 2026 年 2 月 10 日修改
->   - 找到了我自己编译的 LLVM 23-git 不可用的解决办法了
+>   - 找到了我自己编译的 LLVM 23.git 不可用的解决办法了
 >   - 修改一些阅读起来有些困难的地方
 
 [上一篇](../llvm_ir_intro/)我们简单了解了 LLVM IR，现在我来介绍 LLVM New Pass Manager，这是现在 LLVM 推行的 Pass 注册方式。
@@ -214,7 +214,7 @@ add_library(pass-plugin SHARED analysis.cpp)
 >
 > 并且我这个代码应该是 LLVM 22.1 之后才能编译通过，目前 LLVM stable 的版本中，PassPlugin.h 是在 llvm/Passes 下的，对应的 commit URL 是 https://github.com/llvm/llvm-project/commit/f54df0d09e19ec6b205cb0af45c7ecea2fd8aeff
 
-这里的 `MY_LLVM_INSTALL_DIR` 就是 LLVM 的安装位置了，我的就是上一篇编译的 LLVM 23-git，位于 ~/.bin/ 下，所以 `cmake -S . -B build -DMY_LLVM_INSTALL_DIR=` 指定一下就好了。
+这里的 `MY_LLVM_INSTALL_DIR` 就是 LLVM 的安装位置了，我的就是上一篇编译的 LLVM 23.git，位于 ~/.bin/ 下，所以 `cmake -S . -B build -DMY_LLVM_INSTALL_DIR=` 指定一下就好了。
 
 之后调用 `opt`，`opt` 会作为 driver 调用 LLVM 优化相关的组件
 
