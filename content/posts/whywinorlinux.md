@@ -8,7 +8,6 @@ categories:
   - Linux_杂谈
 tags:
   - Linux
-  - intro
 description: "一个评价文章"
 ---
 

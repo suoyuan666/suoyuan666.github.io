@@ -7,7 +7,6 @@ categories:
   - 杂谈
 tags:
   - BSD
-  - intro
 description: "在笔记本电脑上安装 FreeBSD 的初步感受，因为无法日常使用，所以只是初步感受"
 ---
 

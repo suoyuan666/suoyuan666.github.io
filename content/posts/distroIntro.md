@@ -8,7 +8,6 @@ categories:
   - Linux_杂谈
 tags:
   - Linux
-  - intro
 description: "介绍了大部分主流的 GNU/Linux 发行版"
 ---
 # 面向 beginner: GNU/Linux 发行版浅评与介绍

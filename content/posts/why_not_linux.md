@@ -6,7 +6,6 @@ lastmod: 2025-01-15T12:12:36Z
 draft: false
 tags:
   - Linux
-  - intro
 description: "一篇题为 为什么没有很多人使用 Linux 的译文"
 summary: "一篇题为 为什么没有很多人使用 Linux 的译文"
 ---

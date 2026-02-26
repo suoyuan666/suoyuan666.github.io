@@ -4,10 +4,10 @@ author: suo yuan
 date: 2024-02-04T03:42:51Z
 draft: false
 categories:
-  - Cpp
+  - cpp
 tags:
   - CS106L notes
-  - Cpp notes
+  - cpp notes
 description: "CS106L 中关于类的部分"
 ---
 

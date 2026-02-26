@@ -8,7 +8,6 @@ categories:
   - 杂谈
 tags:
   - windows
-  - intro
 description: "再次安装了 Windows，尝试做一些额外的安全配置"
 ---
 

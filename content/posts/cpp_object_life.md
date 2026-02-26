@@ -4,9 +4,9 @@ author: suo yuan
 date: 2024-10-24T01:49:02Z
 draft: false
 tags:
-  - Cpp notes
+  - cpp notes
 categories:
-  - Cpp
+  - cpp
 description: "一篇讲 C++ 对象生命周期的译文"
 summary: "一篇讲 C++ 对象生命周期的译文"
 ---

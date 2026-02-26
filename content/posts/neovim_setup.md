@@ -6,7 +6,6 @@ lastmod: 2024-09-10T23:17:14Z
 draft: false
 tags:
   - neovim
-  - intro
 description: "尝试配置 neovim，具体就是安装了一些插件，这里没有太详细介绍我的配置，等之后有时间我再补上"
 ---
 

@@ -8,7 +8,6 @@ categories:
 tags:
   - Gentoo Linux
   - Linux
-  - intro
 description: "我这次安装 Gentoo Linux 做的额外的工作，也就是除官方文档之外的安装步骤。这里我用的 init 是 openrc，WM 用的是 Hyprland"
 ---
 

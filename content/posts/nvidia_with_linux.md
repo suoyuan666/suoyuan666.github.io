@@ -8,7 +8,6 @@ categories:
   - Linux_杂谈
 tags:
   - linux
-  - intro
 description: "如何在 GNU/Linux 发行版使用 Wayland 的情况下中舒服的使用 NVIDIA 驱动"
 ---
 
