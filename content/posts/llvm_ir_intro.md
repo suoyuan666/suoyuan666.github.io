@@ -17,6 +17,8 @@ summary: "这是我学习 LLVM 开发的笔记，本篇是第一篇，简单介�
 > - 2026 02 23 更新:
 >     - 修改了 LLVM 的编译选项
 >     - 修补了对于 SSA 的解释中可能让人误会的部分
+> - 2026 02 27 更新:
+>     - 修改了对 mem2reg 和 phi 函数插入的解释，使其读起来更加顺畅
 
 我想试试看能不能入门 LLVM 开发，所以这系列博客将会是我这段时间学习的记录
 
@@ -394,7 +396,10 @@ return:
 
 值得注意的是，phi 节点的插入往往是 mem2reg 优化后的结果，因为 SSA 需要保证这里的 virtual register (也就是上面的 `%inc`、`%5` 这种) 不会出现重复赋值的结果，但内存的写入不再此列。
 
-换句话说，通过 alloca 声明的内存使用可以被重复 store，每次 load 都会产生一个新的 virtual register，但 virtual register 不会再被 store 了。而一旦使用了 mem2reg 优化，对栈内存的访问就要被优化为直接对 virtual register 的访问，那么就有可能会把之前多次 store 的情况暴露出来，就可能需要 phi 节点。
+换句话说，通过 alloca 声明的内存使用可以被重复 store，每次 load 都会产生一个新的 virtual register，但 virtual register 不会再被 store 了，因为对 virtual register 的多次 store 违反了 SSA 的规则。
+
+mem2reg 优化就是尝试将对内存的操作提升为对寄存器的操作。所以就涉及到了删除掉 alloca，并把对这个内存的访问改成直接对 virtual register 的访问。那么这就有可能会把之前多次 store 的情况暴露出来，所以我们需要 phi 节点。
+
 
 如果你用 O2 或更高级别的优化编译，你会发现这个阶乘函数会被自动向量化，使用 SIMD 指令进行优化
 
