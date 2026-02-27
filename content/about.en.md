@@ -6,10 +6,7 @@
 - INTJ 🤔
 - **Dev Environment:**
   - Dual Boot: Gentoo Linux && Windows 11
-     - Mainly Gentoo. I plan to eventually migrate all Windows-exclusive apps to a Windows VM.
-     - Preparing to switch from Gentoo Linux to NixOS
-          - Because my laptop has limited performance, compiling large software takes a significant amount of time
-          - The official Gentoo Linux developers cannot maintain all the official repository packages in a timely manner; some packages have no maintainers, and updates for some packages are not carried out promptly
+      - Mainly Gentoo. I plan to eventually migrate all Windows-exclusive apps to a Windows VM.
   - Neovim/Visual Studio Code
 - **Programming Languages:**
   - C/C++
