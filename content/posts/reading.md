@@ -7,6 +7,11 @@ description: "一些感觉看起来不错的文章"
 summary: "一些感觉看起来不错的文章"
 ---
 
+## Thinking about AI LLM
+
+- [杀死你的不是 AI](https://roriri.one/2026/03/07/ai-is-not-killing-you)
+- [AI 提高了效率，喜欢打开黑盒的 hobbyist 怎么办](https://blog.cyyself.name/hobbyist-with-ai/)
+
 ## kernel
 
 - [内核学习经验](https://martins3.github.io/kernel/learn-linux-kernel.html)

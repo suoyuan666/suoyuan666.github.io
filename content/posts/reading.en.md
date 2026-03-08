@@ -7,6 +7,11 @@ description: "Some Articles Worth Reading"
 summary: "Some Articles Worth Reading"
 ---
 
+## Thinking about AI LLM
+
+- [杀死你的不是 AI](https://roriri.one/2026/03/07/ai-is-not-killing-you)
+- [AI 提高了效率，喜欢打开黑盒的 hobbyist 怎么办](https://blog.cyyself.name/hobbyist-with-ai/)
+
 ## kernel
 
 - [内核学习经验](https://martins3.github.io/kernel/learn-linux-kernel.html)
