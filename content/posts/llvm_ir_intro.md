@@ -35,7 +35,7 @@ $ git clone https://github.com/llvm/llvm-project.git
 $ cd llvm-project
 $ cmake -S llvm -B build -G Ninja           \
         -DCMAKE_INSTALL_PREFIX=~/.bin/      \
-        -DCMAKE_BUILD_TYPE=RelWithDebInfo   \
+        -DCMAKE_BUILD_TYPE=Debug            \
         -DLLVM_ENABLE_ASSERTIONS=ON         \
         -DLLVM_ENABLE_PROJECTS="clang"      \
         -DLLVM_ENABLE_RUNTIMES=compiler-rt  \
