@@ -236,6 +236,26 @@ void LifetimeSafetyAnalysis::run() {
 
 在 Facts 都创建好后，就是刚刚提到的三个分析上场了，它们内部都有一个继承自 `DataflowAnalysis` 的具体实现方法，这三个分析都是线性扫描分析，但是不同的分析对 CFG 的扫描顺序并不一样。
 
+不只是对 CFG Block 的扫描顺序不同，具体来说是三个模板参数: `template <typename Derived, typename LatticeType, Direction Dir>`
+
+```cpp
+/// LoanPropagationAnalysis
+class AnalysisImpl
+    : public DataflowAnalysis<AnalysisImpl, Lattice, Direction::Forward> {
+
+/// LiveOriginsAnalysis
+class AnalysisImpl
+    : public DataflowAnalysis<AnalysisImpl, Lattice, Direction::Backward> {
+
+/// MovedLoansAnalysis
+class AnalysisImpl
+    : public DataflowAnalysis<AnalysisImpl, Lattice, Direction::Forward> {
+```
+
+不同的分析对与 CFG Block 的遍历顺序不同，并且它们收集的 `Lattice` 也不同。在下面 Facts 分析中我会提到它们收集的 `Lattice` 具体在收集什么。
+
+### Facts 分析
+
 LoanPropagationAnalysis 属于是前向分析，也就是顺序地遍历 CFG Block 中每一个 Facts，并判断是否需要传播 Loan
 
 ```cpp
