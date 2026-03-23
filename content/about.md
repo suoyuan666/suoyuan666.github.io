@@ -2,16 +2,17 @@
 
 - 普通本科 大四在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
 - 爱好操作系统内核和编译器 😗
-    - 正在学习 LLVM 开发
+    - 正在学习 LLVM 和 eBPF
 - INTJ 🤔
 - 开发环境:
-  - Gentoo Linux && Windows 11 双系统
-     - 主要是 Gentoo Linux，我计划以后把 Windows 才能运行的应用都跑在我的 Windows 虚拟机里
-  - Neovim/Visual Studio Code
+    - Fedora Silverblue
+        - 尝试了很多主流发行版，比如 Arch Linux、Nix OS、Fedora Workstation、Gentoo Linux
+        - 我真的很喜欢 Gentoo Linux，它的 feature 深深吸引着我。难绷的问题在于 Gentoo Linux 的维护者并不多，我想要一个能让我相信的 OS，所以我目前选择了 Fedora Silverblue
+    - Neovim/Visual Studio Code
 - 编程语言:
-  - C/C++
-  - Python/Shell
-  - ~~Java/C#/Rust ?~~
+    - C/C++
+    - Python/Shell
+    - ~~Java/C#/Rust ?~~
 
 ### Project
 

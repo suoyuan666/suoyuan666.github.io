@@ -2,16 +2,17 @@
 
 - Senior undergraduate student. CS major but self-taught. 🤐
 - Enthusiast of Operating Systems & Compilers. 😗
-    - Currently learning LLVM development
+    - Currently diving into LLVM and eBPF
 - INTJ 🤔
 - **Dev Environment:**
-  - Dual Boot: Gentoo Linux && Windows 11
-      - Mainly Gentoo. I plan to eventually migrate all Windows-exclusive apps to a Windows VM.
-  - Neovim/Visual Studio Code
+    - Fedora Silverblue
+        - Experienced with various mainstream distributions, including Arch Linux, NixOS, Fedora Workstation, and Gentoo Linux.
+        - While I am deeply drawn to the features of Gentoo Linux, its relatively small maintainer community makes it hard to rely on as a primary driver. I need an OS I can fully trust for stability, which led me to settle on Fedora Silverblue.
+    - Neovim/Visual Studio Code
 - **Programming Languages:**
-  - C/C++
-  - Python/Shell
-  - ~~Java/C#/Rust ?~~
+    - C/C++
+    - Python/Shell
+    - ~~Java/C#/Rust ?~~
 
 ### Projects
 
