@@ -5,9 +5,7 @@
     - 正在学习 LLVM 和 eBPF
 - INTJ 🤔
 - 开发环境:
-    - Fedora Silverblue
-        - 尝试了很多主流发行版，比如 Arch Linux、Nix OS、Fedora Workstation、Gentoo Linux
-        - 我真的很喜欢 Gentoo Linux，它的 feature 深深吸引着我。难绷的问题在于 Gentoo Linux 的维护者并不多，我想要一个能让我相信的 OS，所以我目前选择了 Fedora Silverblue
+    - Gentoo Linux
     - Neovim/Visual Studio Code
 - 编程语言:
     - C/C++

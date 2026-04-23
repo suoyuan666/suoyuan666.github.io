@@ -5,9 +5,7 @@
     - Currently diving into LLVM and eBPF
 - INTJ 🤔
 - **Dev Environment:**
-    - Fedora Silverblue
-        - Experienced with various mainstream distributions, including Arch Linux, NixOS, Fedora Workstation, and Gentoo Linux.
-        - While I am deeply drawn to the features of Gentoo Linux, its relatively small maintainer community makes it hard to rely on as a primary driver. I need an OS I can fully trust for stability, which led me to settle on Fedora Silverblue.
+    - Gentoo Linux
     - Neovim/Visual Studio Code
 - **Programming Languages:**
     - C/C++
