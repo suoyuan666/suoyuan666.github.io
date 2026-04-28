@@ -53,6 +53,7 @@ summary: "Some Articles Worth Reading"
 - [GNOME 和 IBus 和 Wayland 输入法](https://sh.alynx.one/posts/GNOME-IBus-Wayland-IME/)
 - [Gentoo PCI KVM设备直通](https://blog.plz.ac/posts/gentoo-kvm-pci-passthrough/)
 - [Linux 桌面系统组件概览与故障排查指南](https://thiscute.world/posts/linux-desktop-explained/)
+- [Debunking zswap and zram myths](https://chrisdown.name/2026/03/24/zswap-vs-zram-when-to-use-what.html)
 
 ## Security
 
