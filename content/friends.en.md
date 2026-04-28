@@ -6,3 +6,5 @@
     - A PhD working in cybersecurity research, though his blog is not updated very frequently
 - [Mitchell's Homepage](https://broken.life/)
     - A clang-tidy maintainer — seems technically very strong. I hope I can also become an LLVM maintainer someday.
+- [残页的小博客](https://blog.canyie.top/)
+    - An Android security blogger.

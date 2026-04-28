@@ -6,3 +6,5 @@
     - 难得认识的搞安全的学长，不过学长更新博客的频率不是很高（
 - [Mitchell's Homepage](https://broken.life/)
     - clang-tidy Maintainer，看起来技术很强啊，希望我以后也能在 LLVM 里混上个 Maintainer（
+- [残页的小博客](https://blog.canyie.top/)
+    - 一位搞 Android 安全的博主
