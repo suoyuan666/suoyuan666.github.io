@@ -3,7 +3,7 @@
 - 普通本科 大四在读 在一个应该算是科班的地方里学习的野路子 学校菜菜 我也菜菜 🫡
 - 爱好操作系统内核和编译器 😗
     - 正在学习 LLVM 和 eBPF
-- INTJ 🤔
+- INFJ 🤔
 - 开发环境:
     - Gentoo Linux
     - Neovim/Visual Studio Code

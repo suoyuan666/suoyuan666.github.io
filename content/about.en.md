@@ -3,7 +3,7 @@
 - Senior undergraduate student. CS major but self-taught. 🤐
 - Enthusiast of Operating Systems & Compilers. 😗
     - Currently diving into LLVM and eBPF
-- INTJ 🤔
+- INFJ 🤔
 - **Dev Environment:**
     - Gentoo Linux
     - Neovim/Visual Studio Code
