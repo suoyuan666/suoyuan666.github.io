@@ -13,3 +13,4 @@
     - [arch/arm: Fix TLS initialization to account for padding between sections](https://github.com/apache/nuttx/commit/fac76746eae2afe91a5cb9948e3843596c9f941f)
 - LLVM
     - [\[InstCombine\] Fold zext-add/sub-min/max-trunc to uadd.sat or usub.sat](https://github.com/llvm/llvm-project/commit/4a62d48549d2498b2e88b9bde12a4b7d5b67e4f8)
+    - [\[NFC\]\[LifetimeSafety\]: Track assignment history within a single CFGBlock](https://github.com/llvm/llvm-project/commit/f00ec3f74a7e1f9342286eb1cbafd296397b7b29)
