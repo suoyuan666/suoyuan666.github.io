@@ -462,7 +462,7 @@ int *u;
 
 那就是从 `(void)u` 这个 UseFact 开始逆序遍历当前 Block 的 Facts，起始的 DestOrigin 就是 Origin(u)，目标 Loan 是 Loan(tgt)。
 
-之后我提交了新的 PR 用于
+之后我提交了新的 PR 用于在 use-after-scope 中添加这个报错处理，不过目前还没合入。
 
 这里唯一难绷的问题是在 Facts 生成时往往不会特别考虑 Origin 存储的表达式类型。还是在 https://godbolt.org/z/7eddcK5o6 中，你会看到:
 
