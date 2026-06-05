@@ -474,21 +474,7 @@ OriginFlow:
 
 这是在 Clang AST 中就能看出的。但是由于这个并不影响实际的 Fact 和 Origin 生成，也不和它们强相关，因此并没有得到处理。
 
-但是涉及到 diagnostic 输出时就需要调用 `Origin->getExpr()->ignoreImplictCast()` 才可以得到真正可用的表达式，只有得到了这个才能得到具体的名称以供打印。
-
-表达式实在是太多了，简单的有 `BinaryOperator`，`CallExpr`、`UnaryOperator` 等。但 `CallExpr` 存在隐式调用，比如 `std::string_view refs = str` 就会有:
-
-```clang
-    |-DeclStmt <line:7:5, col:32>
-    | `-VarDecl <col:5, col:29> col:22 refs 'std::string_view':'std::basic_string_view<char>' cinit
-    |   `-ImplicitCastExpr <col:29> '__sv_type':'std::basic_string_view<char>' <UserDefinedConversion>
-    |     `-CXXMemberCallExpr <col:29> '__sv_type':'std::basic_string_view<char>'
-    |       `-MemberExpr <col:29> '<bound member function type>' .operator basic_string_view 0x3a0eb510
-    |         `-ImplicitCastExpr <col:29> 'const std::basic_string<char>' lvalue <NoOp>
-    |           `-DeclRefExpr <col:29> 'std::string':'std::basic_string<char>' lvalue Var 0x3a3f4738 'str' 'std::string':'std::basic_string<char>'
-```
-
-一时间感觉有很多地方都需要考虑，我并不知道是否有一个很好的公共函数可以处理这里。我对这里可能陷入的维护地狱感到担忧，不过对于一般程序来说应该没什么问题。
+但是涉及到 diagnostic 输出时就需要调用 `Origin->getExpr()->ignoreImplictCast()` 才可以得到真正可用的表达式，只有得到了这个后才有办法得到具体的名称以供打印。
 
 ## 参考文档
 
