@@ -14,3 +14,4 @@
 - LLVM
     - [\[InstCombine\] Fold zext-add/sub-min/max-trunc to uadd.sat or usub.sat](https://github.com/llvm/llvm-project/commit/4a62d48549d2498b2e88b9bde12a4b7d5b67e4f8)
     - [\[NFC\]\[LifetimeSafety\]: Track assignment history within a single CFGBlock](https://github.com/llvm/llvm-project/commit/f00ec3f74a7e1f9342286eb1cbafd296397b7b29)
+    - [\[LifetimeSafety\] Introduce buildOriginFlowChain for use-after-scope](https://github.com/llvm/llvm-project/commit/c5654d53c008522d2da165f05b682aafa36d7189)
