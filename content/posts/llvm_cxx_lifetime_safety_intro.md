@@ -1,20 +1,24 @@
 ---
-title: "Clang C++ 生命周期安全分析: 从设计原理到诊断优化"
+title: "Clang 生命周期安全分析: 从设计原理到诊断优化"
 author: suo yuan
 date: 2026-03-20T05:04:56Z
 draft: false
 tags:
   - LLVM
   - Compiler
-description: "关于 Clang C++ Lifetime Safety Analysis 的设计与实现，以及我对该分析的一个小改进"
-summary: "关于 Clang C++ Lifetime Safety Analysis 的设计与实现，以及我对该分析的一个小改进"
+description: "关于 Clang Lifetime Safety Analysis 的设计与实现，以及我对该分析报告时的一个小改进"
+summary: "关于 Clang Lifetime Safety Analysis 的设计与实现，以及我对该分析报告时的一个小改进"
 ---
 
 > 2026 06 01 更新:
 >    - 我的修改被建议拆分，因此我决定改成逐步介绍并及时更新。
 >    - 同时，由于我在编写时有了更多的感悟，所以我决定加一些内容
+>
+> 2026 06 19 更新:
+>    - 我第二个 PR 被合并，因此我再次更新一些内容
+>    - 目前 Lifetime Safety Analysis 一定程度上支持了在 C 代码中使用，因此我去掉了标题中的 "C++"
 
-# Clang C++ 生命周期安全分析: 从设计原理到诊断优化
+# Clang 生命周期安全分析: 从设计原理到诊断优化
 
 ## 概述
 
@@ -57,6 +61,38 @@ test.cpp:11:25: note: later used here
 ```
 
 这里就是一个 use after free 问题，因为 `str` 的生命周期被 `{}` 限制住了，所以使用 a 的时候，`str` 已经死掉了。
+
+Lifetime Safety Analysis 在 C 代码做了实验性支持(6 月 18 日合入的修改，Issue 链接是: [\[LifetimeSafety\] Enable lifetime analysis for C language](https://github.com/llvm/llvm-project/issues/203213))
+
+```c
+void foo() {
+  int *s;
+  {
+    int tgt = 2;
+    int *a = &tgt;
+    int *c = a;
+    int *b = a;
+    int *e = b;
+    s = e;
+  }
+  (void)*s;
+}
+```
+
+使用 `clang -Wlifetime-safety -Xclang -fexperimental-lifetime-safety-c simple-uaf.c` 即可看到:
+
+```txt
+simple-uaf.c:5:15: warning: local variable 'tgt' does not live long enough [-Wlifetime-safety-use-after-scope]
+    5 |     int *a = &tgt;
+      |               ^~~
+simple-uaf.c:10:3: note: destroyed here
+   10 |   }
+      |   ^
+simple-uaf.c:11:10: note: later used here
+   11 |   (void)*s;
+      |          ^
+1 warning generated.
+```
 
 接下来我会先介绍一下基本概念，之后介绍当前 Lifetime Safety Analysis 的设计与实现以及我为 Lifetime Safety 做得一个小增强。本文目标是让对编译原理有一些基本概念的人也能看懂。
 
@@ -444,8 +480,8 @@ void foo() {
 
 1. 为单个 CFG Block 添加赋值语句回溯逻辑，这里不需要回溯具体的表达式
 2. 将上述功能引入任何一个 diagnostic 处理逻辑中
-3. 将该功能引入到所有 Lifetime Safety diagnostic 的处理逻辑中
-4. 为赋值语句回溯添加多 Block 支持
+3. 为赋值语句回溯添加多 Block 支持
+4. 将该功能引入到所有 Lifetime Safety diagnostic 的处理逻辑中
 
 首先我已经合并了 https://github.com/llvm/llvm-project/commit/f00ec3f74a7e1f9342286eb1cbafd296397b7b29，用于在单个 CFG Block 中从给定的 Fact 和 Origin 以及目标 Loarn 中查找赋值链。举个例子就是比如一个 Block 中发生了:
 
@@ -462,7 +498,7 @@ int *u;
 
 那就是从 `(void)u` 这个 UseFact 开始逆序遍历当前 Block 的 Facts，起始的 DestOrigin 就是 Origin(u)，目标 Loan 是 Loan(tgt)。
 
-之后我提交了新的 PR 用于在 use-after-scope 中添加这个报错处理，不过目前还没合入。
+后续就是种 Origin 中开始得到对应的表达式并输出了。
 
 这里唯一难绷的问题是在 Facts 生成时往往不会特别考虑 Origin 存储的表达式类型。还是在 https://godbolt.org/z/7eddcK5o6 中，你会看到:
 
@@ -475,6 +511,45 @@ OriginFlow:
 这是在 Clang AST 中就能看出的。但是由于这个并不影响实际的 Fact 和 Origin 生成，也不和它们强相关，因此并没有得到处理。
 
 但是涉及到 diagnostic 输出时就需要调用 `Origin->getExpr()->ignoreImplictCast()` 才可以得到真正可用的表达式，只有得到了这个后才有办法得到具体的名称以供打印。
+
+目前我已经在 use-after-scope 中添加这个报错处理。因此对于下面这个 C++ 代码:
+
+```cpp
+#include <vector>
+#include <string>
+
+template<class... T> void use(T... arg);
+
+void operator_star_arrow_of_iterators_false_positive_no_cfg_analysis() {
+  auto temporary = []() { return std::vector<std::pair<int, std::string>>{{1, "1"}}; };
+  const char* x = temporary().begin()->second.data();
+  use(x);
+}
+```
+
+使用 `clang++ -Wlifetime-safety simple-uaf.cpp` 可以得到:
+
+```txt
+test.cpp:8:19: warning: temporary object does not live long enough [-Wlifetime-safety-use-after-scope]
+    8 |   const char* x = temporary().begin()->second.data();
+      |                   ^~~~~~~~~~~
+test.cpp:8:52: note: destroyed here
+    8 |   const char* x = temporary().begin()->second.data();
+      |                                                    ^
+test.cpp:8:19: note: result of call to 'begin' aliases the storage of temporary object
+    8 |   const char* x = temporary().begin()->second.data();
+      |                   ^~~~~~~~~~~~~~~~~~~
+test.cpp:8:19: note: expression aliases the storage of temporary object
+    8 |   const char* x = temporary().begin()->second.data();
+      |                   ^~~~~~~~~~~~~~~~~~~~~
+test.cpp:8:19: note: result of call to 'data' aliases the storage of temporary object
+    8 |   const char* x = temporary().begin()->second.data();
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+test.cpp:9:7: note: later used here
+    9 |   use(x);
+      |       ^
+1 warning generated.
+```
 
 ## 参考文档
 
