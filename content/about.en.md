@@ -1,8 +1,6 @@
 ## About Me
 
-- Senior undergraduate student. CS major but self-taught. 🤐
 - Enthusiast of Operating Systems & Compilers. 😗
-    - Currently diving into LLVM and eBPF
 - INTJ 🤔
 - **Dev Environment:**
     - Gentoo Linux
@@ -11,6 +9,10 @@
     - C/C++
     - Python/Shell
     - ~~Java/C#/Rust ?~~
+
+### Open Source Contributions
+
+See [Open Source Contributions Log](../open-source/)
 
 ### Projects
 
