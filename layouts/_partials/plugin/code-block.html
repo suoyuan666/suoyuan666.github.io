@@ -1,0 +1,28 @@
+{{- $content := .Content -}}
+{{- $lang := .Lang -}}
+{{- /* Read code params directly from page/site params to avoid the .Scratch
+       timing race in the theme's init.html (render hooks can fire before init,
+       which made maxShownLines fall back to the default 10). */ -}}
+{{- $code := merge (.Page.Site.Params.page.code | default dict) (.Page.Params.code | default dict) -}}
+{{- $maxShownLines := 10 -}}
+{{- with $code.maxshownlines -}}{{- $maxShownLines = . -}}{{- end -}}
+{{- with $code.maxShownLines -}}{{- $maxShownLines = . -}}{{- end -}}
+{{- $maxShownLines = $maxShownLines | int -}}
+{{- $copy := true -}}
+{{- with $code.copy -}}{{- $copy = . -}}{{- end -}}
+{{- $lines := split $content "\n" | len -}}
+{{- $options := dict "lineNoStart" 1 "lineNos" true -}}
+{{- $options = .Options | partial "function/dict.html" | merge $options -}}
+{{- $lineNoStart := $options.lineNoStart | int -}}
+{{- $lineNos := $options.lineNos | partial "function/bool.html" -}}
+
+{{- $options = dict "noClasses" false "lineNos" false | merge $options -}}
+{{- $result := transform.Highlight $content $lang $options -}}
+<div class="code-block{{ if $lineNos }} code-line-numbers{{ end }}{{ if le $lines $maxShownLines }} open{{ end }}" style="counter-reset: code-block {{ sub $lineNoStart 1 }}">
+    <div class="code-header language-{{ $lang }}">
+        <span class="code-title"><i class="arrow fas fa-angle-right" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></span>
+        {{ if $copy }}<span class="copy" title="{{ T "copyToClipboard" }}"><i class="far fa-copy" aria-hidden="true"></i></span>{{ end }}
+    </div>
+    {{- $result -}}
+</div>
