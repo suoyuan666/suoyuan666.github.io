@@ -85,9 +85,18 @@ void foo() {
 simple-uaf.c:5:15: warning: local variable 'tgt' does not live long enough [-Wlifetime-safety-use-after-scope]
     5 |     int *a = &tgt;
       |               ^~~
-simple-uaf.c:10:3: note: destroyed here
+simple-uaf.c:10:3: note: local variable 'tgt' is destroyed here
    10 |   }
       |   ^
+simple-uaf.c:7:14: note: local variable 'a' aliases the storage of local variable 'tgt'
+    7 |     int *b = a;
+      |              ^
+simple-uaf.c:8:14: note: local variable 'b' aliases the storage of local variable 'tgt'
+    8 |     int *e = b;
+      |              ^
+simple-uaf.c:9:9: note: local variable 'e' aliases the storage of local variable 'tgt'
+    9 |     s = e;
+      |         ^
 simple-uaf.c:11:10: note: later used here
    11 |   (void)*s;
       |          ^
